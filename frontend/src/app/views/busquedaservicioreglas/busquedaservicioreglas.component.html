@@ -1,0 +1,58 @@
+<div class="modal-header">
+    <h4 class="modal-title pull-left">{{ 'key.title.agregar.nuevo.servicio' | translate}}</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="cerrarModal()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body" style="background-color: azure">
+    <form [formGroup]="buscarServicioForm" class="mt-2 mb-4">
+        <div class="form-row">
+            <div class="col-6">
+                <input
+                    type="search"
+                    formControlName="servicio"
+                    placeholder="{{'key.placeholder.codigo.nombre.servicio' | translate}}"
+                    class="w-100 form-control"
+                    autocomplete="off" />
+            </div>
+            <div class="col-6">
+                <button class="ml-3 btn btn-primary px-4" (click)="buscarServicio()">{{ 'key.button.buscar' | translate}}</button>
+            </div>
+        </div>
+    </form>
+
+    <alert type="info" [dismissible]="true">
+        <i class="mr-3 fa fa-info-circle"></i>
+        <span>{{ 'key.msj.busqueda.servicio.reglas' | translate}}</span>
+    </alert>
+
+    <div *ngIf="servicios">
+        <div *ngIf="servicios.length === 0" class="mt-5 mb-4">
+            <h5 class="text-center">{{ 'key.msj.servicios.no.encontrados' | translate}}</h5>
+        </div>
+
+        <table *ngIf="servicios.length !== 0" class="table">
+            <thead>
+                <tr>
+                    <th>{{ 'key.codigo' | translate | uppercase}}</th>
+                    <th>{{ 'key.descripcion' | translate | uppercase}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr
+                    *ngFor="let servicio of servicios | paginate : { itemsPerPage: 5, currentPage: pagina, id: 'paginacionServicios' }"
+                    class="cursor-pointer"
+                    (click)="agregarServicio(servicio)">
+                    <td>{{ servicio.codigo }}</td>
+                    <td>{{ servicio.descripcion }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <pagination-controls id="paginacionServicios" (pageChange)="pagina = $event" previousLabel="{{'key.pagination.anterior' | translate}}"
+        nextLabel="{{'key.pagination.siguiente' | translate}}" autoHide="true">
+        </pagination-controls>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary px-4" (click)="cerrarModal()">{{ 'key.cerrar' | translate}}</button>
+</div>

@@ -1,0 +1,75 @@
+<app-main-nav>
+    <div>
+        <div style="margin: 10px;">
+            <form [formGroup]="FormInfListaConteoInventario">
+                <!-- Contenedor feneral de la página -->
+                <div class="my-2 ml-2 titulo text-center">
+                    <!--menu -->
+                    <h3>
+                        {{ 'key.title.invenario.informe.lista.conteo' | translate}}
+                    </h3>
+                </div>
+                <!-- lineas de edición y bpusqueda -->
+                <div class="card border-primary" style="padding: 5px;">
+                    <div class="form-row mt-2">
+                        <div class="form-group col-md-4">
+                            <label for="bodcodigo">{{ 'key.bodega.solicitante' | translate }} *</label>
+                            <select name="bodcodigo" class='form-control form-control-sm'
+                                formControlName='bodcodigo' (change)="ActivaTipoRegistro()">
+                                <option *ngFor='let listaBodegasSolictante of bodegasSolicitantes'
+                                    [ngValue]='listaBodegasSolictante.id'>
+                                    {{ listaBodegasSolictante.descripcion }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="tipoProducto">{{ 'key.tipo.producto' | translate }} *</label>
+                            <select name="tipoProducto" class='form-control form-control-sm'
+                                formControlName='tipoProducto' (change)="ActivaBtnImprmir()">
+                                <option *ngFor='let tipo of listaTipoProductos'
+                                [ngValue]='tipo.valor'>
+                                  {{ tipo.descripcion }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-2  align-self-end text-center">
+                            <button type="button" id="btnbusca" [disabled]="!btnimprime"
+                                class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                                (click)="ConfirmarImprimir('pdf')">{{ 'key.button.imprimir.pdf' | translate }} <i class="fas fa-file-pdf ml-1"
+                                    aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <div class="form-group col-md-1  align-self-end text-center">
+                                <button type="button" id="btnbusca" [disabled]="!btnimprime"
+                                    class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                                    (click)="ConfirmarImprimir('xls')">{{ 'key.button.imprimir.excel' | translate }}<i class="fa fa-file-excel ml-1"
+                                        aria-hidden="true"></i>
+                                </button>
+                            </div>
+                    </div>
+
+                </div>
+            </form>
+
+
+            <!--  Botones de página -->
+            <div class="row float-right mr-1 mt-2">
+                <div class="form-group  align-self-end">
+                    <button type="button" id="btnlimpiar"
+                        class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02" (click)="limpiar()">{{ 'key.button.limpiar' | translate }} <i
+                            class="fas fa-eraser ml-1"></i>
+                    </button>
+                </div>
+                <div class="form-group align-self-end">
+                    <button type="button" id="btnsalir" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+                        routerLink='../home'>{{ 'key.button.salir' | translate }} <i class="fas fa-window-close ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+        <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+        <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+        <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+    </div>
+</app-main-nav>

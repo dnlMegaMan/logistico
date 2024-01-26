@@ -1,0 +1,64 @@
+<div class="card">
+  <!--menu - Búsqueda de productos-->
+  <div class="card-header">
+    <h3>{{ 'key.title.eventos.devolucion' | translate}}
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onCerrarSalir()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </h3>
+  </div>
+
+  <div *ngFor="let alert of alerts" class="text-center">
+    <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)">{{ alert.msg }}
+    </alert>
+  </div>
+
+  <div class="card m-2 border-primary" style="padding: 10px; background-color:azure;">
+    <form novalidate [formGroup]='lForm' autocomplete="off" spellcheck="false">
+      <!-- tabla para búsqueda en otras pantallas-->
+      <table *ngIf ="detalleocaux.length > 0" class="table table-stripped table-condensed table-hovered">
+        <thead>
+          <tr class="text-center">
+            <th>{{ 'key.fecha' | translate}}</th>
+            <th>{{ 'key.cantidad.devuelta' | translate}}</th>
+            <th>{{ 'key.responsable.devolucion' | translate}}</th>
+            <th>{{ 'key.nota.credito.asociada' | translate}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="text-center" *ngFor="let oc of detalleocaux" (click)="AbirNota(oc.odmdnotacredito)">
+            <td>{{oc.odmdfecha}}</td>
+            <td>{{oc.odmdcantidad}}</td>
+            <td>{{oc.odmdresponsable}}</td>
+            <td>{{oc.odmdnotacredito}} </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div *ngIf ="detalleocaux.length == 0" >
+        <h4 class="text-center">{{ 'key.mensaje.no.existen.devoluciones.recepcion' | translate}}</h4>
+      </div> 
+      
+      <div class="row m-1">
+        <pagination
+          *ngIf="detalleocpag.length > 0"
+          [boundaryLinks]="true" [directionLinks]="true" [maxSize]="6"
+          [totalItems]="detalleocpag.length" [itemsPerPage]=8 [previousText]="'key.pagination.anterior' | translate"
+          [nextText]="'key.pagination.siguiente' | translate" [firstText]="'&laquo;'" [lastText]="'&raquo;'" (pageChanged)="pageChanged($event)">
+        </pagination>
+      </div>
+    </form>
+  </div>
+
+  <div class="row float-right mt-1">
+    <div class="form-group col-md-3 align-self-end text-right">
+      <button type="button" id="btnlimpiar" class="btn  btn-primary btn-sm button-my-styles-busqueda_02"
+        (click)="onCerrarSalir()">{{ 'key.button.salir' | translate}} <i class="fas fa-window-close ml-1"></i>
+      </button>
+    </div>
+  </div>
+</div>
+<swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+<swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+<swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>

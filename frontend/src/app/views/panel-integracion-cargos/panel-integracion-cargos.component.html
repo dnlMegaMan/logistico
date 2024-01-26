@@ -1,0 +1,654 @@
+    <!-- <app-navbar></app-navbar>
+<app-sidebar></app-sidebar>
+<div class="content-wrapper pl-5"> -->
+<app-main-nav>
+  <div style="padding: 10px;">
+    <div class="my-2 ml-2 titulo text-center">
+        <!--menu - productos -mantencion de articulos-->
+        <h3>
+            {{ 'key.title.monitor.interfaz.cargos' | translate | uppercase}}
+        </h3>
+    </div>
+
+    <form [formGroup]="lForm">
+
+        <div class="card border-primary" style="padding: 20px;">
+          <div class="row mr-4">
+              <div class="form-group col-md-1">
+                  <label for="fechadesde">{{ 'key.fechadesde' | translate}} *</label>
+                  <input appSelecttext type="text" placeholder="DD/MM/YYYY" class="form-control form-control-sm"
+                      [bsConfig]="bsConfig" bsDatepicker formControlName="fechadesde" placement="right"
+                      (ngModelChange)="refrescar()"/>
+              </div>
+              <div class="form-group col-md-1">
+                  <label for="fechahasta">{{ 'key.fechahasta' | translate}} *</label>
+                  <input appSelecttext type="text" placeholder="DD/MM/YYYY" class="form-control form-control-sm"
+                      [bsConfig]="bsConfig" bsDatepicker formControlName="fechahasta" placement="right"
+                      (ngModelChange)="refrescar()"/>
+              </div>
+              <div class="form-group col-md-1  align-self-end text-right">
+                  <button type="button" class="btn btn-primary"
+                      (click)="refrescar()">{{ 'key.button.refrescar' | translate}}
+                  </button>
+              </div>
+              <div class="form-group col-md-1  align-self-end text-right">
+                  <button type="button" class="btn btn-primary" data-toggle="button" aria-pressed="false"
+                      autocomplete="off" (click)="limpiarFiltros()" >{{ 'key.limpiar.filtros' | translate}}</button>
+              </div>
+          </div>
+        </div>
+        <div class="card border-primary" style="padding: 20px; max-height: auto;min-height: 100px;">
+            <div class="row mr-2">
+                <div *ngIf="opcion_hospitalizado" class="card text-white bg-primary mb-2" style="max-width: 12rem;">
+
+                    <div class="card-header">
+                        {{ 'key.cargos.hospitalizados' | translate}}
+                    </div>
+                    <div class="card-body">
+                        <!-- <p>{{ this.canidad_movimiento_hospitalizados}}</p> -->
+                        <p>{{ listahospitalizados.length }}</p>
+                    </div>
+                </div>
+
+                <div *ngIf="!opcion_hospitalizado" class="card bg-light mb-2" style="max-width: 12rem;">
+                    <div class="card-header">
+                        {{ 'key.cargos.hospitalizados' | translate}}
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <button type="button" class="btn btn-primary" data-toggle="button" aria-pressed="false"
+                                autocomplete="off" (click)="eleccionopcion('HOSPITALIZADOS' )">
+                                 <!-- {{ this.canidad_movimiento_hospitalizados }} -->
+                                <p>{{ listahospitalizados.length }}</p>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="opcion_urgencia" class="card text-white bg-primary mb-2" style="max-width: 12rem;">
+                    <div class="card-header">
+                        {{ 'key.cargos.urgencias' | translate}}
+                    </div>
+                    <div class="card-body">
+                        <!-- <p>{{this.canidad_movimiento_urgencia}}</p> -->
+                        <p>{{listaurgencia.length}}</p>
+                    </div>
+                </div>
+
+                <div *ngIf="!opcion_urgencia" class="card bg-light mb-2" style="max-width: 12rem;">
+                    <div class="card-header">
+                        {{ 'key.cargos.urgencias' | translate}}
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <button type="button" class="btn btn-primary" data-toggle="button" aria-pressed="false"
+                                autocomplete="off" (click)="eleccionopcion('URGENCIAS' )">
+                                {{listaurgencia.length}}
+                                <!-- {{this.canidad_movimiento_urgencia}} -->
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="opcion_hospitalizado">
+                <div class="card border-primary mt-1" style="padding: 5px;height: 600px;">
+                    <div class="table-responsive mt-1" >
+                        <table class="table table-sm  table-primary table-bordered">
+                            <tr>
+                                <th scope="col">#{{ 'key.id' | translate}}
+                                    <svg (click)="sortbyHos('fdeid')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                    </svg>
+                                    <form [formGroup]="FormFiltroHos">
+                                        <input
+                                            type="number"
+                                            class="form-control form-control-xs text-right"
+                                            style="width: 100px;"
+                                            formControlName="id"
+                                            (keyup.enter)="filtroHos()" 
+                                            (focusout)="filtroHos()" />
+                                    </form>
+                                </th>
+                                <th scope="col">{{ 'key.solicitud' | translate}}
+                                  <svg (click)="sortbyHos('soliid')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                  </svg>
+                                  <form [formGroup]="FormFiltroHos">
+                                        <input
+                                            type="number"
+                                            class="form-control form-control-xs text-right"
+                                            style="width: 100px;"
+                                            formControlName="soliid"
+                                            (keyup.enter)="filtroHos()"
+                                            (focusout)="filtroHos()" />
+                                    </form>
+                                </th>
+                                <th scope="col">{{ 'key.fecha' | translate}}
+                                  <svg (click)="sortbyHos('fecha')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                      <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                  </svg>
+                                  <form [formGroup]="FormFiltroHos">
+                                        <input 
+                                            appSelecttext
+                                            type="text"
+                                            class="form-control form-control-sm"
+                                            style="width: 100px;"
+                                            [bsConfig]="bsConfig"
+                                            bsDatepicker
+                                            formControlName="fecha"
+                                            placement="button" 
+                                            (focusout)="filtroHos()"
+                                            (ngModelChange)="filtroHos()"/>
+                                  </form>
+                                </th>
+                                <th scope="col">{{ 'key.tipo.operacion' | translate}}
+                                    <svg (click)="sortbyHos('tipomovimiento')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                    </svg>
+                                    <form [formGroup]="FormFiltroHos">
+                                    <select 
+                                        name="bodcodigo"
+                                        class='form-control form-control-sm'
+                                        formControlName='tipomovimiento'
+                                        style="width: 150px;"
+                                        (focusout)="filtroHos()"
+                                        (change)="filtroHos()">
+                                        <option [ngValue]="null"></option>
+                                        <option *ngFor="let tipoOperacion of tipoOperaciones" [ngValue]="tipoOperacion.codigo">
+                                            {{ tipoOperacion.descripcion }}
+                                        </option>
+                                    </select>
+                                    </form>
+                                </th>
+                                <th scope="col">{{ 'key.receta' | translate}}
+                                    <svg (click)="sortbyHos('numeroreceta')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                    </svg>
+                                    <form [formGroup]="FormFiltroHos">
+                                        <input 
+                                            type="number"
+                                            class="form-control form-control-xs text-right"
+                                            style="width: 80px;"
+                                            (keyup.enter)="filtroHos()"
+                                            (focusout)="filtroHos()"
+                                            formControlName="receta">
+                                    </form>
+                                </th>
+                                <th scope="col">{{ 'key.numero.cuenta' | translate}}
+                                    <svg (click)="sortbyHos('ctanumcuenta')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                    </svg>
+                                    <form [formGroup]="FormFiltroHos">
+                                        <input
+                                            type="text"
+                                            class="form-control form-control-xs text-right"
+                                            style="width: 100px;"
+                                            formControlName="cuenta"
+                                            (focusout)="filtroHos()"
+                                            (keyup.enter)="filtroHos()" />
+                                    </form>
+                                </th>
+                                <th scope="col">{{ 'key.identificacion' | translate}}
+                                    <svg (click)="sortbyHos('identificacion')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                    </svg>
+                                    <form [formGroup]="FormFiltroHos">
+                                        <input 
+                                            type="text"
+                                            class="form-control form-control-xs text-right"
+                                            style="width: 140px;"
+                                            (focusout)="filtroHos()"
+                                            (keyup.enter)="filtroHos()" formControlName="rut">
+                                    </form>
+                                </th>
+                                <th scope="col">{{ 'key.paciente' | translate}}
+                                    <svg (click)="sortbyHos('paciente')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                    </svg>
+                                    <form [formGroup]="FormFiltroHos">
+                                        <input 
+                                            type="text"
+                                            class="form-control form-control-xs text-right"
+                                            style="width: 200px;"
+                                            (focusout)="filtroHos()"
+                                            (input)="filtroHos()" 
+                                            formControlName="paciente">
+                                    </form>
+                                </th>
+                                <th scope="col">{{ 'key.servicio' | translate}}
+                                    <svg (click)="sortbyHos('servicio')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                    </svg>
+                                    <form [formGroup]="FormFiltroHos">
+                                        <select 
+                                            name="servicio" 
+                                            class='form-control form-control-sm' formControlName='servicio'
+                                            (focusout)="filtroHos()"
+                                            (change)="filtroHos()" 
+                                            style="width: 150px;">
+                                            <option *ngFor="let servicio  of servicios" [ngValue]="servicio.serviciodesc">
+                                                {{ servicio.serviciodesc }}
+                                            </option>
+                                        </select>
+                                    </form>
+                                </th>
+                                <th scope="col">{{ 'key.cama' | translate}}
+                                    <svg (click)="sortbyHos('camaactual')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                    </svg>
+                                    <form [formGroup]="FormFiltroHos">
+                                        <input 
+                                            type="text" 
+                                            class="form-control form-control-xs text-right"
+                                            style="width: 100px"
+                                            (focusout)="filtroHos()"
+                                            (input)="filtroHos()" 
+                                            formControlName="cama" >
+                                    </form>
+                                </th>
+                                <th scope="col">{{ 'key.codigo' | translate}}
+                                    <svg (click)="sortbyHos('mfdemeincodmei')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                    </svg>
+                                    <form [formGroup]="FormFiltroHos">
+                                        <input 
+                                            type="text" 
+                                            class="form-control form-control-xs text-right"
+                                            style="width: 120px"
+                                            (focusout)="filtroHos()"
+                                            (input)="filtroHos()"
+                                            formControlName="codigo">
+                                    </form>
+                                </th>
+                                <th scope="col">{{ 'key.descripcion' | translate}}
+                                    <svg (click)="sortbyHos('descripcionproducto')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                    </svg>
+                                    <form [formGroup]="FormFiltroHos">
+                                        <input 
+                                            type="text" 
+                                            class="form-control form-control-xs text-right"
+                                            style="width: 150px;"
+                                            (focusout)="filtroHos()"
+                                            (input)="filtroHos()" 
+                                            formControlName="descripcion" >
+                                    </form>
+                                </th>
+                                <th scope="col">{{ 'key.cantidad' | translate}}
+                                    <svg (click)="sortbyHos('mfdecantidad')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                    </svg>
+                                    <form [formGroup]="FormFiltroHos">
+                                        <input
+                                            type="number"
+                                            class="form-control form-control-xs text-right"
+                                            style="width: 100px;"
+                                            formControlName="cantidad"
+                                            (keyup.enter)="filtroHos()" 
+                                            (focusout)="filtroHos()" />
+                                    </form>
+                                </th>
+                                <th scope="col">{{ 'key.estado' | translate}}
+                                  <svg (click)="sortbyHos('intcargoestado')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                      <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                  </svg>
+                                  <form [formGroup]="FormFiltroHos">
+                                      <select 
+                                            name="estado" 
+                                            class='form-control form-control-sm'
+                                            style="width: 150px;"
+                                            (focusout)="filtroHos()"
+                                            (change)="filtroHos()" 
+                                            formControlName="estado">
+                                          <option *ngFor="let estados of estadostraspasos" [ngValue]="estados.codigo">
+                                              {{ estados.descripcion }}
+                                          </option>
+                                      </select>
+                                  </form>
+                                </th>
+                                <th scope="col">{{ 'key.observacion' | translate}}
+                                    <svg (click)="sortbyHos('intcargoerror')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                    </svg>
+                                    <form [formGroup]="FormFiltroHos">
+                                        <input 
+                                            type="text" 
+                                            class="form-control form-control-xs text-right"
+                                            style="width: 150px;"
+                                            (focusout)="filtroHos()"
+                                            (input)="filtroHos()" 
+                                            formControlName="observacion" >
+                                    </form>
+                                </th>
+                                <th scope="col">{{ 'key.accion' | translate}}</th>
+                            </tr>
+                            <tr class="table-secondary" *ngFor="let movimiento of listahospitalizadosPaginacion |  paginate: { itemsPerPage: 7, currentPage: page, id: 'cargosHospitalizados' } "
+                                style="cursor: pointer;">
+                                <td><small>{{movimiento.fdeid}}</small></td>
+                                <td><small>{{movimiento.soliid}}</small></td>
+                                <td><small>{{movimiento.fecha}}</small></td>
+                                <td><small>{{movimiento.tipomovimiento}}</small></td>
+                                <td><small>{{movimiento.numeroreceta}}</small></td>
+                                <td><small>{{movimiento.ctanumcuenta}}</small></td>
+                                <td><small>{{movimiento.identificacion}}</small></td>
+                                <td class="text-nowrap help   " tooltip="{{movimiento.paciente}}">
+                                    <small>{{movimiento.paciente| slice:0:30 }}</small>
+                                </td>
+                                <td class="text-nowrap help   " tooltip="{{movimiento.servicio}}">
+                                    <small>{{movimiento.servicio| slice:0:30 }}</small>
+                                </td>
+                                <td><small>{{movimiento.camaactual}} </small></td>
+                                <td><small>{{movimiento.mfdemeincodmei}} </small></td>
+                                <td class="text-nowrap help   " tooltip="{{movimiento.descripcionproducto}}">
+                                    <small>{{movimiento.descripcionproducto| slice:0:20 }}</small>
+                                </td>
+                                <td><small>{{movimiento.mfdecantidad}}</small></td>
+                                <td><small>{{movimiento.intcargoestado}} </small></td>
+                                <td class="text-nowrap help   " tooltip="{{movimiento.intcargoerror}}">
+                                    <small>{{movimiento.intcargoerror| slice:0:20 }}</small>
+                                </td>
+
+                                <td>
+                                    <span><button type="button" id="btnenviar" class="btn btn-info btn-sm ml-2"
+                                            *ngIf="activaEnviar(movimiento)"
+                                            (click)="Enviar(movimiento)"><small>{{ 'key.enviar' | translate}}</small>
+                                        </button>
+
+                                    </span>
+                                </td>
+
+                            </tr>
+
+                        </table>
+                        <div class="row m-1 mt-3">
+                            <pagination-controls
+                            id="cargosHospitalizados"
+                            (pageChange)="page = $event"
+                            previousLabel="{{'key.pagination.anterior' | translate}}"
+                            nextLabel="{{'key.pagination.siguiente' | translate}}"
+                            autoHide="true">
+                          </pagination-controls>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div *ngIf="opcion_urgencia">
+                <div class="card border-primary mt-1" style="padding: 5px; height: 600px;">
+                    <div class="table-responsive mt-1" >
+                        <table class="table table-sm  table-primary table-bordered">
+                            <tr>
+                                <th scope="col">#{{ 'key.id' | translate}}
+                                    <svg (click)="ordenarCargosUrgenciasPor('fdeid')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                    </svg>
+                                    <form [formGroup]="FormFiltroCargosUrgencias">
+                                        <input
+                                            type="number"
+                                            class="form-control form-control-xs text-right"
+                                            style="width: 100px;"
+                                            formControlName="id"                                            
+                                            (keyup.enter)="filtrarCargosUrgencias()" 
+                                            (focusout)="filtrarCargosUrgencias()" />
+                                    </form>
+                                </th>
+                                <th scope="col">{{ 'key.solicitud' | translate}}
+                                    <svg (click)="ordenarCargosUrgenciasPor('soliid')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                    </svg>
+                                    <form [formGroup]="FormFiltroCargosUrgencias">
+                                        <input
+                                            type="number"
+                                            class="form-control form-control-xs text-right"
+                                            style="width: 100px;"
+                                            (keyup.enter)="filtrarCargosUrgencias()"
+                                            (focusout)="filtrarCargosUrgencias()"
+                                            formControlName="soliid" />
+                                    </form>
+                                </th>
+                                <th scope="col">{{ 'key.fecha' | translate}}
+                                    <svg (click)="ordenarCargosUrgenciasPor('fecha')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                    </svg>
+                                    <form [formGroup]="FormFiltroCargosUrgencias">
+                                        <input appSelecttext type="text"
+                                        class="form-control form-control-sm"
+                                        style="width: 100px;"
+                                        [bsConfig]="bsConfig"
+                                        bsDatepicker
+                                        formControlName="fecha"
+                                        placement="button"
+                                        (focusout)="filtrarCargosUrgencias()"
+                                        (ngModelChange)="filtrarCargosUrgencias()" />
+                                    </form>
+                                </th>
+                                <th scope="col">{{ 'key.tipo.operacion' | translate}}
+                                    <svg (click)="ordenarCargosUrgenciasPor('tipomovimiento')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                    </svg>
+                                    <form [formGroup]="FormFiltroCargosUrgencias">
+                                        <select 
+                                            name="bodcodigo"
+                                            class='form-control form-control-sm'
+                                            formControlName='tipomovimiento'
+                                            style="width: 150px;"
+                                            (change)="filtrarCargosUrgencias()">
+                                            <option [ngValue]="null"></option>
+                                            <option *ngFor="let tipoOperacion of tipoOperaciones" [ngValue]="tipoOperacion.codigo">
+                                                {{ tipoOperacion.descripcion }}
+                                            </option>
+                                        </select>
+                                    </form>
+                                </th>
+                                <th scope="col">{{ 'key.receta' | translate}}
+                                    <svg (click)="ordenarCargosUrgenciasPor('numeroreceta')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                    </svg>
+                                    <form [formGroup]="FormFiltroCargosUrgencias">
+                                        <input
+                                        type="number"
+                                        class="form-control form-control-xs text-right"
+                                        style="width: 100px;"
+                                        (keyup.enter)="filtrarCargosUrgencias()"
+                                        (focusout)="filtrarCargosUrgencias()"
+                                        formControlName="receta" />
+                                    </form>
+                                </th>
+                                <th scope="col">{{ 'key.numero.cuenta' | translate}}
+                                    <svg (click)="ordenarCargosUrgenciasPor('ctanumcuenta')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                    </svg>
+                                    <form [formGroup]="FormFiltroCargosUrgencias">
+                                        <input
+                                            type="string"
+                                            class="form-control form-control-xs text-right"
+                                            style="width: 100px;"
+                                            (keyup.enter)="filtrarCargosUrgencias()" 
+                                            (focusout)="filtrarCargosUrgencias()"
+                                            formControlName="cuenta" />
+                                    </form>
+                                </th>
+                                <th scope="col">{{ 'key.numero.identificacion' | translate}}
+                                    <svg (click)="ordenarCargosUrgenciasPor('identificacion')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                    </svg>
+                                    <form [formGroup]="FormFiltroCargosUrgencias">
+                                        <input
+                                            type="text"
+                                            class="form-control form-control-xs text-right"
+                                            style="width: 140px;"
+                                            (keyup.enter)="filtrarCargosUrgencias()"
+                                            (focusout)="filtrarCargosUrgencias()"
+                                            formControlName="rut" />
+                                    </form>
+                                </th>
+                                <th scope="col">{{ 'key.paciente' | translate}}
+                                    <svg (click)="ordenarCargosUrgenciasPor('paciente')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                    </svg>
+                                    <form [formGroup]="FormFiltroCargosUrgencias">
+                                        <input
+                                            type="text"
+                                            class="form-control form-control-xs text-right"
+                                            style="width: 200px;"
+                                            (input)="filtrarCargosUrgencias()"
+                                            (focusout)="filtrarCargosUrgencias()"
+                                            formControlName="paciente" />
+                                    </form>
+                                </th>
+                                <th scope="col">{{ 'key.servicio' | translate}}
+                                    <svg (click)="ordenarCargosUrgenciasPor('servicio')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                    </svg>
+                                    <form [formGroup]="FormFiltroCargosUrgencias">
+                                        <select 
+                                            name="servicio"
+                                            class="form-control form-control-sm"
+                                            style="width: 150px;"
+                                            formControlName="servicio"
+                                            (focusout)="filtrarCargosUrgencias()"
+                                            (change)="filtrarCargosUrgencias()">
+                                            <option *ngFor="let servicio of servicios" [value]="servicio.serviciodesc">
+                                                {{ servicio.serviciodesc }}
+                                            </option>
+                                        </select>
+                                    </form>
+                                </th>
+                                <th scope="col">{{ 'key.codigo' | translate}}
+                                    <svg (click)="ordenarCargosUrgenciasPor('mfdemeincodmei')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                    </svg>
+                                    <form [formGroup]="FormFiltroCargosUrgencias">
+                                        <input
+                                            type="text"
+                                            class="form-control form-control-xs text-right"
+                                            style="width: 120px;"
+                                            formControlName="codigo"                                            
+                                            (focusout)="filtrarCargosUrgencias()"
+                                            (keyup.enter)="filtrarCargosUrgencias()" />
+                                    </form>
+                                </th>
+                                <th scope="col">{{ 'key.descripcion' | translate}}
+                                    <svg (click)="ordenarCargosUrgenciasPor('descripcionproducto')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                    </svg>
+                                    <form [formGroup]="FormFiltroCargosUrgencias">
+                                        <input
+                                            type="text"
+                                            class="form-control form-control-xs text-right"
+                                            style="width: 150px;"
+                                            formControlName="descripcion"                                            
+                                            (focusout)="filtrarCargosUrgencias()"
+                                            (keyup.enter)="filtrarCargosUrgencias()" />
+                                    </form>
+                                </th>
+                                <th scope="col">{{ 'key.cantidad' | translate}}
+                                    <svg (click)="ordenarCargosUrgenciasPor('mfdecantidad')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                    </svg>
+                                    <form [formGroup]="FormFiltroCargosUrgencias">
+                                        <input
+                                            type="number"
+                                            class="form-control form-control-xs text-right"
+                                            style="width: 100px;"
+                                            formControlName="cantidad"                                            
+                                            (focusout)="filtrarCargosUrgencias()"
+                                            (keyup.enter)="filtrarCargosUrgencias()" />
+                                    </form>
+                                </th>
+                                <th scope="col">{{ 'key.estado' | translate}}
+                                    <svg (click)="ordenarCargosUrgenciasPor('intcargoestado')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                    </svg>
+                                    <form [formGroup]="FormFiltroCargosUrgencias">
+                                        <select 
+                                            name="estado" 
+                                            class='form-control form-control-sm'
+                                            style="width: 150px;"
+                                            (focusout)="filtrarCargosUrgencias()"
+                                            (change)="filtrarCargosUrgencias()" 
+                                            formControlName="estado">
+                                            <option *ngFor="let estados of estadostraspasos" [ngValue]="estados.codigo">
+                                                {{ estados.descripcion }}
+                                            </option>
+                                        </select>
+                                    </form>
+                                </th>
+                                <th scope="col">{{ 'key.observacion' | translate}}
+                                    <svg (click)="ordenarCargosUrgenciasPor('intcargoerror')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                    </svg>
+                                    <form [formGroup]="FormFiltroCargosUrgencias">
+                                        <input
+                                            type="text"
+                                            class="form-control form-control-xs text-right"
+                                            style="width: 150px;"
+                                            formControlName="observacion"                                            
+                                            (keyup.enter)="filtrarCargosUrgencias()" />
+                                    </form>
+                                </th>
+                                <th scope="col">{{ 'key.accion' | translate}}</th>
+                            </tr>
+                            <tr class="table-secondary" *ngFor="let movimiento of listaurgenciaPaginacion |  paginate: { itemsPerPage: 7, currentPage: page, id: 'cargosUrgencias' } " style="cursor: pointer;">
+                                <td><small>{{movimiento.fdeid}}</small></td>
+                                <td><small>{{movimiento.soliid}}</small></td>
+                                <td><small>{{movimiento.fecha}}</small></td>
+                                <td><small>{{movimiento.tipomovimiento}}</small></td>
+                                <td><small>{{movimiento.numeroreceta}}</small></td>
+                                <td><small>{{movimiento.ctanumcuenta}}</small></td>
+                                <td><small>{{movimiento.identificacion}}</small></td>
+                                <td class="text-nowrap help   " tooltip="{{movimiento.paciente}}">
+                                    <small>{{movimiento.paciente| slice:0:30 }}</small>
+                                </td>
+                                <td class="text-nowrap help   " tooltip="{{movimiento.servicio}}">
+                                    <small>{{movimiento.servicio| slice:0:30 }}</small>
+                                </td>
+                                <td><small>{{movimiento.mfdemeincodmei}} </small></td>
+                                <td class="text-nowrap help   " tooltip="{{movimiento.descripcionproducto}}">
+                                    <small>{{movimiento.descripcionproducto| slice:0:20 }}</small>
+                                </td>
+                                <td><small>{{movimiento.mfdecantidad}}</small></td>
+                                <td><small>{{movimiento.intcargoestado}} </small></td>
+                                <td class="text-nowrap help   " tooltip="{{movimiento.intcargoerror}}">
+                                    <small>{{movimiento.intcargoerror| slice:0:20 }}</small>
+                                </td>
+                                <td>
+                                    <span><button type="button" id="btnenviar" class="btn btn-info btn-sm ml-2"
+                                            *ngIf="movimiento.intcargoestado =='ERROR' || movimiento.intcargoestado =='OBSERVADO'"
+                                            (click)="Enviar(movimiento)"><small>{{ 'key.enviar' | translate}}</small>
+                                        </button>
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="row m-1 mt-3">
+                            <pagination-controls
+                            id="cargosUrgencias"
+                            (pageChange)="page = $event"
+                            previousLabel="{{'key.pagination.anterior' | translate}}"
+                            nextLabel="{{'key.pagination.siguiente' | translate}}"
+                            autoHide="true">
+                          </pagination-controls>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!--  Botones de página -->
+            <div class="row float-right mr-1 mt-2">
+                <div class="form-group align-self-end">
+                    <button type="button" id="btnguardar" class="btn mr-1 btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+                        (click)="generarExcelGrillaCompleta()">
+                        <span style="margin-right: 0.5rem;">{{ 'key.button.imprimir.grilla' | translate}}</span>
+                        <i class="bi bi-file-earmark-excel-fill"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </form>
+    <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+    <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+    <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+  </div>
+</app-main-nav>

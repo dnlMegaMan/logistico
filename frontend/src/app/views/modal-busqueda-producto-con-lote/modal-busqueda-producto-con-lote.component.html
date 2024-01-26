@@ -1,0 +1,72 @@
+<div class="modal-header">
+    <h4 class="modal-title pull-left">{{ 'key.title.busqueda.productos.lote' | translate}}</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="cerrarModal()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body" style="background-color: azure">
+    <form [formGroup]="busquedaProductosForm" class="mt-2 mb-4">
+        <div class="form-row">
+            <div class="form-group col-2">
+                <label>{{ 'key.lote' | translate}}</label>
+                <input type="text" formControlName="lote" class="form-control form-control-sm" autocomplete="off" />
+            </div>
+            <div class="form-group col-2">
+                <label>{{ 'key.codigo' | translate}}</label>
+                <input type="text" formControlName="codigo" class="form-control form-control-sm" autocomplete="off" />
+            </div>
+            <div class="form-group col-3">
+                <label>{{ 'key.descripcion' | translate}}</label>
+                <input type="text" formControlName="descripcion" class="form-control form-control-sm" autocomplete="off" />
+            </div>
+            <div class="form-group col-2 align-self-end">
+                <button class="ml-3 btn btn-sm btn-primary px-4" (click)="buscarProductos()">
+                    <span class="mr-2">{{ 'key.button.buscar' | translate}}</span>
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <div *ngIf="productos.length === 0" class="mt-5 mb-4">
+        <h5 class="text-center">{{ 'key.mensaje.no.resultados.busqueda' | translate}}</h5>
+    </div>
+
+    <ng-container *ngIf="productos.length > 0">
+        <table class="table">
+            <thead>
+                <th>{{ 'key.codigo' | translate}}</th>
+                <th>{{ 'key.descripcion' | translate}}</th>
+                <th>{{ 'key.lote' | translate}}</th>
+                <th>{{ 'key.f.vencimiento' | translate}}</th>
+            </thead>
+            <tbody>
+                <tr
+                    *ngFor="let producto of productos | paginate : { itemsPerPage: 5, currentPage: paginaActual }"
+                    (click)="cerrarModal(producto)"
+                    class="cursor-pointer">
+                    <td>{{ producto.codigo }}</td>
+                    <td>{{ producto.descripcion }}</td>
+                    <td>{{ producto.lote }}</td>
+                    <td>{{ producto.fechaVencimiento | date : 'dd/MM/yyyy' }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <pagination-controls (pageChange)="paginaActual = $event" (pageBoundsCorrection)="paginaActual = $event" previousLabel="{{'key.pagination.anterior' | translate}}"
+        nextLabel="{{'key.pagination.siguiente' | translate}}">
+        </pagination-controls>
+    </ng-container>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-primary px-4" (click)="limpiar()">
+        <span class="mr-2 text-uppercase">{{ 'key.button.limpiar.L' | translate}}</span>
+        <i class="fas fa-eraser ml-1"></i>
+    </button>
+    <button type="button" class="btn btn-sm btn-primary px-4" (click)="cerrarModal()">
+        <span class="mr-2 text-uppercase">{{ 'key.cerrar' | translate}}</span>
+        <i class="fas fa-window-close ml-1"></i>
+    </button>
+</div>
+
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+<swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>

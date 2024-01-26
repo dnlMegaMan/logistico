@@ -1,0 +1,25 @@
+<nav class="container-fluid py-3" style="background-color: rgb(109, 175, 175)">
+    <div class="row">
+        <img src="./assets/images/barra_supOS_PROD.jpg" alt="Logo" class="d-block m-auto" style="opacity: 0.8" />
+    </div>
+</nav>
+
+<div class="container m-auto py-4 text-center">
+    <div class="row">
+      <div class="col-12">
+            <h3 class="mb-4">{{ 'key.title.sistema.mantencion' | translate}}</h3>
+            <p *ngIf="!terminoMantencion" class="text-black">{{ 'key.mensaje.sistema.mantencion' | translate}}</p>
+            <p *ngIf="terminoMantencion" class="text-success">{{ 'key.mensaje.sistema.mantencion.fin' | translate}}</p>
+
+            <div class="mt-4 mb-5">
+                <button type="button" id="btnsalir" class="m-auto px-5 btn btn-sm btn-primary" routerLink="/login" [disabled]="!terminoMantencion">
+                    {{ 'key.ir.login' | translate}} <i class="fas fa-user ml-1"></i>
+                </button>
+            </div>
+
+            <div>
+                <img src="/assets/images/sitio_en_mantencion.png" class="m-auto img-fluid rounded" style="max-width: 400px" alt="Sitio en mantención" />
+            </div>
+        </div>
+    </div>
+</div>

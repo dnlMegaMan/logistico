@@ -1,0 +1,23 @@
+[
+  {
+    "name": "DESARROLLO",
+    "stringconnection": "PrivAdm/sisaPrivDes20XX@//10.0.1.9:1521/pdb_qa.sub09012156411.vcnmodernizacio.oraclevcn.com",
+    "username" : "PrivAdm",
+	"password" : "sisaPrivDes20XX",
+	"connectstring" : "10.0.1.9:1521/pdb_qa.sub09012156411.vcnmodernizacio.oraclevcn.com"
+  },
+  {
+    "name": "TESTING_PROD",
+    "stringconnection": "PRIVADM/sisaPrivQA20XX@//10.0.1.9:1521/pdb_qa.sub09012156411.vcnmodernizacio.oraclevcn.com",
+    "username" : "PRIVADM",
+	"password" : "sisaPrivQA20XX",
+	"connectstring" : "10.0.1.9:1521/pdb_qa.sub09012156411.vcnmodernizacio.oraclevcn.com"
+  },
+  {
+    "name": "TESTING",
+    "stringconnection": "PRIVADM/sisaPrivQA20XX@//10.0.1.9:1521/pdb_qa.sub09012156411.vcnmodernizacio.oraclevcn.com",
+    "username" : "PRIVADM",
+	"password" : "sisaPrivQA20XX",
+	"connectstring" : "10.0.1.9:1521/pdb_qa.sub09012156411.vcnmodernizacio.oraclevcn.com"
+  }
+]

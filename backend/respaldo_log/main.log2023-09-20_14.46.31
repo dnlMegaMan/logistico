@@ -1,0 +1,2 @@
+{"level":"info","file":"administradorLoggers.go:85","funcion":"logging.initLogger","time":"2023-09-20 14:39:34","message":"Logs servicios REST abiertos exitosamente"}
+{"level":"info","file":"main.go:415","funcion":"main.main","time":"2023-09-20 14:39:34","message":"Inicio de main.go en http://localhost:8091"}

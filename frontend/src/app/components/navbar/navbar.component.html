@@ -1,0 +1,68 @@
+<div class="form-row" style="height: 120px">
+  <div class="form-group col-md-12" style="margin-top: 20px;">
+    <form [formGroup]="FormConexion" autocomplete="off" spellcheck="false">
+      <ul class="border-primary text-center" style="width: 1300px;">
+
+        <div class="form-row">
+          <div class="form-group col-md-2 mr-2">
+            <a>
+              <img src="./assets/images/{{empresa}}" alt="Logo" class="brand-image pl-1 pt-3"
+                style="opacity: .8; width: 150px; height: 65px;">
+            </a>
+          </div>
+          <div class="form-group col-md-3">
+            <label for="f_esacodigo" style="color: white" class="mb-1"><small style="color: white">{{ 'key.empresa' | translate}}</small>
+              *</label>
+            <select class='form-control form-control-sm' name='f_esacodigo' formControlName='f_esacodigo'
+              (change)="BuscaSucursal(FormConexion.value.f_hdgcodigo,FormConexion.value.f_esacodigo)">
+              <option *ngFor='let empresa of lista_empresas' [ngValue]='empresa.esacodigo'>
+                <small>{{ empresa.esanombre }}</small>
+              </option>
+            </select>
+          </div>
+          <div class="form-group col-md-3">
+            <label for="f_cmecodigo" style="color: white" class="mb-1"><small>{{ 'key.sucursal' | translate}}</small> *</label>
+            <select class='form-control form-control-sm' name='f_cmecodigo' formControlName='f_cmecodigo'
+              (change)="sucursal(FormConexion.value.f_cmecodigo)">
+              <option *ngFor='let sucursal of lista_sucursales' [ngValue]='sucursal.cmecodigo' [disabled]="(fncCombo)">
+                <small>{{ sucursal.cmenombre }}</small>
+              </option>
+            </select>
+          </div>
+          <div class="form-group col-md-3" *ngIf="selectorIdioma">
+            <label for="f_idioma" style="color: white" class="mb-1"><small style="margin-left: -132%;">{{ 'key.idioma' | translate}}</small> *</label>
+            <select class='form-control form-control-sm' name='f_idioma' formControlName='f_idioma'  [(ngModel)]="idiomaSelected" 
+              #langSelect (change)="changeLang(langSelect.value)" style="width: 70%;">
+              <option *ngFor="let lang of languageList" [value]="lang.code" [selected]="lang === translate.currentLang">{{ lang.label }}
+              </option>
+            </select>
+          </div>
+          <div style="position: sticky; top: -2%; right: 1%;">
+            <div class="form-group col-md-2 mt-4">
+              <button mat-button [matMenuTriggerFor]="menu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <strong>
+                  <p mat-menu-item>{{FormConexion.value.f_usuario}}</p>
+                </strong>
+                <button mat-button (click)="CierreSesion()" color="warn">
+                  {{ 'key.cerrarSesion' | translate}}
+                </button>
+              </mat-menu>
+            </div>
+            <div class="form-group  align-self-end" *ngIf="Pendiente">
+              <div class="form-group col-md-1">
+                <figure id="photo" title="{{mensaje}}" tooltip-dir="right">
+                  <img src="./assets/images/{{icono}}" />
+                </figure>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ul>
+    </form>
+  </div>
+  <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+</div>
+<!-- *** -->

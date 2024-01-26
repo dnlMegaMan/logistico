@@ -1,0 +1,40 @@
+<!-- <div class="container"> -->
+    <form [formGroup]="FormConexion" autocomplete="off" spellcheck="false">
+        <li class="card mt-2 border-primary" style="padding: 10px;">
+            <div class="form-row">
+                <label for="hdgcodigo">Holding: *</label>
+                <div class="form-group col-md-3">
+                    <select class='form-control form-control-sm' name='hdgcodigo' formControlName='hdgcodigo'
+                        (change)="BuscaEmpresa(FormConexion.value.hdgcodigo)" [compareWith]='compare_hdgcodigo'>
+                        <option *ngFor=' let holding of holdings' [ngValue]='holding.hdgcodigo'>
+                            {{ holding.hdgnombre }}
+                        </option>
+                    </select>
+                </div>
+
+                <label for="empresa">Empresa: *</label>
+                <div class="form-group col-md-3">
+                    <select class='form-control form-control-sm' name='esacodigo' formControlName='esacodigo'
+                        (change)="BuscaSucursal(FormConexion.value.hdgcodigo,FormConexion.value.esacodigo)" [compareWith]='compare_esacodigo'>
+                        <option *ngFor='let empresa of empresas' [ngValue]='empresa.esacodigo'>
+                            {{ empresa.esanombre }}
+                        </option>
+                    </select>
+                </div>
+
+                <label for="sucursal">Sucursal: *</label>
+                <div class="form-group col-md-3">
+                    <select class='form-control form-control-sm' name='esacodigo' formControlName='cmecodigo'
+                        (change)="sucursal(FormConexion.value.cmecodigo)"  [compareWith]='compare_cmecodigo' >
+                        <option *ngFor='let sucursal of sucursales' [ngValue]='sucursal.cmecodigo'>
+                            {{ sucursal.cmenombre }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </li>
+    </form>
+
+
+
+<!-- </div> -->

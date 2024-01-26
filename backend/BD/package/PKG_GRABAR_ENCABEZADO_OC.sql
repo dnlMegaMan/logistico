@@ -1,0 +1,50 @@
+create or replace PACKAGE PKG_GRABAR_ENCABEZADO_OC as
+    PROCEDURE P_GRABAR_ENCABEZADO_OC(
+		In_Json IN CLOB,
+		Out_Json IN OUT CLOB
+    );
+END PKG_GRABAR_ENCABEZADO_OC;
+/
+create or replace PACKAGE BODY PKG_GRABAR_ENCABEZADO_OC AS
+
+    PROCEDURE P_GRABAR_ENCABEZADO_OC(
+		In_Json IN CLOB,
+		Out_Json IN OUT CLOB
+    ) AS
+    BEGIN
+		DECLARE 
+			IN_PROVE_ID NUMBER;
+			IN_USUARIO VARCHAR2(32767);
+			IN_EST_OC NUMBER;
+			IN_FEC_ANUL VARCHAR2(32767);
+			IN_BOD_ID NUMBER;
+			NEWNROOC NUMBER;
+			NEWORCID NUMBER;
+		BEGIN
+			SELECT JSON_VALUE(In_Json, '$.proveedorid') AS IN_PROVE_ID INTO IN_PROVE_ID FROM DUAL;
+			SELECT JSON_VALUE(In_Json, '$.usuario') AS IN_USUARIO INTO IN_USUARIO FROM DUAL;
+			SELECT JSON_VALUE(In_Json, '$.estadooc') AS IN_EST_OC INTO IN_EST_OC FROM DUAL;
+			SELECT JSON_VALUE(In_Json, '$.fechaanulacionoc') AS IN_FEC_ANUL INTO IN_FEC_ANUL FROM DUAL;
+			SELECT JSON_VALUE(In_Json, '$.bodegaid') AS IN_BOD_ID INTO IN_BOD_ID FROM DUAL;
+
+			SELECT nvl(MAX(ORCO_NUMDOC),0) + 1 INTO NEWNROOC FROM CLIN_FAR_OC;
+			SELECT nvl(MAX(ORCO_ID),0) + 1 INTO NEWORCID FROM CLIN_FAR_OC;
+
+			insert into clin_far_oc (orco_id, orco_prov_id, orco_numdoc, orco_fecha_doc, orco_usuario_resp, orco_estado, orco_fecha_anulacion, orco_fbod_id ) 
+			values (NEWORCID, IN_PROVE_ID, NEWNROOC, sysdate, IN_USUARIO, IN_EST_OC, to_date(IN_FEC_ANUL,'YYYY-MM-DD'), IN_BOD_ID);
+
+			SELECT json_arrayagg(
+				JSON_OBJECT(
+					'numerodococ' IS ORCO_NUMDOC
+					,'orcoid'     IS ORCO_ID
+				) RETURNING CLOB
+			) AS RESP_JSON into Out_Json
+			FROM (
+				select ORCO_NUMDOC, ORCO_ID 
+				from CLIN_FAR_OC 
+				Where ORCO_numdoc = NEWNROOC
+			);
+		END;
+    END P_GRABAR_ENCABEZADO_OC;
+END PKG_GRABAR_ENCABEZADO_OC;
+/

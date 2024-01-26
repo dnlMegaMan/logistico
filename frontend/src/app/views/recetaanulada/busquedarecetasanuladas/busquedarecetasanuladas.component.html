@@ -1,0 +1,143 @@
+<div class="container">
+  <div class="card">
+      <!--menu - productos -mantencion de articulos-->
+      <div class="card-header">
+          {{titulo}}
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onSalir()">
+              <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+        <div class="card m-2 border-primary" style="padding: 10px; background-color:azure;">
+          <form novalidate [formGroup]='FormBusquedaRecAnu' autocomplete="off" spellcheck="false">
+              <div class="clas form-row">
+                  <div class="form-group col-md-2">
+                      <label for="soliid">{{ 'key.n.receta' | translate}}</label>
+                      <input type="text" class="form-control form-control-sm" formControlName="receid">
+                  </div>
+                  <div class="form-group col-md-2">
+                    <label for="esticod">{{ 'key.ambito' | translate}} *</label>
+                    <select name="esticod" class='form-control form-control-sm' formControlName='ambito'>
+                        <option *ngFor="let tipoambito of tiposambitos" [ngValue]="tipoambito.ambitocodigo">
+                            {{ tipoambito.ambitodescripcion }}
+                        </option>
+                    </select>
+                  </div>
+                  <div class="form-group col-md-2">
+                      <label for="fechadesde">{{ 'key.fechadesde' | translate}} *</label>
+                      <input appSelecttext type="text" placeholder="DD/MM/YYYY" id="fechadesde"
+                          class='form-control form-control-sm' [bsConfig]="bsConfig" bsDatepicker
+                          formControlName="fechadesde">
+                  </div>
+                  <div class="form-group col-md-2">
+                      <label for="fechahasta">{{ 'key.fechahasta' | translate}} *</label>
+                      <input appSelecttext type="text" placeholder="DD/MM/YYYY" id="fechahasta"
+                          class='form-control form-control-sm' [bsConfig]="bsConfig" bsDatepicker
+                          formControlName="fechahasta">
+                  </div>
+              </div>
+              <div class="clas form-row">
+                <div class="form-group col-md-2">
+                  <label for="tipoidentificacion">{{ 'key.tipo.identificacion' | translate}} *</label>
+                  <select name="tipoidentificacion" class='form-control form-control-sm'
+                      formControlName='tipoidentificacion'>
+                      <option *ngFor="let docidenti of docsidentis" [ngValue]="docidenti.docidentcodigo">
+                          {{ docidenti.docidentdescripcion }}
+                      </option>
+                  </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="numeroidentificacion">{{ 'key.numero.identificacion' | translate}}*</label>
+                    <input type="text" class="form-control form-control-sm" formControlName="numeroidentificacion">
+                </div>
+                <div class="form-group col-md-3">
+                  <label for="nombrepaciente">{{ 'key.nombres' | translate}}</label>
+                  <input type="text" class="form-control form-control-sm text-uppercase" placeholder="{{'key.placeholder.ingrese.nombres' | translate}}"
+                  formControlName="nombrepaciente">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-3">
+                  <label for="apellidopaterno">{{ 'key.apellido.paterno' | translate}}</label>
+                  <input type="text" class="form-control form-control-sm text-uppercase" placeholder="{{'key.placeholder.ingrese.apellido.paterno' | translate}}
+                  formControlName="apellidopaterno">
+                </div>
+                <div class="form-group col-md-3">
+                  <label for="apellidomaterno">{{ 'key.apellido.materno' | translate}}</label>
+                  <input type="text" class="form-control form-control-sm text-uppercase" placeholder="{{'key.placeholder.ingrese.apellido.materno' | translate}}"
+                  formControlName="apellidomaterno">
+                </div>
+                <div class="form-group col-md-3 align-self-end text-left">
+                  <button type="button" id="btnbuscar" class="btn btn-primary btn-sm button-my-styles-busqueda_01 pl-4"
+                      (click)="BuscarSolicitudesPacientes()">{{ 'key.button.buscar' | translate}} <i class="fas fa-search ml-1"></i>
+                  </button>
+                </div>
+              </div>
+
+              <table class="table table-stripped table-condensed table-hovered">
+                  <thead>
+                      <tr>
+                          <th>{{ 'key.n.receta' | translate}}</th>
+                          <th>{{ 'key.solicitud.numero' | translate}}</th>
+                          <th>{{ 'key.estado' | translate}}</th>
+                          <th>{{ 'key.fecha.hora' | translate}}</th>
+                          <th>{{ 'key.nombre.paciente' | translate}}</th>
+                          <th>{{ 'key.usuario.autoriza' | translate}}</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr class="table-secondary" *ngFor="let listapacientes of listasolicitudespacientespaginacion
+                      |  paginate: {itemsPerPage: 5, currentPage: page, id:'recAnul'}"
+                          (click)="onCerrar(listapacientes)" style="cursor: pointer;">
+                          <td>{{listapacientes.numeroreceta}}</td>
+                          <td>{{listapacientes.soliid}}</td>
+                          <td>{{listapacientes.estadosolicitudde}}</td>
+                          <td>{{listapacientes.fechacreacion | date:'dd/MM/yyyy HH:mm:ss'}}</td>
+                          <td
+                              tooltip="{{listapacientes.nombrespac }} {{ listapacientes.apepaternopac }} {{ listapacientes.apematernopac }}">
+                              {{listapacientes.nombrespac |slice:0:15}} {{listapacientes.apepaternopac |slice:0:12}}
+                              {{listapacientes.apematernopac | slice:0:11}}
+                          </td>
+                          <td style="text-transform: uppercase;">{{listapacientes.usuarioelimina}} </td>
+                      </tr>
+                  </tbody>
+              </table>
+              <div class="row m-1 mt-3">
+                <pagination-controls
+                  id="recAnul"
+                  (pageChange)="page = $event"
+                  previousLabel="{{'key.pagination.anterior' | translate}}"
+                  nextLabel="{{'key.pagination.siguiente' | translate}}"
+                  autoHide="true">
+                </pagination-controls>
+              </div>
+          </form>
+      </div>
+      <!--  Botones de página -->
+      <div class="row float-right mr-1 mt-2" style="padding: 5px; margin: auto;">
+        <div class="form-group  align-self-end" >
+            <button type="button" id="btnimprimir"
+            [disabled]="!listasolicitudespacientespaginacion.length"
+                class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02" (click)="onImprimirLista()">{{ 'key.button.imprimir.lista' | translate}} <i class="fas fa-file-pdf ml-1"></i>
+            </button>
+        </div>
+        <div class="form-group  align-self-end">
+            <button type="button" id="btnlimpiar" (click)="Limpiar()"
+                class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02">{{ 'key.button.limpiar' | translate}}
+                <i class="fas fa-eraser ml-1"></i>
+
+            </button>
+        </div>
+        <div class="form-group  align-self-end">
+            <button type="button" id="btnsalir"
+                class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+                (click)="onCerrarSalir()">{{ 'key.button.salir' | translate}} <i
+                    class="fas fa-window-close ml-1"></i>
+            </button>
+        </div>
+    </div>
+  </div>
+  <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+  <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+  <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+  <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+</div>

@@ -1,0 +1,329 @@
+
+<app-main-nav>
+  <div style="padding: 10px;">
+    <!-- Contenedor feneral de la página -->
+    <div class="my-2 ml-2 titulo text-center">
+        <!--menu -->
+        <h3>
+            {{ 'key.dispensacion.solicitud.pacientes' | translate}}
+        </h3>
+    </div>
+    <!-- lineas de edición y bpusqueda -->
+    <form [formGroup]="FormDispensaSolicitudPaciente" autocomplete="off" spellcheck="false">
+
+        <div class="card border-primary mt-0" style="padding: 5px;height: 310px;">
+            <tabset>
+                <tab heading="{{'key.tab.identificacion.paciente' | translate}}" id="tab1" style="padding: 5px">
+                    <div class="form-row">
+                        <div class="form-group col-md-2">
+                            <label for="numsolicitud">{{ 'key.solicitud.numero' | translate}} *</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="numsolicitud">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="tipodoc">{{ 'key.tipo.identificacion' | translate}} *</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="tipodoc">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="numidentificacion">{{ 'key.numero.identificacion' | translate}} *</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="numidentificacion">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="numsolicitud">{{ 'key.sexo' | translate}} *</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="sexo">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="numsolicitud">{{ 'key.numero.cuenta' | translate}} *</label>
+                            <input type="number" class="form-control form-control-sm" formControlName="numcuenta">
+                        </div>
+                        <div class="form-group col-md-2 align-self-end text-right">
+                            <button type="button" id="btnbuscar"
+                                class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                                (click)="BuscarSolicitudes()">{{ 'key.button.buscar.solicitud' | translate}}
+                                <i class="fas fa-search ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-row ">
+                        <div class="form-group col-md-6">
+                            <label for="numsolicitud">{{ 'key.nombres.apellidos.paciente' | translate}} *</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="nombrepaciente">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="numsolicitud">{{ 'key.edad' | translate}} *</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="edad">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="numsolicitud">{{ 'key.cama' | translate}} *</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="cama">
+                        </div>
+                        <div class="form-group col-md-2 align-self-end text-right">
+                            <button type="button" id="btnevento" class="btn btn-primary btn-sm
+                                    button-my-styles-busqueda_01"
+                                [disabled]="(FormDispensaSolicitudPaciente.value.numsolicitud == null) "
+                                (click)="eventosSolicitud()">{{ 'key.button.eventos' | translate}}
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-2">
+                            <label for="ambito">{{ 'key.ambito' | translate}} *</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="ambito">
+                            <p class="text-danger text-form-valid" *ngIf="FormDispensaSolicitudPaciente.controls['ambito'].invalid &&
+                                FormDispensaSolicitudPaciente.controls['ambito'].touched">
+                                {{ 'key.requerido' | translate}}
+                            </p>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="estadoorden">{{ 'key.estado.orden' | translate}} *</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="estadoorden">
+                            <p class="text-danger text-form-valid" *ngIf="FormDispensaSolicitudPaciente.controls['estadoorden'].invalid &&
+                                FormDispensaSolicitudPaciente.controls['estadoorden'].touched">
+                                {{ 'key.requerido' | translate}}
+                            </p>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="numsolicitud">{{ 'key.unidad' | translate}} *</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="unidad">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="numsolicitud">{{ 'key.pieza' | translate}} *</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="pieza">
+                        </div>
+
+                    </div>
+                </tab>
+            </tabset>
+        </div>
+    </form>
+
+
+    <div class="card border-primary mt-0" style="padding: 5px">
+        <tabset>
+            <tab heading="{{'key.tab.detalle.solicitud' | translate}}" id="tab1">
+                <form [formGroup]="FormDatosProducto" autocomplete="off" spellcheck="false">
+                    <div class="row form-group align-self-end ml-1">
+                        <div class="form-group col-md-2">
+                            <label for="codigo">{{ 'key.codigo' | translate}} *</label>
+                            <input type="text" class="form-control form-control-sm"
+                            (keyup.enter)="findArticuloGrilla()"
+                            (keydown.tab)="findArticuloGrilla()"
+                            formControlName="codigo"
+                            placeholder="Ingrese código"
+                            type="text"
+                            #codigo>
+                        </div>
+
+                            <div class="form-group col-md-6 align-self-end">
+                                <button type="button" class="btn btn-info btn-sm ml-2"
+                                    [disabled]="!ActivaBotonBuscaGrilla" (click)="findArticuloGrilla()">{{ 'key.button.buscar' | translate}}<i
+                                    class="fas fa-search ml-1"></i>
+                                </button>
+                                <button type="button" [disabled]="!ActivaBotonLimpiaBusca"
+                                    class="btn btn-danger btn-sm ml-2" (click)="limpiarCodigo()">{{ 'key.button.limpiar.busqueda' | translate}}<i
+                                        class="fas fa-brush ml-1"></i>
+                                </button>
+                            </div>
+
+                    </div>
+                </form>
+                <div class="table-responsive mt-3" style="max-height: 1080px;min-height: 390px;">
+                    <table id="tbldatosordendevolucion"
+                        class="table ml-1 table-condensed table-responsive-md table-bordered ">
+                        <thead class="table-primary  table-sm">
+                            <!-- da color de fondo a la columna-->
+                            <tr class="text-center table-sm">
+                                <th>{{ 'key.codigo' | translate}}</th>
+                                <th>{{ 'key.descripcion' | translate}}</th>
+                                <th>{{ 'key.dosifica' | translate}}</th>
+                                <th>{{ 'key.c.h' | translate}}</th>
+                                <th>{{ 'key.cantidad' | translate}}</th>
+                                <th>{{ 'key.unidad.medida' | translate}}</th>
+                                <th>{{ 'key.total' | translate}}</th>
+                                <th>{{ 'key.via' | translate}}</th>
+                                <th>{{ 'key.dispensado' | translate}}</th>
+                                <th>{{ 'key.pendiente' | translate}}</th>
+                                <th>{{ 'key.recepcionados' | translate}}</th>
+                                <th>{{ 'key.cantidad.devuelta' | translate}}</th>
+                                <th>{{ 'key.button.eventos' | translate}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let detallesolicitud of detallesolicitudpacientepaginacion ; let id = index"
+                                [ngClass]="detallesolicitud.backgroundcolor">
+                                <td><small>{{detallesolicitud.codmei}}</small></td>
+                                <td class="text-nowrap help   " tooltip="{{detallesolicitud.meindescri }}">
+                                    <small>{{detallesolicitud.meindescri | slice:0:30}}</small></td>
+                                <td><small>{{detallesolicitud.dosis}}</small></td>
+                                <td><small>{{detallesolicitud.formulacion}}</small></td>
+                                <td><small>{{detallesolicitud.dias}}</small></td>
+                                <td><small>{{detallesolicitud.descunidadmedida}}</small></td>
+                                <td><small>{{detallesolicitud.cantsoli}}</small></td>
+                                <td><small>{{detallesolicitud.viaadministracion}}</small></td>
+                                <td><small>{{detallesolicitud.cantdespachada}}</small></td>
+                                <td><small>{{detallesolicitud.cantsoli - detallesolicitud.cantdespachada}}</small></td>
+                                <td><small>{{detallesolicitud.cantrecepcionado}}</small></td>
+                                <td><small>{{detallesolicitud.cantdevolucion}} </small></td>
+                                <td>
+                                    <small>
+                                        <span><button type="button" id="btnVerEventos"
+                                                class="btn btn-info btn-rounded btn-sm ml-2"
+                                                (click)="eventosDetalleSolicitud(detallesolicitud)">{{ 'key.button.eventos' | translate}}
+                                            </button>
+                                        </span>
+                                    </small>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row m-1" *ngIf="detallesolicitudpaciente.length>20">
+                    <pagination [boundaryLinks]="true" [directionLinks]="true" [maxSize]="8"
+                        [totalItems]="detallesolicitudpaciente.length" [itemsPerPage]=20 [previousText]="'key.pagination.anterior' | translate"
+                        [nextText]="'key.pagination.siguiente' | translate" [firstText]="'&laquo;'" [lastText]="'&raquo;'"
+                        (pageChanged)="pageChanged($event)">
+                    </pagination>
+                </div>
+            </tab>
+
+            <tab heading="{{'key.tab.dispensacion' | translate}}" id="tab2">
+                <div class="table-responsive mt-3" style="max-height: 1080px;min-height: 390px;">
+                    <div class="form-group col-md-12 align-self-end">
+                        <form novalidate [formGroup]='FormDispensaDetalle' autocomplete="off" spellcheck="false">
+                            <div class="form-row mt-2">
+                                <div class="form-group col-md-2">
+                                    <label for="codigo">{{ 'key.codigo' | translate}} *</label>
+                                    <input type="text" class="form-control form-control-sm"
+                                        (keyup.enter)="codigo_ingresado(FormDispensaDetalle.value)"
+                                        (focusout)="codigo_ingresado(FormDispensaDetalle.value)"
+                                        formControlName="codigo"
+                                        placeholder="Ingrese código"
+                                        #codigo>
+                                </div>
+                                <div class="form-group col-md-2">
+                                    <label for="cantidad">{{ 'key.cantidad' | translate}} *</label>
+                                    <input type="number" class="form-control form-control-sm"
+                                    (keyup.enter)="valida_cantidad(FormDispensaDetalle.value.cantidad,FormDispensaDetalle.value)"
+                                    (focusout)="valida_cantidad(FormDispensaDetalle.value.cantidad,FormDispensaDetalle.value)"
+                                        formControlName="cantidad">
+                                </div>
+
+                                <div class="form-group col-md-2" >
+                                    <label for="lote">{{ 'key.lote' | translate}} *</label>
+                                    <select name="lote" class='form-control form-control-sm' formControlName='lote'
+                                        (change)="LlamaFecha()" ngDefaultControl>
+                                        <option *ngFor="let detallelote  of detalleslotes" [ngValue]='detallelote'
+                                        [selected]='detallelote.row == 0'
+                                        value= "{{detallelote.row}}">
+                                            {{detallelote.glscombo}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="numsolicitud">{{ 'key.fecha.vencimiento' | translate}} *</label>
+                                    <input appSelecttext type="text" placeholder="DD/MM/YYYY"
+                                        class="form-control form-control-sm" [bsConfig]="bsConfig" bsDatepicker
+                                        formControlName="fechavto">
+                                </div>
+                                <div class="form-group col-md-3 align-self-end">
+                                    <button type="button" class="btn btn-info btn-rounded btn-sm ml-2"
+                                        [disabled]="!btnagregar"
+                                        (click)="addArticuloGrillaDispensacion(FormDispensaDetalle.value)">
+                                        {{ 'key.agregar' | translate}} <i class="fas fa-plus ml-1" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <table id="table" class="table ml-1 table-condensed table-responsive-md table-bordered ">
+                        <thead class="table-primary  table-sm">
+                            <!-- da color de fondo a la columna-->
+                            <tr class="text-center table-sm">
+                                <th>{{ 'key.codigo' | translate}}</th>
+                                <th>{{ 'key.descripcion' | translate}}</th>
+                                <th>{{ 'key.lote' | translate}}</th>
+                                <th>{{ 'key.fecha.vencimiento' | translate}}</th>
+                                <th>{{ 'key.pendiente' | translate}}</th>
+                                <th>{{ 'key.dispensar' | translate}}*</th>
+                                <th class="text-center"><button type="button" id="btnElinaRegistro"
+                                    class="btn btn-info btn-danger btn-sm ml-2 "
+                                    (click)="ConfirmaEliminaProductoDeLaGrilla2()" [disabled]="!desactivabtnelim">
+                                    {{ 'key.button.eliminar' | translate}} <i class="fas fa-trash-restore-alt  ml-1"></i>
+                                </button>
+                            </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="table-secondary"
+                                *ngFor="let detallesolicitud of detallessolicitudespaginacion ; let id = index">
+                                <td><small>{{detallesolicitud.codmei}}</small></td>
+                                <td class="text-nowrap help   " tooltip="{{detallesolicitud.meindescri }}">
+                                    <small>{{detallesolicitud.meindescri | slice:0:30}}</small></td>
+                                <td><small>{{detallesolicitud.lote}}</small></td>
+                                <td><small>{{detallesolicitud.fechavto }}</small></td>
+                                <td><small>{{detallesolicitud.cantsoli - detallesolicitud.cantdespachada}}</small></td>
+                                <td><small>
+                                        <input type="number" class="form-control form-control-sm text-right" min="1"
+                                            max="100" [(ngModel)]="detallesolicitud.cantadespachar"
+                                            [disabled]="!detallesolicitud.bloqcampogrilla"
+                                            (input)="cambio_cantidad(id, 'cantadespachar',detallesolicitud)"
+                                            (blur)="validacantidadgrilla(id,detallesolicitud)">
+                                    </small>
+                                </td>
+                                <td>
+                                    <small>
+                                        <input class="mr-2  " type="checkbox"
+                                            [disabled]="!detallesolicitud.bloqcampogrilla"
+                                            (click)="CambioCheck(detallesolicitud,id,$event,detallesolicitud.marcacheckgrilla)">
+                                    </small>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row m-1" *ngIf="detallessolicitudes.length>20">
+                    <pagination [boundaryLinks]="true" [directionLinks]="true" [maxSize]="8"
+                        [totalItems]="detallessolicitudes.length" [itemsPerPage]=20 [previousText]="'key.pagination.anterior' | translate"
+                        [nextText]="'key.pagination.siguiente' | translate" [firstText]="'&laquo;'" [lastText]="'&raquo;'"
+                        (pageChanged)="pageChangedDespacho($event)">
+                    </pagination>
+                </div>
+            </tab>
+        </tabset>
+    </div>
+
+    <!--  Botones de página -->
+    <div class="row float-right mr-1 mt-2">
+        <div class="form-group  align-self-end" *ngIf="modelopermisos.btndispensarsolicpac">
+
+            <button type="button" id="btnguardar"
+              class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+              (click)="ConfirmaDispensarSolicitud(FormDispensaSolicitudPaciente.value)"
+              [disabled]="!detallessolicitudespaginacion.length || !btnDispensar">{{ 'key.button.dispensar' | translate}}
+              <i class="fas fa-save ml-1"></i>
+            </button>
+
+        </div>
+        <div class="form-group  align-self-end" *ngIf="modelopermisos.btnimprimedisppac">
+            <button type="button" id="btnguardar" [disabled]="!btnImprime"
+                class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02" (click)="onImprimir()">
+                {{ 'key.button.imprimir' | translate}} <i class="fas fa-file-pdf ml-1"></i>
+            </button>
+        </div>
+        <div class="form-group align-self-end">
+            <button type="button" id="btnlimpiar" class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+                (click)="Limpiar()">{{ 'key.button.limpiar' | translate}} <i class="fas fa-eraser ml-1"></i>
+            </button>
+        </div>
+        <div class="form-group align-self-end">
+            <button type="button" id="btnsalir" class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+                (click)=salir()>{{ 'key.button.salir' | translate}} <i class="fas fa-window-close ml-1"></i>
+            </button>
+        </div>
+    </div>
+    <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+    <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+    <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+    <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+  </div>
+</app-main-nav>
+

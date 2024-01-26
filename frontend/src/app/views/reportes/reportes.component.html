@@ -1,0 +1,242 @@
+<!-- <app-navbar></app-navbar>
+<app-sidebar></app-sidebar>
+
+<div class="content-wrapper pl-5"> -->
+<app-main-nav>
+    <div>
+    <!-- <div class="container"> -->
+    <!-- Contenedor feneral de la página -->
+    <div class="my-2 ml-2 titulo text-center">
+        <!--menu -->
+        <h3>
+            {{ 'key.title.reimpresion.solicitudes' | translate}}
+        </h3>
+    </div>
+
+    <div class="card border-primary mt-0" style="padding: 5px; height: 300px; width: 400">
+        <form [formGroup]="FormReportes" autocomplete="off" spellcheck="false">
+            <div class="table-responsive mt-1" style="height: 300px;">
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label for="tiposolicitud">{{ 'key.tipo.solicitud' | translate}} *</label>
+                        <select class="form-control form-control-sm" formControlName="tiposolicitud"
+                            (change)="SeleccionaTipoSolicitud(FormReportes.value.tiposolicitud)">
+
+                            <option value=0>{{ 'key.solicitud.bodega' | translate}} </option>
+                            <option value=1>{{ 'key.solicitud.paciente' | translate}} </option>
+
+                        </select>
+                    </div>
+                    <div class="form-group col-sm-2">
+                        <label for="numsolicitud">{{ 'key.numero.solicitud' | translate}} *</label>
+                        <input type="number" class="form-control form-control-sm"
+                            (keyup.enter)="getSolicitud($event.target.value,FormReportes.value.tiposolicitud,FormReportes.value.numsolicitud)"
+                            (keydown.tab)="getSolicitud($event.target.value,FormReportes.value.tiposolicitud,FormReportes.value.numsolicitud)"
+                            formControlName="numsolicitud">
+                    </div>
+                    <div class="form-group col-sm-2">
+                        <label for="estado">{{ 'key.estado.solicitud' | translate}} *</label>
+                        <input type="text" class="form-control form-control-sm"
+                         formControlName="estado">
+                    </div>
+                    <!-- <div class="form-group col-md-4" *ngIf="tiporeporte">
+                        <label for="tiporeporte">Tipo de Reporte *</label>
+                        <select class="form-control form-control-sm" formControlName="tiporeporte"
+                            (change)="ActivaImprimir()">
+                            <option value=0>Solicitud Bodega </option>
+                            <option value=1>Despacho Solicitud Bodega </option>
+                            <option value=2>Recepción Solicitud Bodega </option>
+                            <option value=3>Devolución Solicitud Bodega </option>
+                            <option value=4>Recepción Devolución Solicitud Bodega </option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4" *ngIf="!tiporeporte">
+                        <label for="tiporeporte">Tipo de Reporte *</label>
+                        <select class="form-control form-control-sm" formControlName="tiporeporte"
+                            (change)="ActivaImprimir()">
+                            <option value=5>Solicitud Paciente </option>
+                            <option value=6>Dispensación Solicitud Paciente </option>
+                            <option value=7>Recepción Devolución Solicitud Paciente </option>
+                            <option value=8>Despacho De Recetas</option>
+                        </select>
+                    </div> -->
+
+                    <div class="form-group col-sm-2 align-self-end">
+                        <button type="button" id="paciente" class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                            [disabled]="!activabtnbuscar" (click)="BuscarSolicitud(FormReportes.value.tiposolicitud)">
+                            {{ 'key.button.buscar.solicitud' | translate}} <i class="fas fa-search ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-row" *ngIf="!selectiposolicitud">
+                    <div class="form-group col-sm-3">
+                        <label for="bodorigen">{{ 'key.bodega.solicitante' | translate}} *</label>
+                        <input type="text" class="form-control form-control-sm"
+                            (keyup.enter)="getSolicitud($event.target.value,FormReportes.value.tiposolicitud,FormReportes.value.numsolicitud)"
+                            (keydown.tab)="getSolicitud($event.target.value,FormReportes.value.tiposolicitud,FormReportes.value.numsolicitud)"
+                            formControlName="bodorigen">
+                    </div>
+                    <div class="form-group col-sm-2">
+                        <label for="boddestino">{{ 'key.bodega.suministro' | translate}} *</label>
+                        <input type="text" class="form-control form-control-sm"
+                            (keyup.enter)="getSolicitud($event.target.value,FormReportes.value.tiposolicitud,FormReportes.value.numsolicitud)"
+                            (keydown.tab)="getSolicitud($event.target.value,FormReportes.value.tiposolicitud,FormReportes.value.numsolicitud)"
+                            formControlName="boddestino">
+                    </div>
+
+                </div>
+                <div class="form-row" *ngIf="selectiposolicitud">
+                    <div class="form-group col-sm-2">
+                        <label for="identipaciente">{{ 'key.identificacion.paciente' | translate}} *</label>
+                        <input type="text" class="form-control form-control-sm"
+                            formControlName="identipaciente">
+                    </div>
+                    <div class="form-group col-sm-3">
+                        <label for="nombrepaciente">{{ 'key.nombres.paciente' | translate}} *</label>
+                        <input type="text" class="form-control form-control-sm"
+                            formControlName="nombrepaciente">
+                    </div>
+                    <div class="form-group col-sm-2">
+                        <label for="numdocprof">{{ 'key.identificacion.medico' | translate}} *</label>
+                        <input type="text" class="form-control form-control-sm"
+                            formControlName="numdocprof">
+                    </div>
+                    <div class="form-group col-sm-3">
+                        <label for="nombremedico">{{ 'key.nombres.medico' | translate}} *</label>
+                        <input type="text" class="form-control form-control-sm"
+                            (keyup.enter)="getSolicitud($event.target.value,FormReportes.value.tiposolicitud,FormReportes.value.numsolicitud)"
+                            (keydown.tab)="getSolicitud($event.target.value,FormReportes.value.tiposolicitud,FormReportes.value.numsolicitud)"
+                            formControlName="nombremedico">
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+    <!-- <div class="card border-primary mt-1" style="padding: 5px;">
+        <div class="table-editable mt-3" style="padding: 5px; height:300px;">
+
+            <div class="table-responsive mt-3" style="padding: 5px; height:220px;">
+                <table id="tbldatosordendevolucion" class="table ml-1 table-condensed table-bordered ">
+                    <thead class="table-primary  table-sm">
+                        <!-- da color de fondo a la columna->
+    <tr class="text-center table-sm">
+        <th>N° Solicitud</th>
+        <th>Descripción</th>
+        <th>Progr.</th>
+        <th>Entrega En</th>
+        <th>Dosifica*</th>
+        <th>Veces al Día* </th>
+        <th>Días*</th>
+        <th>Total</th>
+        <th>U Medida</th>
+        <th>Eventos</th>
+        <th>Eliminar</th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let detalle of arrdetalleSolicitudMedPaginacion; let id = index" class="table-secondary">
+            <td><small>{{ detalle.codmei }}</small></td>
+            <td class="text-nowrap help" tooltip="{{detalle.meindescri }}">
+                <small>{{ detalle.meindescri | slice: 0:15}}</small>
+            </td>
+            <td>
+                <small>
+                    <input class="mr-2 " type="checkbox" [checked]="detalle.marcacheckgrilla"
+                        (change)="cambio_checkGrilla( id, $event,detalle)" name="marca">
+                </small>
+            </td>
+            <td>
+                <select class="form-control form-control-sm" [disabled]="!detalle.marcacheckgrilla"
+                    (change)="SeleccionaComboGrilla($event,id,detalle.diasentregacodigodet,detalle)"
+                    [(ngModel)]="detalle.diasentregacodigodet">
+                    <!- (change)="cantidadsolicitada(detalle)" ->
+                    <option *ngFor="let estadoreceta of estadorecetasprogs" [ngValue]='estadoreceta.diasentregacodigo'>
+                        {{ estadoreceta.diasentregadesc }}
+                    </option>
+                </select>
+
+            </td>
+            <td>
+                <small><input type="number" class="form-control form-control-sm text-right" min="1" max="100"
+                        [(ngModel)]="detalle.dosis" maxlength="2" (input)="cantidadsolicitada(detalle)">
+                </small>
+            </td>
+            <td>
+                <small><input type="number" class="form-control form-control-sm text-right" min="1" max="100"
+                        [(ngModel)]="detalle.formulacion" (input)="cantidadsolicitada(detalle)" maxlength="2">
+                </small>
+            </td>
+            <td>
+                <small>
+                    <input type="number" class="form-control form-control-sm text-right" min="1" max="1000"
+                        [(ngModel)]="detalle.dias" (input)="cantidadsolicitada(detalle)">
+                </small>
+            </td>
+            <td>
+                <small>
+                    <input type="number" class="form-control form-control-sm text-right" min="0" max="100"
+                        [(ngModel)]="detalle.cantsoli" (ngValue)="detalle.cantsoli" [disabled]="true">
+                </small>
+            <td>
+                <small>{{ detalle.glosaunidaddespacho}}</small>
+            </td>
+
+
+            <td>
+                <small>
+                    <span><button type="button" id="btnVerEventos" class="btn btn-info btn-rounded btn-sm ml-2"
+                            (click)="eventosDetalleSolicitud(detalle)"
+                            [disabled]="!existsolicitud">Eventos</button></span>
+                </small>
+            </td>
+            <td>
+                <small>
+                    <span><button type="button" id="btnEliminar" class="btn btn-info btn-rounded btn-sm ml-2"
+                            (click)="ConfirmaBorraProductoMed(detalle,id)" [disabled]="existsolicitud">Eliminar
+                        </button></span>
+                </small>
+            </td>
+        </tr>
+    </tbody>
+    </table>
+    <!- <div class="row m-1">
+                    <pagination [boundaryLinks]="true" [directionLinks]="true" [maxSize]="8"
+                        [totalItems]="arrdetalleSolicitudMed.length" [itemsPerPage]=20 [previousText]="'Anterior'"
+                        [nextText]="'Siguiente'" [firstText]="'&laquo;'" [lastText]="'&raquo;'"
+                        (pageChanged)="pageChanged($event)">
+                    </pagination>
+                </div> ->
+    </div>
+
+    </div>
+    </div> -->
+
+    <!--  Botones de página [disabled]="!ActivaBotonDispensar()"*ngIf="modelopermisos.btngrabadespachorec"-->
+    <div class="row float-right mr-1 mt-2">
+        <div class="form-group  align-self-end">
+            <button type="button" id="btnimprimir" class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+                (click)="ConfirmarImpresion()" [disabled]="!activabtnimprime">{{ 'key.button.imprimir' | translate}} <i class="fas fa-save"></i>
+            </button>
+        </div>
+
+        <div class="form-group  align-self-end">
+            <button type="button" id="btnlimpiar" (click)="limpiar()"
+                class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02">{{ 'key.button.limpiar' | translate}}
+                <i class="fas fa-eraser ml-1"></i>
+            </button>
+        </div>
+        <div class="form-group  align-self-end">
+            <button type="button" id="btnsalir" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+            routerLink='../home'>{{ 'key.button.salir' | translate}}<i class="fas fa-window-close ml-1"></i>
+            </button>
+        </div>
+    </div>
+    <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+    <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+    <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+    <swal #alertSwalConfirmar title="" text="" type="question" [showCancelButton]="true"> </swal>
+    <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+</div>
+</app-main-nav>

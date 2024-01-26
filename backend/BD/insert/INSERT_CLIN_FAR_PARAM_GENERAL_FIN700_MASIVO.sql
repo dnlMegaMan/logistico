@@ -1,0 +1,2 @@
+Insert into FARMACIACLINICA.CLIN_FAR_PARAM_GENERAL (PARG_ID,PARG_CODIGO,PARG_DESCRIPCION,PARG_VALOR1,PARG_VALOR2) values ('62','usaPCKFin700Mas','servicio: EnviarmovimientosFin700Masivo.go 1:SI 0:NO','SI',null);
+/

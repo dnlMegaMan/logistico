@@ -1,0 +1,18 @@
+<!-- <app-navbar></app-navbar>
+<app-sidebar></app-sidebar> -->
+<!-- <div class="content-wrapper pl-1"> -->
+<app-main-nav>
+  <div style="padding: 10px;">
+    <alert *ngIf="mostrarAlerta" type="warning" [dismissible]="true" (onClosed)="onCerrarAlerta()">
+      <p><strong>{{ 'key.atencion' | translate}}</strong> {{ 'alert.advertencia.navegador' | translate}} </p>
+
+      <div class="form-check form-check-inline">
+        <input type="checkbox" id="noMostrarCheck" class="m2-3 form-check-input cursor-pointer" [formControl]="noMostrarAlertaNavegadorControl">
+        <label class="form-check-label cursor-pointer" for="noMostrarCheck" >{{ 'alert.ocultar.mensaje' | translate}}</label>
+      </div>
+    </alert>
+    <div  class="jumbotron m-auto">
+      <img src="./assets/images/{{imagen}}" style="width: 100%;" alt="Cinque Terre">
+    </div>
+  </div>
+</app-main-nav>

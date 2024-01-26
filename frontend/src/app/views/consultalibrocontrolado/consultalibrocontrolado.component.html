@@ -1,0 +1,224 @@
+<!-- <app-navbar ></app-navbar>
+<app-sidebar></app-sidebar>
+<div class="content-wrapper pl-4"> -->
+<app-main-nav>
+  <div style="padding: 10px;">
+    <div style="margin: 10px;">
+        <form [formGroup]="FormConsultaLibroControlado">
+            <!-- Contenedor feneral de la página -->
+            <div class="my-2 ml-2 titulo text-center">
+                <!--menu -->
+                <h3>
+                    {{ 'key.title.consulta.libro.controlado' | translate}}
+                </h3>
+            </div>
+            <div class="card border-primary" style="padding: 5px;">
+                <div class="form-row mt-2">
+                    <div class="form-group col-md-3">
+                        <label for="bodcodigo">{{ 'key.bodega' | translate}}  *</label>
+                        <select name="bodcodigo" class='form-control form-control-sm' formControlName='bodcodigo'
+                            (change)="BuscaPeriodoBodegaControlada(FormConsultaLibroControlado.value.bodcodigo)">
+                            <option *ngFor='let bodega of bodegascontroladas'
+                                [ngValue]='bodega.codbodegacontrolados'>
+                                {{ bodega.desbodegacontrolados }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group col-sm-3">
+                        <label for="periodo">{{ 'key.periodo' | translate}}  *</label>
+                        <select name="periodo" class="form-control form-control-sm " formControlName="periodo"
+                            (change)="SeleccionaBusqueda(FormConsultaLibroControlado.value.periodo)">
+                            <option *ngFor="let periodo of periodosmedcontrolados" [ngValue]="periodo.libcid">
+                                {{ periodo.libcperiodo }} {{periodo.libcfechacierre}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-1" > <!--*ngIf="muestracoddes"-->
+                        <label for="codigo">{{ 'key.codigo' | translate}} *</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="codigo"
+                        (keyup.enter)="getProducto($event.target.value)" (keydown.tab)="getProducto($event.target.value)">
+                    </div>
+                    <div class="form-group col-md-2" > <!--*ngIf="muestracoddes"-->
+                        <label for="descripcion">{{ 'key.descripcion' | translate}} *</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="descripcion"
+                        (input)="setDatabusqueda($event.target.value, 2)">
+                    </div>
+                    <!-- <div class="form-group col-md-2">
+                        <label for="marca">Todos los Productos *</label>
+                        <input class="mr-2 form-control form-control-sm" type="checkbox"
+                            formControlName="marca"
+                            (change)="cambio_check('todoslosproductos', $event)" name="marca">
+                    </div> -->
+
+                    <div class="form-group col-md-1 align-self-end" >
+                        <button type="button" id="btnbuscar" class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                          (click)="getProducto(FormConsultaLibroControlado.controls.codigo.value)"
+                          [disabled]="!activbusqueda">{{ 'key.button.buscar' | translate}} <i
+                          class="fas fa-search ml-1" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="card border-primary" style="padding: 5px;margin-top: 10px">
+            <div id="table" class="table-editable" style="max-height: auto;min-height: 100px;">
+                <div id="table" class="table-editable table-responsive mt-2">
+                    <table *ngIf="!muestragrillacoddes"
+                        class="table table-sm table-condensed table-bordered table-responsive-md table-striped text-center">
+                        <tr class="table table-sm  table-primary table-bordered ">
+                            <th class="text-center">{{ 'key.correlativo' | translate}}</th>
+                            <th class="text-center">{{ 'key.fecha.movimiento' | translate}}</th>
+                            <th class="text-center">{{ 'key.movimiento' | translate}} </th>
+                            <th class="text-center">{{ 'key.n.receta' | translate}}</th>
+                            <th class="text-center">{{ 'key.solicitud.numero' | translate}}</th>
+                            <th class="text-center">{{ 'key.referencia.fin700' | translate}}</th>
+                            <th class="text-center">{{ 'key.identificacion.paciente' | translate}}</th>
+                            <th class="text-center">{{ 'key.nombre.paciente' | translate}}</th>
+                            <th class="text-center">{{ 'key.identificacion.medico' | translate}}</th>
+                            <th class="text-center">{{ 'key.nombres.medico' | translate}}</th>
+                            <th class="text-center">{{ 'key.cantidad.entrada' | translate}}</th>
+                            <th class="text-center">{{ 'key.cantidad.salida' | translate}}</th>
+                            <th class="text-center">{{ 'key.saldo' | translate}}</th>
+                        </tr>
+                        <tr class="table-secondary" *ngFor="let registro of periodosconsultadospaginacion; let id = index">
+                            <td class="text-nowrap">
+                                <small><span> {{registro.correlativo}} </span></small>
+                            </td>
+                            <td>
+                                <small><span>{{registro.movimfecha | date:'yyyy-MM-dd HH:mm:ss' }}</span></small>
+                            </td>
+                            <td class="text-nowrap" tooltip="{{registro.movimdescri }}">
+                                <small><span>{{registro.movimdescri | slice:0:20}} </span></small>
+                            </td>
+                            <td class="text-nowrap">
+                                <small><span> {{registro.nroreceta}}</span>      </small>
+                            </td>
+                            <td class="text-nowrap">
+                                <small><span> {{registro.nrosolicitud}}</span>      </small>
+                            </td>
+                            <td class="text-nowrap">
+                              <small><span>{{registro.referencia}} </span></small>
+                            </td>
+                            <td class="text-nowrap">
+                                <small><span> {{registro.rutpaciente}} </span></small>
+                            </td>
+                            <td class="text-nowrap" tooltip="{{registro.nombrepaciente }}">
+                                <small><span> {{registro.nombrepaciente | slice:0:20}} </span></small>
+                            </td>
+                            <td class="text-nowrap">
+                                <small><span > {{registro.rutprof}}   </span></small>
+                            </td>
+                            <td class="text-nowrap" tooltip="{{registro.nombreprof }}">
+                                <small><span> {{registro.nombreprof | slice:0:20}} </span></small>
+                            </td>
+                            <td class="text-nowrap">
+                                <small><span> {{registro.cantidadentrada}} </span></small>
+                            </td>
+                            <td class="text-nowrap">
+                                <small><span> {{registro.cantidadsalida}} </span></small>
+                            </td>
+                            <td class="text-nowrap">
+                                <small><span> {{registro.cantidadsaldo}} </span></small>
+                            </td>
+                        </tr>
+                    </table>
+                    <table *ngIf="muestragrillacoddes"
+                        class="table table-sm table-condensed table-bordered table-responsive-md table-striped text-center">
+                        <tr class="table table-sm  table-primary table-bordered ">
+                            <th class="text-center">{{ 'key.codigo' | translate}}</th>
+                            <th class="text-center">{{ 'key.descripcion' | translate}}</th>
+                            <th class="text-center">{{ 'key.fecha.movimiento' | translate}}</th>
+                            <th class="text-center">{{ 'key.movimiento' | translate}} </th>
+                            <th class="text-center">{{ 'key.motivo' | translate}}</th>
+                            <th class="text-center">{{ 'key.n.receta' | translate}}</th>
+                            <th class="text-center">{{ 'key.identificacion.medico' | translate}}</th>
+                            <th class="text-center">{{ 'key.nombres.medico' | translate}}</th>
+                            <th class="text-center">{{ 'key.identificacion.paciente' | translate}}</th>
+                            <th class="text-center">{{ 'key.nombre.paciente' | translate}}</th>
+                            <th class="text-center">{{ 'key.cantidad.entrada' | translate}}</th>
+                            <th class="text-center">{{ 'key.cantidad.salida' | translate}}</th>
+                            <th class="text-center">{{ 'key.saldo' | translate}}</th>
+                        </tr>
+                        <tr class="table-secondary" *ngFor="let registro of periodosconsultadospaginacion; let id = index">
+                            <td>
+                                <small><span>{{registro.meincodmei}}</span></small>
+                            </td>
+                            <td class="text-nowrap help   " tooltip="{{registro.meindescri }}">
+                                <small><span> {{registro.meindescri| slice:0:20 }}</span></small>
+                            </td>
+                            <td>
+                                <small><span>{{registro.movimfecha }}</span></small>
+                            </td>
+                            <td class="text-nowrap" tooltip="{{registro.movimdescri }}">
+                                <small><span>{{registro.movimdescri | slice:0:20}} </span></small>
+                            </td>
+                            <td class="text-nowrap" tooltip="{{registro.tipomotivodes }}">
+                                <small><span> {{registro.tipomotivodes | slice:0:20}} </span></small>
+                            </td>
+                            <td class="text-nowrap">
+                                <small><span> {{registro.nroreceta}}</span>      </small>
+                            </td>
+                            <td class="text-nowrap">
+                                <small><span > {{registro.rutprof}}   </span></small>
+                            </td>
+                            <td class="text-nowrap" tooltip="{{registro.nombreprof }}">
+                                <small><span> {{registro.nombreprof | slice:0:20}} </span></small>
+                            </td>
+                            <td class="text-nowrap">
+                                <small><span> {{registro.rutpaciente}} </span></small>
+                            </td>
+                            <td class="text-nowrap" tooltip="{{registro.nombrepaciente }}">
+                                <small><span> {{registro.nombrepaciente | slice:0:20}} </span></small>
+                            </td>
+                            <td class="text-nowrap">
+                                <small><span> {{registro.cantidadentrada}} </span></small>
+                            </td>
+                            <td class="text-nowrap">
+                                <small><span> {{registro.cantidadsalida}} </span></small>
+                            </td>
+                            <td class="text-nowrap">
+                                <small><span> {{registro.cantidadsaldo}} </span></small>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="row m-1" *ngIf="periodosconsultados.length>20">
+                    <pagination [boundaryLinks]="true" [directionLinks]="true" [maxSize]="11"
+                        [totalItems]="periodosconsultados.length" [itemsPerPage]= 20 [previousText]="'key.pagination.anterior' | translate"
+                        [nextText]="'key.pagination.siguiente' | translate" [firstText]="'&laquo;'" [lastText]="'&raquo;'"
+                        (pageChanged)="pageChanged($event)">
+                    </pagination>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row float-right mr-1 mt-2">
+        <!--Al agregarle col-md-3 queda el espacio entre botones cuando aparece generar solicitud-->
+
+        <div class="form-group   align-self-end" *ngIf="modelopermisos.btnimplibconsulta">
+            <button type="button" id="btnguardar" class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+                (click)="onImprimir('pdf')"[disabled]="!btnimprime">{{ 'key.button.imprimir.libro' | translate}}<i class="fas fa-file-pdf ml-1"></i>
+            </button>
+        </div>
+        <div class="form-group   align-self-end" *ngIf="modelopermisos.btnimplibconsulta">
+            <button type="button" id="btnguardar" class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+                (click)="onImprimir('xls')"[disabled]="!btnimprime">{{ 'key.button.imprimir.excel' | translate}} <i class="fas fa-file-excel ml-1"></i>
+            </button>
+        </div>
+        <div class="form-group  align-self-end">
+            <button type="button" id="btnlimpiar" class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+                (click)="limpiar()">{{ 'key.button.limpiar' | translate}}<i class="fas fa-eraser ml-1"></i>
+            </button>
+        </div>
+        <div class="form-group  align-self-end">
+            <button type="button" id="btnsalir" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+                routerLink='../home'>{{ 'key.button.salir' | translate}} <i class="fas fa-window-close ml-1"></i>
+            </button>
+        </div>
+    </div>
+    <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+    <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+    <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+    <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+  </div>
+</app-main-nav>

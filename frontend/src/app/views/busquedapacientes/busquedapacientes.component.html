@@ -1,0 +1,309 @@
+<div class="card">
+  <!--menu - productos -mantencion de articulos-->
+  <div class="card-header">
+    {{ 'key.title.busqueda.paciente' | translate}}
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onCerrarSalir()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+
+  <div class="card m-2 border-primary" style="padding: 10px; background-color:azure;">
+    <tabset>
+      <!-- Tab AMBULATORIO --> <!--Este código NO BORRARLO-->
+      <tab heading="{{'key.tab.ambulatorio' | translate}}" id="tab2" *ngIf="activatipobusquedaamb">
+        <form novalidate [formGroup]='lForm' autocomplete="off" spellcheck="false">
+          <div class="form-row">
+
+            <div class="form-group col-md-2">
+              <label for="tipoidentificacion">{{ 'key.tipo.identificacion' | translate}} *</label>
+              <select name="tipoidentificacion" class='form-control form-control-sm'
+                formControlName='tipoidentificacion'
+                (change)="activarNumid(3)">
+                <option *ngFor='let listatipoidentificacion  of arreglotipodocumentoidentificacion'
+                  [ngValue]='listatipoidentificacion.codtipodocumento'>
+                  {{listatipoidentificacion.destipodocumento}}
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group col-md-3">
+              <label for="numeroidentificacion">{{ 'key.numero.identificacion' | translate}}</label>
+              <input type="text" class="form-control form-control-sm" formControlName="numeroidentificacion">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-3">
+              <label for="apellidopaterno">{{ 'key.apellido.paterno' | translate}}</label>
+              <input type="text" class="form-control form-control-sm" formControlName="apellidopaterno">
+            </div>
+            <div class="form-group col-md-3">
+              <label for="apellidomaterno">{{ 'key.apellido.materno' | translate}}</label>
+              <input type="text" class="form-control form-control-sm" formControlName="apellidomaterno">
+            </div>
+            <div class="form-group col-md-3">
+              <label for="nombrespaciente">{{ 'key.nombres' | translate}}</label>
+              <input type="text" class="form-control form-control-sm" formControlName="nombrespaciente">
+            </div>
+            <div
+              class="form-group col-md-3 align-self-end">
+              <button type="button" id="btnbuscar" class="btn btn-primary btn-sm button-my-styles-busqueda_01" (click)="BuscarPacienteFiltro(
+                lForm.value.tipoidentificacion, lForm.value.numeroidentificacion, lForm.value.apellidopaterno,
+                lForm.value.apellidomaterno,lForm.value.nombrespaciente)"
+                [disabled]="findValidControls()">
+                {{ 'key.button.buscar' | translate}} <i class="fas fa-search ml-1"></i>
+              </button>
+            </div>
+            <table class="table table-stripped table-condensed table-hovered">
+              <thead>
+                <tr>
+                  <th>{{ 'key.tipo.identificacion' | translate}}</th>
+                  <th>{{ 'key.numero.identificacion' | translate}}</th>
+                  <th>{{ 'key.apellido.paterno' | translate}}</th>
+                  <th>{{ 'key.apellido.materno' | translate}}</th>
+                  <th>{{ 'key.nombres' | translate}}</th>
+                  <th>{{ 'key.fecha.nacimiento' | translate}}</th>
+                  <th>{{ 'key.prevision' | translate}}</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr *ngFor="let pacientes of listadopacientespaginacion" (click)="onCerrar(pacientes)"
+                  style="cursor: pointer;">
+                  <td>{{pacientes.descidentificacion}}</td>
+                  <td>{{pacientes.docuidentificacion}}</td>
+                  <td>{{pacientes.apepaternopac}}</td>
+                  <td>{{pacientes.apematernopac}}</td>
+                  <td>{{pacientes.nombrespac}}</td>
+                  <td>
+                    {{pacientes.fechanacimiento | date:'dd/MM/yyyy'}}
+                  </td>
+                  <td>{{pacientes.previsionpaciente}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="row m-1">
+              <pagination [boundaryLinks]="true" [directionLinks]="true" [maxSize]="6"
+                [totalItems]="listadopacientes.length" [itemsPerPage]=8 [previousText]="'key.pagination.anterior' | translate"
+                [nextText]="'key.pagination.siguiente' | translate" [firstText]="'&laquo;'" [lastText]="'&raquo;'"
+                (pageChanged)="pageChanged($event)">
+              </pagination>
+            </div>
+          </div>
+        </form>
+
+      </tab>
+      <!-- Tab HOSPITALIZADO -->
+      <tab heading="{{'key.tab.hospitalizado' | translate}}" id="tab2" *ngIf="activatipobusquedaurg">
+        <form novalidate [formGroup]='hForm' autocomplete="off" spellcheck="false">
+
+          <div class="form-row">
+
+            <div class="form-group col-md-2">
+              <label for="tipoidentificacion">{{ 'key.tipo.identificacion' | translate}} *</label>
+              <select name="tipoidentificacion" class='form-control form-control-sm'
+                formControlName='tipoidentificacion'
+                (change)="activarNumid(1)">
+                <option *ngFor='let listatipoidentificacion  of arreglotipodocumentoidentificacion'
+                  [ngValue]='listatipoidentificacion.codtipodocumento'>
+                  {{listatipoidentificacion.destipodocumento}}
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group col-md-3">
+              <label for="numeroidentificacion">{{ 'key.numero.identificacion' | translate}}</label>
+              <input type="text" class="form-control form-control-sm"
+                (input)="onSelectServicio($event.target.value)"
+                formControlName="numeroidentificacion"
+                (input)="onValidafiltro($event.target.value, 2)">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-sm-3">
+              <label for="nombrespaciente">{{ 'key.nombres' | translate}} *</label>
+              <input type="text" class="form-control form-control-sm"
+                formControlName="nombrespaciente"
+                (input)="onValidafiltro($event.target.value, 2)">
+            </div>
+            <div class="form-group col-sm-3">
+              <label for="apellidopaterno">{{ 'key.apellido.paterno' | translate}} *</label>
+              <input type="text" class="form-control form-control-sm"
+                formControlName="apellidopaterno"
+                (input)="onValidafiltro($event.target.value, 2)">
+            </div>
+            <div class="form-group col-sm-3">
+              <label for="apellidomaterno">{{ 'key.apellido.materno' | translate}} *</label>
+              <input type="text" class="form-control form-control-sm"
+                formControlName="apellidomaterno"
+                (input)="onValidafiltro($event.target.value, 2)">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-sm-3">
+              <label for="servicio">{{ 'key.servicio' | translate}} *</label>
+              <select name="servicio" class='form-control form-control-sm' formControlName='servicio'
+                (change)="onSelectServicio($event.target.value)">
+                <option *ngFor='let servicio  of servicios' value='{{ servicio.serviciocod }}'>
+                  {{ servicio.serviciodesc }}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-sm-3">
+              <label for="pieza">{{ 'key.pieza' | translate}} *</label>
+              <select name="pieza" class='form-control form-control-sm' formControlName='pieza'
+                (change)="onSelectPieza($event.target.value)">
+                <option *ngFor='let pieza of piezas' value='{{ pieza.piezaid }}'>
+                  {{ pieza.piezadescripcion }}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-sm-3">
+              <label for="cama">{{ 'key.cama' | translate}} *</label>
+              <select name="cama" class='form-control form-control-sm' formControlName='cama'>
+                <option *ngFor='let cama of camas' value='{{ cama.camaid }}'>
+                  {{ cama.camadescripcion }}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-sm-3 align-self-end text-right">
+              <button [disabled]="!filtrohosp" type="button"
+                class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                (click)="BuscarPaciente('hospitalizado')">{{ 'key.button.buscar' | translate}} <i class="fas fa-search ml-1"></i>
+              </button>
+            </div>
+          </div>
+          <table class="table table-stripped table-condensed table-hovered">
+            <thead>
+              <tr>
+                <th>{{ 'key.nombres' | translate}}</th>
+                <th>{{ 'key.pieza' | translate}}</th>
+                <th>{{ 'key.cama' | translate}}</th>
+                <th>{{ 'key.medico.tratante' | translate}}</th>
+                <th>{{ 'key.prevision' | translate}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let pacientes of listadopacienteshosppaginacion" (click)="onCerrar(pacientes)"
+                style="cursor: pointer;">
+                <td>{{ pacientes.apepaternopac }} {{ pacientes.apematernopac }}
+                  {{ pacientes.nombrespac }}</td>
+                <td>{{ pacientes.pzagloza }}</td>
+                <td>{{ pacientes.camglosa }}</td>
+                <td>{{ pacientes.nombremedico }} </td>
+                <td>{{pacientes.previsionpaciente}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="row">
+
+            <div class="col-md-6">
+              <pagination [boundaryLinks]="true" [directionLinks]="true" [maxSize]="6"
+                [totalItems]="listadopacienteshosp.length" [itemsPerPage]=8 [previousText]="'key.pagination.anterior' | translate"
+                [nextText]="'key.pagination.siguiente' | translate" [firstText]="'&laquo;'" [lastText]="'&raquo;'"
+                (pageChanged)="pageChangedhosp($event)">
+              </pagination>
+            </div>
+
+          </div>
+        </form>
+      </tab>
+      <!-- Tab Urgencia -->
+      <!-- NO BORRAR ESTE CÓDIGO -->
+      <tab heading="{{'key.tab.urgencia' | translate}}" id="tab3" *ngIf="activatipobusquedahosp">
+        <form novalidate [formGroup]='uForm' autocomplete="off" spellcheck="false">
+          <div class="form-row">
+            <div class="form-group col-md-2">
+              <label for="tipoidentificacion">{{ 'key.tipo.identificacion' | translate}} *</label>
+              <select name="tipoidentificacion" class='form-control form-control-sm'
+                formControlName='tipoidentificacion'
+                (change)="activarNumid(2)">
+                <option *ngFor='let listatipoidentificacion  of arreglotipodocumentoidentificacion'
+                  [ngValue]='listatipoidentificacion.codtipodocumento'>
+                  {{listatipoidentificacion.destipodocumento}}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-md-3">
+              <label for="numeroidentificacion">{{ 'key.numero.identificacion' | translate}}</label>
+              <input type="text" class="form-control form-control-sm"
+                (input)="onSelectServicio($event.target.value)"
+                formControlName="numeroidentificacion"
+                (input)="onValidafiltro($event.target.value, 3)">
+            </div>
+          </div>
+          <div class="form-row">
+              <div class="form-group col-sm-3">
+                <label for="nombrespaciente">{{ 'key.nombres' | translate}} </label>
+                <input type="text" class="form-control form-control-sm"
+                  formControlName="nombrespaciente"
+                  (input)="onValidafiltro($event.target.value, 3)">
+              </div>
+              <div class="form-group col-sm-3">
+                <label for="apellidopaterno">{{ 'key.apellido.paterno' | translate}} </label>
+                <input type="text" class="form-control form-control-sm"
+                  formControlName="apellidopaterno"
+                  (input)="onValidafiltro($event.target.value, 3)">
+              </div>
+              <div class="form-group col-sm-3">
+                <label for="apellidomaterno">{{ 'key.apellido.materno' | translate}} </label>
+                <input type="text" class="form-control form-control-sm"
+                  formControlName="apellidomaterno"
+                  (input)="onValidafiltro($event.target.value, 3)">
+              </div>
+            <div class="form-group col-sm-3 align-self-end text-right">
+              <button type="button" class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                (click)="BuscarPaciente('urgencia')"
+                [disabled]="!filtrourg"
+                >Buscar <i class="fas fa-search ml-1"></i>
+              </button>
+            </div>
+          </div>
+          <table class="table table-stripped table-condensed table-hovered">
+            <thead>
+              <tr>
+                <th>{{ 'key.numero.identificacion' | translate}} {{ 'key.paciente' | translate}}</th>
+                <th>{{ 'key.paciente' | translate}}</th>
+                <th>{{ 'key.edad' | translate}}</th>
+                <th>{{ 'key.sexo' | translate}}</th>
+                <th>{{ 'key.prevision' | translate}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let paciente of pacientes_urgencia_paginacion" (click)="onCerrar(paciente)"
+                style="cursor: pointer;">
+                <td>{{ paciente.numdocpac}}</td>
+                <td>{{ paciente.apepaternopac}} {{ paciente.apematernopac}} {{ paciente.nombrespac}} </td>
+                <td>{{ paciente.edad}}</td>
+                <td>{{ paciente.glsexo}}</td>
+                <td>{{ paciente.previsionpaciente}}</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="row">
+            <div class="col-md-6">
+              <pagination [boundaryLinks]="true" [directionLinks]="true" [maxSize]="8"
+                [totalItems]="pacientes_urgencia.length" [itemsPerPage]=8 [previousText]="'key.pagination.anterior' | translate"
+                [nextText]="'key.pagination.siguiente' | translate" [firstText]="'&laquo;'" [lastText]="'&raquo;'"
+                (pageChanged)="pageChangedUrgencia($event)">
+              </pagination>
+            </div>
+          </div>
+        </form>
+      </tab>
+
+    </tabset>
+
+    <div class="form-group col-sm-3 align-self-end text-right">
+      <button type="button" class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+        (click)="Limpiar()">{{ 'key.button.limpiar.L' | translate}} <i class="fas fa-eraser ml-1"></i>
+      </button>
+
+    </div>
+  </div>
+  <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+  <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+  <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+  <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+</div>

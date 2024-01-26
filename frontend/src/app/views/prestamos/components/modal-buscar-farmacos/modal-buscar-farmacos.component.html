@@ -1,0 +1,83 @@
+<div class="container">
+    <div class="card">
+        <!--menu - productos -mantencion de articulos-->
+        <div class="card-header">
+            Busqueda de Farmaco-Insumos
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onSalir()">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <div class="card m-2 border-primary" style="padding: 10px; background-color:azure;">
+            <form [formGroup]="formDatosMedicamentos" novalidate  autocomplete="off" spellcheck="false">
+                <div class="clas form-row">
+                  <div class="form-group col-md-2">
+                    <label for="codigo">Código</label>
+                    <input appSelecttext type="number" id="codigo" formControlName="codigo"
+                        class='form-control form-control-sm'>
+                </div>
+                    <div class="form-group col-md-2">
+                        <label for="descripcion">Descripción</label>
+                        <input appSelecttext type="text" id="descripcion" formControlName="descripcion"
+                            class='form-control form-control-sm'>
+                    </div>
+                  <div class="form-group col-md-3 align-self-end text-left">
+                    <button type="button" id="btnbuscar" class="btn btn-primary btn-sm button-my-styles-busqueda_01 pl-4" [disabled]="!cargando" (click)="onBuscarMedicamento()"
+                        >Buscar <i class="fas fa-search ml-1"></i>
+                    </button>
+                  </div>
+                </div>
+              </form>
+                <div class="loading-container" *ngIf="!cargando">
+                  <i class="fas fa-spinner fa-spin"></i>
+                  <span>Cargando...</span>
+                </div>
+                <table class="table table-stripped table-condensed table-hovered" *ngIf="cargando" >
+                    <thead>
+                        <tr>
+                            <th>Codigo</th>
+                            <th>Descripción Medicamento</th>
+                            <th>Valor Costo</th>
+                            <th>Stock</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let medicamento of listaMedicamentosPag" let id=index
+                      (click)="onCerrar(medicamento)"style="cursor: pointer;">
+                      <td>{{medicamento.codigo}}</td>
+                      <td><strong>{{medicamento.descripcion}}</strong></td>
+                      <td>{{medicamento.valorcosto}}</td>
+                      <td>{{medicamento.saldo}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="row m-1">
+                  <pagination
+                    *ngIf="listaMedicamentos.length > 0"
+                    [boundaryLinks]="true" [directionLinks]="true" [maxSize]="6"
+                    [totalItems]="listaMedicamentos.length" [itemsPerPage]=8 [previousText]="'Anterior'" [nextText]="'Siguiente'"
+                    [firstText]="'&laquo;'" [lastText]="'&raquo;'" (pageChanged)="pageChanged($event)">
+                  </pagination>
+                </div>
+        </div>
+        <!--  Botones de página -->
+
+        <div class="row float-right mt-1">
+            <div class="form-group col-md-8 align-self-end text-right">
+                <button type="button" id="btnlimpiar" class="btn  btn-primary btn-sm button-my-styles-busqueda_02" [disabled]="!cargando" (click)="limpiar()"
+                    >LIMPIAR <i class="fas fa-eraser ml-1"></i>
+                </button>
+            </div>
+            <div class="form-group col-md-3 align-self-end text-right">
+                <button type="button" id="btnsalir" class="btn  btn-primary btn-sm button-my-styles-busqueda_02" (click)="onSalir()"
+                   >SALIR <i class="fas fa-window-close ml-1"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+    <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+    <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+    <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+    <swal #alertSwalConfirmar title="" text="" type="question" [showCancelButton]="true"> </swal>
+</div>

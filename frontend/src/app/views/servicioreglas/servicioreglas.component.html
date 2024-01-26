@@ -1,0 +1,158 @@
+<app-main-nav>
+    <div style="padding: 10px">
+        <!-- Contenedor general de la página -->
+        <div class="my-2 ml-2 titulo text-center">
+            <h3>{{ 'key.title.mantenedor.reglas' | translate}}</h3>
+        </div>
+        <!-- lineas de edición y bpusqueda -->
+        <div class="card m-2 border-primary" style="padding: 10px">
+            <form [formGroup]="servicioForm">
+                <div class="form-row">
+                    <div class="form-group col-1">
+                        <label>{{ 'key.servicio' | translate}}</label>
+                        <input
+                            type="text"
+                            class="form-control form-control-sm"
+                            formControlName="codigo"
+                            autocomplete="off"
+                            [typeahead]="servicios"
+                            typeaheadOptionField="codigo"
+                            [typeaheadScrollable]="true"
+                            [typeaheadOptionsInScrollableView]="7"
+                            [typeaheadLatinize]="true"
+                            [typeaheadMinLength]="0"
+                            (typeaheadOnSelect)="seleccionarServicio()" />
+                    </div>
+                    <div class="form-group col-4">
+                        <label class="mr-2">{{ 'key.descripcion' | translate}}</label>
+                        <input
+                            type="text"
+                            class="form-control form-control-sm"
+                            formControlName="descripcion"
+                            autocomplete="off"
+                            [typeahead]="servicios"
+                            typeaheadOptionField="descripcion"
+                            [typeaheadScrollable]="true"
+                            [typeaheadOptionsInScrollableView]="7"
+                            [typeaheadMinLength]="0"
+                            [typeaheadLatinize]="true"
+                            (typeaheadOnSelect)="seleccionarServicio()" />
+                    </div>
+                    <div class="form-group col-3 align-self-end">
+                        <button type="button" class="px-4 btn btn-sm btn-primary" [disabled]="servicioForm.disabled" (click)="buscarServicio()">
+                            {{ 'key.button.buscar' | translate}} <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="card m-2 border-primary" style="padding: 10px; height: 370px">
+            <form [formGroup]="reglasBodegaForm">
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label>{{ 'key.bodega.insumo' | translate}} </label>
+                        <select
+                            class="form-control form-control-sm"
+                            formControlName="bodegaInsumo"
+                            [ngClass]="{ 'is-invalid': reglasBodegaForm.get('bodegaInsumo').invalid }">
+                            <option *ngFor="let bodega of bodegas" [value]="bodega.fbodCodigo">{{ bodega.fbodCodigo }} - {{ bodega.descripcion }}</option>
+                        </select>
+                        <div *ngIf="reglasBodegaForm.get('bodegaInsumo').hasError('sinBodega')" class="invalid-feedback">{{ 'key.mensaje.campo.obligatorio' | translate}}</div>
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <label>{{ 'key.bodega.medicamentos' | translate}} </label>
+                        <select
+                            class="form-control form-control-sm"
+                            formControlName="bodegaMedicamento"
+                            [ngClass]="{ 'is-invalid': reglasBodegaForm.get('bodegaMedicamento').invalid }">
+                            <option *ngFor="let bodega of bodegas" [value]="bodega.fbodCodigo">{{ bodega.fbodCodigo }} - {{ bodega.descripcion }}</option>
+                        </select>
+                        <div *ngIf="reglasBodegaForm.get('bodegaMedicamento').hasError('sinBodega')" class="invalid-feedback">{{ 'key.mensaje.campo.obligatorio' | translate}}</div>
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <label>{{ 'key.bodega.consignacion' | translate}} </label>
+                        <select class="form-control form-control-sm" formControlName="bodegaConsignacion">
+                            <option [value]="0"></option>
+                            <option *ngFor="let bodega of bodegas" [value]="bodega.fbodCodigo">{{ bodega.fbodCodigo }} - {{ bodega.descripcion }}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label>{{ 'key.bodega.controlados' | translate}} </label>
+                        <select class="form-control form-control-sm" formControlName="bodegaControlados">
+                            <option [value]="0"></option>
+                            <option *ngFor="let bodega of bodegas" [value]="bodega.fbodCodigo">{{ bodega.fbodCodigo }} - {{ bodega.descripcion }}</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <label>{{ 'key.bodega.servicio' | translate}} </label>
+                        <select
+                            class="form-control form-control-sm"
+                            formControlName="bodegaServicio"
+                            [ngClass]="{ 'is-invalid': reglasBodegaForm.get('bodegaServicio').invalid }">
+                            <option *ngFor="let bodega of bodegas" [value]="bodega.fbodCodigo">{{ bodega.fbodCodigo }} - {{ bodega.descripcion }}</option>
+                        </select>
+                        <div *ngIf="reglasBodegaForm.get('bodegaServicio').hasError('sinBodega')" class="invalid-feedback">{{ 'key.mensaje.campo.obligatorio' | translate}}</div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label>{{ 'key.centro.costo' | translate}}</label>
+                        <input
+                            type="number"
+                            formControlName="centroCosto"
+                            class="form-control form-control-sm"
+                            [ngClass]="{ 'is-invalid': reglasBodegaForm.get('centroCosto').invalid }" />
+                        <div *ngIf="reglasBodegaForm.get('centroCosto').hasError('required')" class="invalid-feedback">{{ 'key.mensaje.campo.obligatorio' | translate}}</div>
+                        <div *ngIf="reglasBodegaForm.get('centroCosto').hasError('min')" class="invalid-feedback">
+                            {{ 'key.msj.condicion.centro.costo' | translate}}
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <label>{{ 'key.centro.consumo' | translate}}</label>
+                        <input
+                            type="number"
+                            formControlName="centroConsumo"
+                            class="form-control form-control-sm"
+                            [ngClass]="{ 'is-invalid': reglasBodegaForm.get('centroConsumo').invalid }" />
+                        <div *ngIf="reglasBodegaForm.get('centroConsumo').hasError('required')" class="invalid-feedback">Este campo es obligatorio</div>
+                        <div *ngIf="reglasBodegaForm.get('centroConsumo').hasError('min')" class="invalid-feedback">
+                            {{ 'key.msj.condicion.centro.consumo' | translate}}
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="form-row float-right mr-2">
+            <div class="form-group align-self-end">
+                <button
+                    class="btn btn-sm btn-primary mr-1 px-4"
+                    [disabled]="reglasBodegaForm.invalid || reglasBodegaForm.disabled"
+                    (click)="modoComponente === 'modificacion' ? modificarReglas() : crearReglas()">
+                    <span class="text-uppercase mr-1">{{ modoComponente === 'modificacion' ? 'Modificar Regla' : 'Crear Regla' }}</span>
+                    <i class="fas fa-save ml-1"></i>
+                </button>
+            </div>
+
+            <div class="form-group align-self-end">
+                <button class="btn btn-sm btn-primary mr-1 px-4" (click)="limpiar()">
+                    <span class="text-uppercase mr-1">{{ 'key.button.limpiar' | translate}}</span>
+                    <i class="fas fa-eraser ml-1"></i>
+                </button>
+            </div>
+        </div>
+
+        <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+        <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+        <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+    </div>
+</app-main-nav>
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>

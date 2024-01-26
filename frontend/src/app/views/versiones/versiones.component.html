@@ -1,0 +1,42 @@
+<!-- <app-navbar ></app-navbar>
+<app-sidebar></app-sidebar>
+<div class="content-wrapper pl-4"> -->
+<app-main-nav>
+  <div style="padding: 10px;">
+    <div style="margin: 10px;">
+        <!-- <app-usuario-estructura-conexion>
+        </app-usuario-estructura-conexion> -->
+        <div class="my-2 ml-2 titulo text-center">
+            <!--menu -->
+            <h3>
+                {{ 'key.versiones' | translate}}
+            </h3>
+        </div>
+        <form [formGroup]='FormVersiones'>
+            <div class="card border-primary" style="padding: 20px;">
+                <div class="form-row text-center" style="margin: auto; width: 50%;" >
+                    <div class="form-group col-md-4" style="margin: auto;">
+                        <label for="numversioninf" >{{ 'key.versiones.servicios.rest' | translate}}</label>
+                        <input type="text" class="form-control form-control" formControlName="numversioninf">
+                    </div>
+                    <!-- <div class="form-group col-md-4">
+                        <label for="numversionserv">Versión Servicios *</label>
+                        <input type="text" class="form-control form-control" formControlName="numversionserv">
+                    </div> -->
+                    <div class="form-group col-md-4" style="margin: auto;">
+                        <label for="numversionapp">{{ 'key.versiones.applicacion' | translate}}</label>
+                        <input type="text" class="form-control form-control" formControlName="numversionapp">
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="row float-right mr-1 mt-2">
+            <div class="form-group  align-self-end">
+                <button type="button" id="btnsalir" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+                    routerLink='../home'>{{ 'key.button.salir' | translate}} <i class="fas fa-window-close ml-1"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+  </div>
+</app-main-nav>

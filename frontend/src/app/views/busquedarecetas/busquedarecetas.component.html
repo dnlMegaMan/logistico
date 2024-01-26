@@ -1,0 +1,470 @@
+<div class="card">
+    <!--menu - productos -mantencion de articulos-->
+    <div class="card-header">
+        {{titulo}}
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onCerrarSalir()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+
+    <div class="card m-2 border-primary" style="padding: 10px; background-color:azure;">
+        <div [hidden]="tipoModal">
+          <tabset>
+            <!-- Tab AMBULATORIO -->
+            <tab heading="{{'key.tab.ambulatorio' | translate}}" id="tab2" *ngIf="activatipobusquedaamb">
+                <form novalidate [formGroup]='FormBuscaRecetasAmbulatorias' autocomplete="off" spellcheck="false">
+                    <div class="form-row">
+                        <div class="form-group col-md-2">
+                            <label for="numreceta">{{ 'key.n.receta' | translate}}</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="numreceta"
+                            (keyup.enter)= "getReceta()" (keydown.tab)= "getReceta()"
+                            (input)="onValidafiltro($event.target.value, 1)">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="tipoidentificacion">{{ 'key.tipo.identificacion' | translate}} *</label>
+                            <select name="tipoidentificacion" class='form-control form-control-sm'
+                                formControlName='tipoidentificacion'
+                                (change)="comboTipoidAmb()">
+                                <option *ngFor='let listatipoidentificacion  of arreglotipodocumentoidentificacion'
+                                    [ngValue]='listatipoidentificacion.codtipodocumento'>
+                                    {{listatipoidentificacion.destipodocumento}}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            <label for="numeroidentificacion">{{ 'key.numero.identificacion' | translate}}</label>
+                            <input type="text" class="form-control form-control-sm"
+                              formControlName="numeroidentificacion"
+                              (input)="onValidafiltro($event.target.value, 1)">
+                        </div>
+                        <div
+                            class="form-group col-md-5 text-right>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            align-self-end">
+                            <button type="button" id="btnbuscar"
+                                class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                                [disabled]="!filtroamb"
+                                (click)="BuscarRecetasFiltroAmbulatorio()">{{ 'key.button.buscar' | translate}} <i class="fas fa-search ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <label for="apellidopaterno">{{ 'key.apellido.paterno' | translate}}</label>
+                            <input type="text" class="form-control form-control-sm"
+                              formControlName="apellidopaterno"
+                              (input)="onValidafiltro($event.target.value, 1)">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="apellidomaterno">{{ 'key.apellido.materno' | translate}}</label>
+                            <input type="text" class="form-control form-control-sm"
+                              formControlName="apellidomaterno"
+                              (input)="onValidafiltro($event.target.value, 1)">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="nombrespaciente">{{ 'key.nombres' | translate}}</label>
+                            <input type="text" class="form-control form-control-sm"
+                              formControlName="nombrespaciente"
+                              (input)="onValidafiltro($event.target.value, 1)">
+                        </div>
+                        <div class="form-group col-sm-3 align-self-end text-right">
+                            <button type="button" class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                                (click)="LimpiarAmb()">{{ 'key.button.limpiar.L' | translate}} <i class="fas fa-eraser ml-1"></i>
+                            </button>
+                        </div>
+
+                        <table class="table table-stripped table-condensed table-hovered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#{{ 'key.receta' | translate}}</th>
+                                    <th scope="col">{{ 'key.fecha' | translate}}</th>
+                                    <!-- <th scope="col">Unidad</th>
+                                    <th scope="col">Servicio</th> -->
+                                    <th scope="col">{{ 'key.numero.identificacion' | translate}}</th>
+                                    <th scope="col">{{ 'key.paciente' | translate}}</th>
+                                    <!-- <th scope="col">Cama</th> -->
+                                    <th scope="col">{{ 'key.medico' | translate}}</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let recetaamb of listarecetasambulatoriasPaginacion"
+                                    (click)="onCerrar(recetaamb)" style="cursor: pointer;">
+                                    <td>{{recetaamb.recenumero}} </td>
+                                    <td>{{recetaamb.recefechaentrega}}</td>
+                                    <!-- <td>{{recetaamb.descidentificacion}}</td> -->
+                                    <td>{{recetaamb.recedocumpac}}</td>
+                                    <td>{{recetaamb.recenombrepaciente}}</td>
+                                    <!-- <td>{{pacientes.materno}}</td> -->
+                                    <td>{{recetaamb.recenombremedico}}</td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="row m-1">
+                            <pagination [boundaryLinks]="true" [directionLinks]="true" [maxSize]="6"
+                                [totalItems]="listarecetasambulatorias.length" [itemsPerPage]=8
+                                [previousText]="'key.pagination.anterior' | translate" [nextText]="'key.pagination.siguiente' | translate" [firstText]="'&laquo;'"
+                                [lastText]="'&raquo;'" (pageChanged)="pageChanged($event)">
+                            </pagination>
+                        </div>
+                    </div>
+                </form>
+            </tab>
+            <!-- Tab HOSPITALIZADO -->
+            <tab heading="{{'key.tab.hospitalizado' | translate}}" id="tab2" *ngIf="activatipobusquedahospurgamb">
+                <form novalidate [formGroup]='FormBuscaRecetasHospitalizadas' autocomplete="off" spellcheck="false">
+                    <div class="form-row">
+                        <div class="form-group col-sm-2">
+                            <label for="numreceta">{{ 'key.n.receta' | translate}}</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="numreceta"
+                                (input)="onValidafiltro($event.target.value, 2)"
+                                (keyup.enter)= "BuscarRecetasFiltrohospitalizado()"
+                                (keydown.tab)= "BuscarRecetasFiltrohospitalizado()">
+                        </div>
+                        <div class="form-group col-md-2">
+                          <label for="tipoidentificacion">{{ 'key.tipo.identificacion' | translate}} *</label>
+                          <select name="tipoidentificacion" class='form-control form-control-sm'
+                              formControlName='tipoidentificacion'
+                              (change)="comboTipoidHosp()">
+                              <option *ngFor='let listatipoidentificacion  of arreglotipodocumentoidentificacion'
+                                  [ngValue]='listatipoidentificacion.codtipodocumento'>
+                                  {{listatipoidentificacion.destipodocumento}}
+                              </option>
+                          </select>
+                      </div>
+                      <div class="form-group col-md-3">
+                          <label for="numeroidentificacion">{{ 'key.numero.identificacion' | translate}}</label>
+                          <input type="text" class="form-control form-control-sm"
+                            (input)="onValidafiltro($event.target.value, 2)"
+                              formControlName="numeroidentificacion">
+                      </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-sm-2">
+                            <label for="nombrespaciente">{{ 'key.nombres' | translate}} *</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="nombrespaciente"
+                                (input)="onValidafiltro($event.target.value, 2)">
+                        </div>
+                        <div class="form-group col-sm-3">
+                            <label for="apellidopaterno">{{ 'key.apellido.paterno' | translate}} *</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="apellidopaterno"
+                                (input)="onValidafiltro($event.target.value, 2)">
+                        </div>
+                        <div class="form-group col-sm-3">
+                            <label for="apellidomaterno">{{ 'key.apellido.materno' | translate}} *</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="apellidomaterno"
+                                (input)="onValidafiltro($event.target.value, 2)">
+                        </div>
+                        <div class="form-group col-sm-2 align-self-end text-right">
+                            <button [disabled]="!filtrohosp" type="button"
+                                class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                                (click)="BuscarRecetasFiltrohospitalizado()">{{ 'key.button.buscar' | translate}}<i class="fas fa-search ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-sm-3">
+                            <label for="servicio">{{ 'key.servicio' | translate}} *</label>
+                            <select name="servicio" class='form-control form-control-sm' formControlName='servicio'
+                                (change)="onSelectServicio($event.target.value)">
+                                <option *ngFor='let servicio  of servicios' value='{{ servicio.serviciocod }}'>
+                                    {{ servicio.serviciodesc }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group col-sm-3">
+                            <label for="pieza">{{ 'key.pieza' | translate}} *</label>
+                            <select name="pieza" class='form-control form-control-sm' formControlName='pieza'
+                                (change)="onSelectPieza($event.target.value)">
+                                <option *ngFor='let pieza of piezas' value='{{ pieza.piezaid }}'>
+                                    {{ pieza.piezadescripcion }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group col-sm-3">
+                            <label for="cama">{{ 'key.cama' | translate}} *</label>
+                            <select name="cama" class='form-control form-control-sm' formControlName='cama'>
+                                <option *ngFor='let cama of camas' value='{{ cama.camaid }}'>
+                                    {{ cama.camadescripcion }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group col-sm-3 align-self-end text-right">
+                            <button type="button" class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                                (click)="LimpiarHosp()">{{ 'key.button.limpiar.L' | translate}} <i class="fas fa-eraser ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <table class="table table-stripped table-condensed table-hovered">
+                        <thead>
+                            <tr>
+                                <th scope="col">#{{ 'key.receta' | translate}}</th>
+                                <th scope="col">{{ 'key.fecha' | translate}}</th>
+                                <th scope="col">{{ 'key.numero.identificacion' | translate}}</th>
+                                <th scope="col">{{ 'key.paciente' | translate}}</th>
+                                <th scope="col">{{ 'key.medico' | translate}}</th>
+
+                                <!-- <th>Pieza</th>
+                                <th>Cama</th>
+                                <th>Medico Tratante</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let recetahosp of listarecetashospitalizadosPaginacion"
+                                (click)="onCerrar(recetahosp)" style="cursor: pointer;">
+                                <td>{{recetahosp.recenumero }} </td>
+                                <td>{{recetahosp.recefechaentrega }} </td>
+                                <td>{{recetahosp.recedocumpac }}</td>
+                                <td>{{recetahosp.recenombrepaciente }}</td>
+                                <td>{{recetahosp.recenombremedico}}</td>
+                                <!-- <td>{{ recetahosp.pzagloza }}</td>
+                                <td>{{ pacientes.camglosa }}</td>
+                                <td>{{ pacientes.nombremedico }} </td> -->
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <pagination [boundaryLinks]="true" [directionLinks]="true" [maxSize]="6"
+                                [totalItems]="listarecetashospitalizados.length" [itemsPerPage]=8
+                                [previousText]="'key.pagination.anterior' | translate" [nextText]="'key.pagination.siguiente' | translate" [firstText]="'&laquo;'"
+                                [lastText]="'&raquo;'" (pageChanged)="pageChangedhosp($event)">
+                            </pagination>
+                        </div>
+                        <!-- <div class="form-group col-sm-6 align-self-end text-right">
+                        <button type="button" class="btn btn-primary btn-sm button-my-styles-busqueda_01 ml-1" tooltip="CERRAR"
+                            (click)="onCerrarSalir()">CERRAR<i class="fas fa-window-close ml-1"></i>
+                        </button>
+                        </div> -->
+                    </div>
+                </form>
+            </tab>
+            <!-- Tab Urgencia -->
+            <tab heading="{{'key.tab.urgencia' | translate}}" id="tab3" *ngIf="activatipobusquedahospurgamb">
+                <form novalidate [formGroup]='FormBuscaRecetasUrgencia' autocomplete="off" spellcheck="false">
+                    <div class="form-row">
+                        <div class="form-group col-md-2">
+                            <label for="numreceta">{{ 'key.n.receta' | translate}}</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="numreceta"
+                              (keyup.enter)= "BuscarRecetasFiltroUrgencia()" (keydown.tab)= "BuscarRecetasFiltroUrgencia()"
+                              (input)="onValidafiltro($event.target.value, 3)">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="tipoidentificacion">{{ 'key.tipo.identificacion' | translate}} *</label>
+                            <select name="tipoidentificacion" class='form-control form-control-sm'
+                                formControlName='tipoidentificacion'
+                                (change)="comboTipoidUrg()">
+                                <option *ngFor='let listatipoidentificacion  of arreglotipodocumentoidentificacion'
+                                    [ngValue]='listatipoidentificacion.codtipodocumento'>
+                                    {{listatipoidentificacion.destipodocumento}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="numeroidentificacion">{{ 'key.numero.identificacion' | translate}}</label>
+                            <input type="text" class="form-control form-control-sm"
+                              formControlName="numeroidentificacion"
+                              (input)="onValidafiltro($event.target.value, 3)">
+                        </div>
+                        <div
+                            class="form-group col-md-5 text-right>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            align-self-end">
+                            <button type="button" id="btnbuscar"
+                                class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                                [disabled]="!filtrourg"
+                                (click)="BuscarRecetasFiltroUrgencia()">{{ 'key.button.buscar' | translate}} <i class="fas fa-search ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <label for="apellidopaterno">{{ 'key.apellido.paterno' | translate}}</label>
+                            <input type="text" class="form-control form-control-sm"
+                              formControlName="apellidopaterno"
+                              (input)="onValidafiltro($event.target.value, 3)">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="apellidomaterno">{{ 'key.apellido.materno' | translate}}</label>
+                            <input type="text" class="form-control form-control-sm"
+                              formControlName="apellidomaterno"
+                              (input)="onValidafiltro($event.target.value, 3)">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="nombrespaciente">{{ 'key.nombres' | translate}}</label>
+                            <input type="text" class="form-control form-control-sm"
+                              formControlName="nombrespaciente"
+                              (input)="onValidafiltro($event.target.value, 3)">
+                        </div>
+                        <div class="form-group col-sm-3 align-self-end text-right">
+                            <button type="button" class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                                (click)="LimpiarUrg()">{{ 'key.button.limpiar.L' | translate}} <i class="fas fa-eraser ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                        <table class="table table-stripped table-condensed table-hovered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#{{ 'key.receta' | translate}}</th>
+                                    <th scope="col">{{ 'key.fecha' | translate}}</th>
+                                    <th scope="col">{{ 'key.numero.identificacion' | translate}}</th>
+                                    <th scope="col">{{ 'key.paciente' | translate}}</th>
+                                    <th scope="col">{{ 'key.medico' | translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let recetaurg of listarecetasurgenciaPaginacion" (click)="onCerrar(recetaurg)"
+                                    style="cursor: pointer;">
+                                    <td>{{recetaurg.recenumero}} </td>
+                                    <td>{{recetaurg.recefechaentrega}}</td>
+                                    <!--<td>{{recetaamb.descidentificacion}}</td> -->
+                                    <td>{{recetaurg.recedocumpac}}</td>
+                                    <td>{{recetaurg.recenombrepaciente}}</td>
+                                    <!--<td>{{pacientes.materno}}</td> -->
+                                    <td>{{recetaurg.recenombremedico}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="row">
+                            <div class="col-md-6">
+                            <pagination [boundaryLinks]="true" [directionLinks]="true" [maxSize]="8" [totalItems]="listarecetasurgencia.length"
+                                [itemsPerPage]=8 [previousText]="'key.pagination.anterior' | translate" [nextText]="'key.pagination.siguiente' | translate" [firstText]="'&laquo;'"
+                                [lastText]="'&raquo;'" (pageChanged)="pageChangedUrgencia($event)">
+                            </pagination>
+                        </div>
+                    </div>
+                </form>
+            </tab>
+        </tabset>
+        </div>
+        <!-- BUSCA RECETAS -->
+        <div [hidden]="!tipoModal">
+          <form novalidate [formGroup]='FormBuscaRecetas' autocomplete="off" spellcheck="false">
+              <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="nombrespaciente">{{ 'key.nombres' | translate}}</label>
+                    <input type="text" class="form-control form-control-sm"
+                      formControlName="nombrespaciente"
+                      (input)="onValidafiltro($event.target.value, 1)">
+                </div>
+                <div class="form-group col-md-3">
+                  <label for="apellidopaterno">{{ 'key.apellido.paterno' | translate}}</label>
+                  <input type="text" class="form-control form-control-sm"
+                    formControlName="apellidopaterno"
+                    (input)="onValidafiltro($event.target.value, 1)">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="apellidomaterno">{{ 'key.apellido.materno' | translate}}</label>
+                    <input type="text" class="form-control form-control-sm"
+                      formControlName="apellidomaterno"
+                      (input)="onValidafiltro($event.target.value, 1)">
+                </div>
+              </div>
+              <p class="text-danger text-form-valid"
+                                *ngIf="FormBuscaRecetas.controls.fechadesde.invalid &&
+                                (FormBuscaRecetas.controls.fechadesde.dirty ||
+                                FormBuscaRecetas.controls.fechadesde.touched)">
+                                {{ 'key.mensaje.requerido.fechaDesde.menor.fechaHasta' | translate}}
+                                </p>
+                                <p class="text-danger text-form-valid"
+                                *ngIf="FormBuscaRecetas.controls.fechahasta.invalid &&
+                                 (FormBuscaRecetas.controls.fechahasta.dirty ||
+                                 FormBuscaRecetas.controls.fechahasta.touched)">
+                                 {{ 'key.mensaje.requerido.fechaHasta.mayor.fechaDesde' | translate}}
+                                </p>
+              <div class="form-row">
+                <div class="form-group col-sm-2">
+                  <label for="fechadesde">{{ 'key.fechadesde' | translate}}</label>
+                  <input appSelecttext type="text" placeholder="DD/MM/YYYY" class="form-control form-control-sm"
+                          [bsConfig]="bsConfig" bsDatepicker formControlName="fechadesde" placement="right"/>
+                </div>
+                <div class="form-group  col-sm-2">
+                  <label for="fechahasta">{{ 'key.fechahasta' | translate}}</label>
+                  <input appSelecttext type="text" placeholder="DD/MM/YYYY" class="form-control form-control-sm"
+                          [bsConfig]="bsConfig" bsDatepicker formControlName="fechahasta" placement="right" />
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="ambito">{{ 'key.ambito' | translate}}</label>
+                    <select name="ambito" class='form-control form-control-sm'
+                        formControlName='ambito'>
+                        <option *ngFor='let listaAmbito of listaAmbitos'
+                            [ngValue]='listaAmbito.ambitocodigo' >
+                            {{ listaAmbito.ambitodescripcion }}
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="tiporeceta">{{ 'key.tipo.receta' | translate}}</label>
+                    <select name="tiporeceta" class='form-control form-control-sm'
+                        formControlName='tiporeceta'>
+                        <option *ngFor='let listaReceta of listaRecetas'
+                            [ngValue]='listaReceta.tiporecetadesc' >
+                            {{ listaReceta.tiporecetadesc }}
+                        </option>
+                    </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-sm-2"></div>
+                <div class="form-group col-sm-2"></div>
+                <div class="form-group col-sm-2"></div>
+                <div class="form-group col-sm-2"></div>
+                <div class="form-group col-sm-2 align-self-end text-right">
+                  <button type="button" class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                      (click)="Limpiar()">{{ 'key.button.limpiar.L' | translate}} <i class="fas fa-eraser ml-1"></i>
+                  </button>
+                </div>
+                <div class="form-group col-md-2 text-right>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            align-self-end">
+                    <button type="button" id="btnbuscar"
+                        class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                        (click)="BuscarRecetasFiltro()">{{ 'key.button.buscar' | translate}} <i class="fas fa-search ml-1"></i>
+                    </button>
+                </div>
+              </div>
+              <div class="form-row">
+                  <table class="table table-stripped table-condensed table-hovered">
+                      <thead>
+                          <tr>
+                            <th scope="col">{{ 'key.fecha.dig' | translate}}</th>
+                            <th scope="col">{{ 'key.ambito' | translate}}</th>
+                            <th scope="col">{{ 'key.receta' | translate}}</th>
+                            <th scope="col">{{ 'key.tipo' | translate}}</th>
+                            <th scope="col">{{ 'key.tr.pr.f.entrega' | translate}}</th>
+                            <th scope="col">{{ 'key.codigo' | translate}}</th>
+                            <th scope="col">{{ 'key.descripcion' | translate}}</th>
+                            <th scope="col">{{ 'key.solicitado' | translate}}</th>
+                            <th scope="col">{{ 'key.despachado' | translate}}</th>
+                            <th scope="col">{{ 'key.pend.despachar' | translate}}</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr *ngFor="let receta of listarecetasmodal
+                          |  paginate: {itemsPerPage: 8, currentPage: page,id:'movpac'} ;"
+                              (click)="onCerrar(receta)" style="cursor: pointer;">
+                              <td>{{receta.fechadig}} </td>
+                              <td>{{receta.ambito}}</td>
+                              <td>{{receta.recenumero}}</td>
+                              <td>{{receta.tipo}}</td>
+                              <td>{{receta.trprfentrega}}</td>
+                              <td>{{receta.codigo}}</td>
+                              <td>{{receta.descripcion}}</td>
+                              <td>{{receta.solicitado}}</td>
+                              <td>{{receta.despachado}}</td>
+                              <td>{{receta.pendiente}}</td>
+                          </tr>
+                      </tbody>
+                  </table>
+                  <div class="row  align-self-center">
+                    <pagination-controls
+                      id="movpac"
+                      (pageChange)="page = $event"
+                      previousLabel="{{'key.pagination.anterior' | translate}}"
+                      nextLabel="{{'key.pagination.siguiente' | translate}}"
+                      autoHide="true">
+                    </pagination-controls>
+                  </div>
+              </div>
+          </form>
+        </div>
+    </div>
+    <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+</div>

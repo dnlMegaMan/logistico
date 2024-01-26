@@ -1,0 +1,594 @@
+
+<aside class="main-sidebar" id="sideb">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Sidebar Menu -->
+        <nav>
+            <ul class="nav nav-pills nav-sidebar flex-column pt-2" id="side-menu" data-widget="treeview" role="menu"
+                data-accordion="false">
+                <li class="nav-item">
+                    <a class="nav-link collapsed text-truncate" href="#submenumonitor" data-toggle="collapse"
+                        [routerLink]="['/monitorejecutivo']" style="color:white">
+                        <!-- <i class="nav-icon fas fa-copy"></i> -->
+                        <i class="fas fa-angle-right mr-1"></i>
+                        <p><small>Monitor</small> </p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link collapsed text-truncate" href="#submenuproducto" data-toggle="collapse"
+                        data-target="#submenuproducto" style="color:white"
+                        *ngIf="modelopermisos.btnproducto">
+                        <!-- <i class="nav-icon fas fa-copy"></i> -->
+                        <i class="fas fa-angle-right mr-1"></i>
+                        <p><small>Productos</small></p>
+                    </a>
+                    <div class="collapse" id="submenuproducto" aria-expanded="false">
+                        <ul class="flex-column pl-2 nav">
+                            <li class="nav-item">
+                                <a [routerLink]="['/mantencionarticulos']" style="color:white" class="nav-link"
+                                *ngIf="modelopermisos.btnmantarticulo">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p><small>Mantención de Artículos</small></p>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+               <!-- <li class="nav-item">
+                    <a class="nav-link collapsed flex-column text-truncate" href="#submenuinventarios"
+                        data-toggle="collapse" data-target="#submenuinventarios" style="color:white">
+                        <i class=" fas fa-angle-right mr-1"></i>
+                        <p><small>Inventarios</small></p>
+                    </a>
+                    <div class="collapse" id="submenuinventarios" aria-expanded="false">
+                        <ul class="flex-column pl-2 nav">
+                             <li class="nav-item">
+                                <a [routerLink]="['/listadopararealizarinventarios']" style="color:white"
+                                    class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p id="sidem"><small>Listado para Realizar Inventario</small> </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a style="color:white" [routerLink]="['/generainventariosistema']" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p id="sidem"><small>Inventario Sistema</small> </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a style="color:white" [routerLink]="['/ingresoconteomanual']" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p id="sidem"><small>Ingreso Conteo Manual</small> </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a style="color:white" [routerLink]="['/generaajusteinventario']" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p id="sidem"><small>Ajuste Inventario</small> </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a style="color:white" [routerLink]="['/consultadekardex']" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p id="sidem"><small>Kardex</small> </p>
+                                </a>
+                            </li>
+                             <li class="nav-item">
+                                <a style="color:white" [routerLink]="['/informeexistenciasvalorizado']"
+                                    class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p id="sidem"><small>Existencias Valorizadas</small> </p>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li> -->
+
+                <!-- NAv Administracion OC -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed text-truncate" href="#submeoc" data-toggle="collapse"
+                        data-target="#submeoc" style="color:white">
+                        <i class=" fas fa-angle-right mr-1"></i>
+                        <p><small>Adm.OC</small>
+                        </p>
+                    </a>
+                    <div class="collapse" id="submeoc" aria-expanded="false">
+                        <ul class="flex-column pl-2 nav">
+                            <li class="nav-item">
+                                <a class="nav-link" style="color:white" [routerLink]="['/ingreso-oc']">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p><small>Ingreso Orden de compra</small></p>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="collapse" id="submeoc" aria-expanded="false">
+                        <ul class="flex-column pl-2 nav">
+                            <li class="nav-item">
+                                <a class="nav-link" style="color:white" [routerLink]="['/recepcion-oc']">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p><small>recepcion oc</small></p>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="collapse" id="submeoc" aria-expanded="false">
+                        <ul class="flex-column pl-2 nav">
+                            <li class="nav-item">
+                                <a class="nav-link" style="color:white" [routerLink]="['/devolucion-oc']">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p><small>devolucion oc</small></p>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="collapse" id="submeoc" aria-expanded="false">
+                        <ul class="flex-column pl-2 nav">
+                            <li class="nav-item">
+                                <a class="nav-link" style="color:white" [routerLink]="['/devoluciones-oc']">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p><small>devoluciones oc</small></p>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="collapse" id="submeoc" aria-expanded="false">
+                        <ul class="flex-column pl-2 nav">
+                            <li class="nav-item">
+                                <a class="nav-link" style="color:white" [routerLink]="['/mantenedor-prov']">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p><small>Mantenedor PRoveedores</small></p>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="collapse" id="submeoc" aria-expanded="false">
+                        <ul class="flex-column pl-2 nav">
+                            <li class="nav-item">
+                                <a class="nav-link" style="color:white" [routerLink]="['/distribucion-oc-esp']">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p><small>destribucion oc esp</small></p>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="collapse" id="submeoc" aria-expanded="false">
+                        <ul class="flex-column pl-2 nav">
+                            <li class="nav-item">
+                                <a class="nav-link" style="color:white" [routerLink]="['/buscaritems-oc']">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p><small>buscaritems on</small></p>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <!-- FIN NAV OC-->
+
+                <li class="nav-item">
+                    <a class="nav-link collapsed text-truncate" href="#submebodegas" data-toggle="collapse"
+                        data-target="#submebodegas" style="color:white"
+                        *ngIf="modelopermisos.btnadmbodegas">
+                        <i class=" fas fa-angle-right mr-1"></i>
+                        <p><small>Adm.Bodegas</small>
+
+                        </p>
+                    </a>
+                    <div class="collapse" id="submebodegas" aria-expanded="false">
+                        <ul class="flex-column pl-2 nav">
+
+                            <li class="nav-item">
+                                <a class="nav-link" style="color:white" [routerLink]="['/bodegas']"
+                                *ngIf="modelopermisos.btnbodegas">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p><small>Bodegas</small></p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" style="color:white" [routerLink]="['/bodegasprueba']"
+                                *ngIf="usuario==='AGOMEZ'">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p><small>Bodegas Prueba</small></p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                    <!-- [routerLink]="['/plantillas/1']"  -->
+                                <a (click)="LlamaPantallaPlantillas('1')"
+                                    style="cursor: pointer; color:white" class="nav-link"
+                                    *ngIf="modelopermisos.btnplantillabod">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p id="sidem"><small>Plantillas de Bodegas</small> </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <!-- Consultar Walter -->
+                                <a  style="cursor: pointer; color:white" class="nav-link"
+                                    (click)="LlamaPantallaPlantillas('2')"
+                                    *ngIf="modelopermisos.btnplantillaproced">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p id="sidem"><small>Plantillas de Procedimientos</small></p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a [routerLink]="['/fraccionamientoproductos']" style="color:white" class="nav-link"
+                                *ngIf="modelopermisos.btnfraccionamiento">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p id="sidem"><small>Fraccionamiento</small> </p>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link collapsed text-truncate" href="#submenulibrocontrolado"
+                                    data-toggle="collapse" data-target="#submenulibrocontrolado" style="color:white"
+                                    *ngIf="modelopermisos.btnlibcontrolado">
+                                    <i class=" fas fa-angle-right mr-1"></i>
+                                    <p><small>Libro Controlado</small> </p>
+                                </a>
+
+                                <div class="collapse" id="submenulibrocontrolado" aria-expanded="false">
+                                    <ul class="flex-column pl-2 nav">
+                                        <!-- <li class="nav-item"> -->
+                                            <a [routerLink]="['/librocontrolado']" style="color:white" class="nav-link"
+                                            *ngIf="modelopermisos.btncierre">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p id="sidem"><small>Cierre</small></p>
+                                            </a>
+                                        <!-- </li> -->
+                                        <!-- _ -->
+                                    </ul>
+                                    <ul class="flex-column pl-2 nav">
+                                        <a style="color:white" [routerLink]="['/consultalibrocontrolado']" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p id="sidem"><small>Consulta</small> </p>
+                                        </a>
+                                        <!-- _ -->
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link collapsed text-truncate" href="#submenukardex"
+                                    data-toggle="collapse" data-target="#submenukardex" style="color:white"
+                                    *ngIf="modelopermisos.btnlibcontrolado">
+                                    <i class=" fas fa-angle-right mr-1"></i>
+                                    <p><small>Kardex</small> </p>
+                                </a>
+
+                                <div class="collapse" id="submenukardex" aria-expanded="false">
+                                    <ul class="flex-column pl-2 nav">
+                                        <li class="nav-item">
+                                            <a style="color:white" [routerLink]="['/cierrekardex']" class="nav-link">                                             <i class="far fa-circle nav-icon"></i>
+                                                <p id="sidem"><small>Cierre</small></p>
+                                            </a>
+                                        </li>
+                                        <!-- _ -->
+                                    </ul>
+                                    <ul class="flex-column pl-2 nav">
+                                        <a style="color:white" [routerLink]="['/consultadekardex']" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p id="sidem"><small>Consulta</small> </p>
+                                        </a>
+                                        <!-- _ -->
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li class="nav-item" hidden>
+                                <a class="nav-link collapsed text-truncate" href="#submenuinventarios"
+                                    data-toggle="collapse" data-target="#submenuajustes" style="color:white"
+                                    *ngIf="modelopermisos.btnajustes">
+                                    <i class=" fas fa-angle-right mr-1"></i>
+                                    <p><small>Ajustes</small> </p>
+                                </a>
+
+                                <div class="collapse" id="submenuajustes" aria-expanded="false">
+                                    <ul class="flex-column pl-2 nav">
+                                        <li class="nav-item">
+                                            <a [routerLink]="['/ajustestock']" style="color:white" class="nav-link"
+                                            *ngIf="modelopermisos.btnajustestock">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p id="sidem"><small>Ajuste de Stock</small></p>
+                                            </a>
+                                        </li>
+                                        <!-- _ -->
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed text-truncate" href="#submenusolicitudes" data-toggle="collapse"
+                        data-target="#submenusolicitudes" style="color:white"
+                        *ngIf="modelopermisos.btnmovbodega">
+                        <i class="fas fa-angle-right mr-1"></i>
+                        <p><small>Mov.Bodegas</small>
+                        </p>
+                    </a>
+                    <div class="collapse" id="submenusolicitudes" aria-expanded="false">
+                        <ul class="flex-column pl-2 nav">
+                            <li class="nav-item">
+                                <a [routerLink]="['/creasolicitud']" style="color:white" class="nav-link"
+                                *ngIf="modelopermisos.btnadmsol">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p id="sidem"><small>Administración de Solicitudes</small></p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a [routerLink]="['/reposicionarticulos']" style="color:white" class="nav-link"
+                                *ngIf="modelopermisos.btnrepoarticulos">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p id="sidem"><small>Reposición Artículos</small></p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a style="color:white" [routerLink]="['/despachosolicitudes']" class="nav-link"
+                                *ngIf="modelopermisos.btndespsol">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p id="sidem"><small>Despachar Solicitudes</small></p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a style="color:white" [routerLink]="['/recepcionsolicitudes']" class="nav-link"
+                                *ngIf="modelopermisos.btnrecepsol">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p id="sidem"><small>Recepción de Solicitudes</small></p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a style="color:white" [routerLink]="['/devolucionsolicitudes']" class="nav-link"
+                                *ngIf="modelopermisos.btndevsol">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p id="sidem"><small>Devoluciones de Solicitudes</small></p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a style="color:white" [routerLink]="['/recepciondevolucionbodegas']" class="nav-link"
+                                *ngIf="modelopermisos.btnrecepdevbod">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p id="sidem"><small>Recepción Devolución entre Bodegas</small></p>
+                                </a>
+                            </li>
+                            <!-- <li class="nav-item">
+                                <a style="color:white" [routerLink]="['/movimientos']" class="nav-link"
+                                *ngIf="modelopermisos.btnmovimientosb">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p id="sidem"><small>Movimientos</small></p>
+                                </a>
+                            </li> -->
+                            <li class="nav-item">
+                                <a style="color:white" [routerLink]="['/controlstockminimo']" class="nav-link"
+                                *ngIf="modelopermisos.btnctrlstockmin">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p id="sidem"><small>Control Stock Mínimo</small></p>
+                                </a>
+                            </li>
+                            <!-- <li class="nav-item">
+                                <a style="color:white" [routerLink]="['/despachocostoservicio']" class="nav-link"
+                                >
+                                <!-- *ngIf="modelopermisos.btndepachocostoservi" ->
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p id="sidem"><small>Autopedido</small></p>
+                                </a>
+                            </li> -->
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed text-truncate" href="#submenusolicitudespac" data-toggle="collapse"
+                        data-target="#submenusolicitudespac" style="color:white"
+                        *ngIf="modelopermisos.btnmovpaciente">
+                        <i class="fas fa-angle-right mr-1"></i>
+                        <p><small>Mov.Pacientes</small>
+                        </p>
+                    </a>
+                    <div class="collapse" id="submenusolicitudespac" aria-expanded="false">
+                        <ul class="flex-column pl-2 nav">
+                            <li class="nav-item" >
+                                <a style="color:white" class="nav-link" (click)="onSolpaciente()"
+                                *ngIf="modelopermisos.btnsolpaciente">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p id="sidem"><small> Solicitud Paciente</small></p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a [routerLink]="['/creadispensasolicitudpaciente']" style="color:white" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p id="sidem"><small> Crea/Dispensa Sol. Paciente</small></p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a *ngIf="usuario==='AGOMEZ'" [routerLink]="['/creadispensasolicitudprueba']"
+                                    style="color:white" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p id="sidem"><small> Crea/Dispensa Sol. Prueba</small></p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a [routerLink]="['/dispensarsolicitudespacientes']" style="color:white"
+                                    class="nav-link" *ngIf="modelopermisos.btndispsolpac">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p id="sidem"><small>Dispensación de Solicitudes de Pacientes</small></p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a [routerLink]="['/devolucionpacientes']" style="color:white" class="nav-link"
+                                *ngIf="modelopermisos.btnrecepdevolpac">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p id="sidem"><small>Recepción Devolución de Pacientes</small></p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a [routerLink]="['/despachorecetasambulatoria']" style="color:white" class="nav-link"
+                                *ngIf="modelopermisos.btndesprecetas">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p id="sidem"><small>Despacho Recetas</small></p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a [routerLink]="['/consultarecetasambulatoria']" style="color:white" class="nav-link"
+                                *ngIf="modelopermisos.btnconsulrecetas">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p id="sidem"><small>Consulta Recetas Programadas</small></p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                              <a [routerLink]="['/recetaanulada']" style="color:white" class="nav-link"
+                              *ngIf="modelopermisos.btndesprecetas">
+                                  <i class="far fa-circle nav-icon"></i>
+                                  <p id="sidem"><small>Recetas Anuladas</small></p>
+                              </a>
+                          </li>
+                            <!-- <li class="nav-item">
+                                <a style="color:white" [routerLink]="['/movimientos']" class="nav-link"
+                                *ngIf="modelopermisos.btnmovimientosp">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p id="sidem"><small>Movimientos</small></p>
+                                </a>
+                            </li> -->
+                        </ul>
+                    </div>
+                </li>
+
+
+                <li class="nav-item">
+                    <a class="nav-link collapsed text-truncate" href="#submebodegas" data-toggle="collapse"
+                        data-target="#submenusolicitudconsumo" style="color:white"
+                        *ngIf="modelopermisos.btnconsumo">
+                        <i class=" fas fa-angle-right mr-1"></i>
+                        <p><small>Consumo</small>
+                        </p>
+                    </a>
+                    <div class="collapse" id="submenusolicitudconsumo" aria-expanded="false">
+                        <ul class="flex-column pl-2 nav">
+                            <li class="nav-item">
+                                <a class="nav-link" style="color:white" [routerLink]="['/solicitudconsumo']"
+                                *ngIf="modelopermisos.btnsolconsumo">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p><small>Solicitud Consumo</small></p>
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="flex-column pl-2 nav">
+                            <li class="nav-item">
+                                <a class="nav-link" style="color:white" [routerLink]="['/plantillaconsumo']"
+                                *ngIf="modelopermisos.btnplantconsumo">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p><small>Plantillas Consumo</small></p>
+                                </a>
+                            </li>
+                        </ul>
+                   </div>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link collapsed text-truncate" href="#submenuadmusuarios" data-toggle="collapse"
+                        [routerLink]="['/despachocostoservicio']" style="color:white"
+                        data-target="#submenusolicitudautopedido"
+                        *ngIf="modelopermisos.btnautopedido" >
+
+                        <i class="fas fa-angle-right mr-1"></i>
+                        <p><small>Autopedido</small> </p>
+                    </a>
+                    <div class="collapse" id="submenusolicitudautopedido" aria-expanded="false">
+                        <ul class="flex-column pl-2 nav">
+                            <li class="nav-item">
+                                <a class="nav-link" style="color:white" [routerLink]="['/solicitudconsumo']"
+                                *ngIf="modelopermisos.btnsolautopedido">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p><small>Solicitud Autopedido</small></p>
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="flex-column pl-2 nav">
+                            <li class="nav-item">
+                                <a class="nav-link" style="color:white"
+                                [routerLink]="['/devolucionautopedido']" style="color:white" >
+                                <!-- *ngIf="modelopermisos.btndepachocostoservi" -->
+                                <i class="fas fa-angle-right mr-1"></i>
+                                <p><small>Dev.Autopedido</small> </p>
+                                </a>
+                            </li>
+                        </ul>
+                   </div>
+                </li>
+                <!-- <li class="nav-item">
+                    <a class="nav-link collapsed text-truncate" href="#submenuadmusuarios" data-toggle="collapse"
+                        [routerLink]="['/devolucionautopedido']" style="color:white" >
+                        <!-- *ngIf="modelopermisos.btndepachocostoservi" ->
+                        <i class="fas fa-angle-right mr-1"></i>
+                        <p><small>Dev.Autopedido</small> </p>
+                    </a>
+                </li> -->
+
+                <li class="nav-item" hidden>
+                    <a class="nav-link collapsed text-truncate" href="#submenuadmusuarios" data-toggle="collapse"
+                        [routerLink]="['/busquedacuentas']" style="color:white" >
+                        <i class="fas fa-angle-right mr-1"></i>
+                        <p><small>Búsq.Cuentas</small> </p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link collapsed text-truncate" href="#submenuadmusuarios" data-toggle="collapse"
+                        [routerLink]="['/rolesusuarios']" style="color:white" *ngIf="modelopermisos.btnusroles">
+                        <!-- <i class="nav-icon fas fa-copy"></i> -->
+                        <i class="fas fa-angle-right mr-1"></i>
+                        <p><small>Usuarios Roles</small> </p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link collapsed text-truncate" href="#submenumonitorintegracion" data-toggle="collapse"
+                        data-target="#submenumonitorintegracion" style="color:white"
+                        *ngIf="modelopermisos.btnMenuInterfaz">
+                        <i class="fas fa-angle-right mr-1"></i>
+                        <p><small>Integración</small>
+                        </p>
+                    </a>
+                    <div class="collapse" id="submenumonitorintegracion" aria-expanded="false">
+                        <ul class="flex-column pl-2 nav">
+                            <li class="nav-item">
+                                <a [routerLink]="['/PanelIntegracionCargosComponent']" style="color:white" class="nav-link"
+                                *ngIf="modelopermisos.btnMenuInterfazCargos">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p id="sidem"><small> Visor Cargos</small></p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a [routerLink]="['/PanelIntegracionERPComponent']" style="color:white" class="nav-link"
+                                *ngIf="modelopermisos.btnMenuInterfazCargos">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p id="sidem"><small> Visor ERP</small></p>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+
+                <li class="nav-item">
+                    <a class="nav-link collapsed text-truncate" href="#submenuversion" data-toggle="collapse"
+                        data-target="#submenuversion" style="color:white" *ngIf="modelopermisos.btnacercade">
+                        <!-- <i class="nav-icon fas fa-copy"></i> -->
+                        <i class="fas fa-angle-right mr-1"></i>
+                        <p><small> Acerca de</small>
+                        </p>
+                    </a>
+                    <div class="collapse" id="submenuversion" aria-expanded="false">
+                        <ul class="flex-column pl-2 nav">
+                            <li class="nav-item">
+                                <a [routerLink]="['/versiones']" style="color:white" class="nav-link">
+                                    <i class="far fa-circle nav-icon" *ngIf="modelopermisos.btnversiones"></i>
+                                    <p><small>Versiones</small> </p>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</aside>

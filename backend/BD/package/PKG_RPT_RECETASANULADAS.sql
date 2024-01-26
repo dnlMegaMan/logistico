@@ -1,0 +1,190 @@
+create or replace PACKAGE "PKG_RPT_RECETASANULADAS" As
+
+Procedure PRO_RPT_RECETASANULADAS
+    ( In_IdReport   In Number
+     ,In_HdgCodigo  In Number        
+     ,In_EsaCodigo  In Number        
+     ,In_CmeCodigo  In Number 
+     ,In_Ambito     In Number
+    );
+
+End PKG_RPT_RECETASANULADAS;
+/
+create or replace PACKAGE BODY  "PKG_RPT_RECETASANULADAS" As
+
+Procedure PRO_RPT_RECETASANULADAS  
+    ( In_IdReport   In Number
+     ,In_HdgCodigo  In Number        
+     ,In_EsaCodigo  In Number        
+     ,In_CmeCodigo  In Number 
+     ,In_Ambito     In Number 
+     ) As
+
+Begin
+
+DECLARE
+
+   BEGIN
+		FOR CAB IN (
+			SELECT 
+				 In_IdReport AS IDREPORT
+				,NVL(SOLI_ID, 0) AS SOLIID
+				,NVL(SOLI_NUMERO_RECETA, 0) AS RECEID
+				,TO_CHAR(SOLI_FECHA_CREACION,'DD-MM-YYYY HH24:MI:SS') AS FECHACREACION
+				,NVL((SELECT NVL(GLSTIPIDENTIFICACION, ' ') FROM DESA1.PRMTIPOIDENTIFICACION WHERE HDGCODIGO = SOLI_HDGCODIGO AND ESACODIGO =SOLI_ESACODIGO AND CMECODIGO =SOLI_CMECODIGO AND CODTIPIDENTIFICACION = SOLI_TIPDOC_PAC), ' ') AS GLSTIPIDENTIFICACION
+				,NVL(SOLI_NUMDOC_PAC, ' ') AS NUMDOCPAC
+				,NVL((SELECT NVL(GLSSEXO,' ') FROM PRMSEXO WHERE CODSEXO = SOLI_CODSEX ), ' ') AS GLSSEXO
+				,NVL(SOLI_CTANUMCUENTA,0) AS CTANUMCUENTA
+				,(TRIM(CLINOMBRES) ||' ' || TRIM(CLIAPEPATERNO) || ' ' || TRIM(CLIAPEMATERNO) ) AS NOMBREPAC
+				,CALCULAREDAD( TO_CHAR(CLIENTE.CLIFECNACIMIENTO,'YYYY/MM/DD'),TO_CHAR(SYSDATE,'YYYY/MM/DD')) AS EDAD
+				,NVL((SELECT NVL(CAMGLOSA, ' ') FROM DESA1.CAMA WHERE CAMID = SOLI_IDCAMA), ' ') AS CAMGLOSA
+				,NVL((SELECT  NVL(GLSAMBITO, ' ')  FROM PRMAMBITO WHERE HDGCODIGO=SOLI_HDGCODIGO AND ESACODIGO=SOLI_ESACODIGO AND  CMECODIGO=SOLI_CMECODIGO AND CODAMBITO=SOLI_CODAMBITO), ' ') AS GLSAMBITO
+				,NVL(PA1.FPAR_DESCRIPCION, ' ') AS ESTADOSOLICITUDDE
+				,NVL((SELECT NVL(UNDGLOSA,' ') FROM UNIDADCENTRO, UNIDAD WHERE UNCID = SOLI_SERV_ID_ORIGEN AND UNIDADCENTRO.CODUNIDAD  = UNIDAD.CODUNIDAD), ' ') AS UNDGLOSA
+				,NVL((SELECT NVL(PZAGLOSA,' ') FROM PIEZA WHERE PZAID = SOLI_IDPIEZA), ' ') AS PZAGLOSA
+				,NVL(SOLI_NOM_MED_TRATANTE, ' ') AS NOMBREMEDICO
+				,NVL(BO1.FBOD_DESCRIPCION, ' ') AS BODORIGENDESC
+				,NVL(BO2.FBOD_DESCRIPCION, ' ') AS BODDESTINODESC
+				,NVL(SOLI_BOD_ORIGEN,0) AS BODORIGEN
+				,NVL(SOLI_BOD_DESTINO,0) AS BODDESTINO
+				,NVL(' ', ' ') AS TIPOREG
+				,NVL(SOLI_HDGCODIGO, 0) AS HDGCODIGO
+				,NVL(SOLI_ESACODIGO, 0) AS ESACODIGO
+				,NVL(SOLI_CMECODIGO, 0) AS CMECODIGO
+				,SYSDATE AS FECHARPT
+				,NVL(SOLI_USUARIO_ELIMINA, ' ') AS USUARIOANULA
+				,TO_DATE(SOLI_FECHA_ELIMINA,'DD-MM-YYYY HH24:MI:SS') AS FECHAANULACION
+			FROM
+				CLIN_FAR_SOLICITUDES
+				, CLIENTE
+				, CLIN_FAR_BODEGAS BO1
+				, CLIN_FAR_BODEGAS BO2
+				, CLIN_FAR_PARAM PA1 
+			WHERE SOLI_HDGCODIGO = IN_HDGCODIGO 
+			AND SOLI_ESACODIGO =   IN_ESACODIGO
+			AND SOLI_CMECODIGO =   IN_CMECODIGO
+			AND SOLI_CODAMBITO = IN_AMBITO 
+			AND SOLI_ESTADO = 80 
+			AND SOLI_CLIID =  CLIENTE.CLIID(+) 
+			AND SOLI_BOD_ORIGEN = BO1.FBOD_CODIGO(+) 
+			AND SOLI_HDGCODIGO = BO1.HDGCODIGO(+) 
+			AND SOLI_ESACODIGO = BO1.ESACODIGO(+) 
+			AND SOLI_CMECODIGO = BO1.CMECODIGO(+)  
+			AND SOLI_BOD_DESTINO = BO2.FBOD_CODIGO(+) 
+			AND SOLI_HDGCODIGO = BO2.HDGCODIGO(+) 
+			AND SOLI_ESACODIGO = BO2.ESACODIGO(+) 
+			AND SOLI_CMECODIGO = BO2.CMECODIGO(+)  
+			AND PA1.FPAR_TIPO(+)  = 38 
+			AND PA1.FPAR_CODIGO(+) != 0 
+			AND PA1.FPAR_CODIGO(+) = SOLI_ESTADO
+		) LOOP
+			BEGIN
+				BEGIN
+					INSERT INTO RPT_RECETASANULADASCAB (
+						 IDREPORT
+						,SOLIID
+						,RECEID
+						,FECHACREACION
+						,GLSTIPIDENTIFICACION
+						,NUMDOCPAC
+						,GLSSEXO
+						,CTANUMCUENTA
+						,NOMBREPAC
+						,EDAD
+						,CAMGLOSA
+						,GLSAMBITO
+						,ESTADOSOLICITUDDE
+						,UNDGLOSA
+						,PZAGLOSA
+						,NOMBREMEDICO
+						,BODORIGENDESC
+						,BODDESTINODESC
+						,BODORIGEN
+						,BODDESTINO
+						,TIPOREG
+						,HDGCODIGO
+						,ESACODIGO
+						,CMECODIGO
+						,FECHARPT
+						,USUARIOANULA
+						,FECHAANULACION 
+					) VALUES (
+						 CAB.IDREPORT
+						,CAB.SOLIID
+						,CAB.RECEID
+						,CAB.FECHACREACION
+						,CAB.GLSTIPIDENTIFICACION
+						,CAB.NUMDOCPAC
+						,CAB.GLSSEXO
+						,CAB.CTANUMCUENTA
+						,CAB.NOMBREPAC
+						,CAB.EDAD
+						,CAB.CAMGLOSA
+						,CAB.GLSAMBITO
+						,CAB.ESTADOSOLICITUDDE
+						,CAB.UNDGLOSA
+						,CAB.PZAGLOSA
+						,CAB.NOMBREMEDICO
+						,CAB.BODORIGENDESC
+						,CAB.BODDESTINODESC
+						,CAB.BODORIGEN
+						,CAB.BODDESTINO
+						,CAB.TIPOREG
+						,CAB.HDGCODIGO
+						,CAB.ESACODIGO
+						,CAB.CMECODIGO
+						,CAB.FECHARPT
+						,CAB.USUARIOANULA
+						,CAB.FECHAANULACION 				
+					);
+				END;
+				BEGIN
+                    FOR DET IN (
+                        SELECT 
+                             NVL(SODE_MEIN_CODMEI, ' ') AS CODMEI
+                            ,NVL(MEIN_DESCRI, ' ') AS MEINDESCRI
+                            ,NVL(TO_CHAR(SODE_LOTE ||' '|| TO_CHAR(SODE_LOTE_FECHAVTO, 'DD/MM/YYYY')), ' ') AS LOTE
+                            ,NVL(SODE_DOSIS, 0) AS DOSIS
+                            ,NVL(SODE_FORMULACION, 0) AS FORMULACION
+                            ,NVL(SODE_DIAS, 0) AS DIAS
+                            ,NVL(SODE_CANT_SOLI, 0) AS CANTSOLI
+                        FROM 
+                              CLIN_FAR_SOLICITUDES_DET
+                            , CLIN_FAR_MAMEIN
+                        WHERE SODE_ESTADO <> 110 
+                        AND SODE_MEIN_ID = MEIN_ID
+                        AND SODE_SOLI_ID = CAB.SOLIID
+                    ) LOOP
+                        BEGIN
+                            INSERT INTO RPT_RECETASANULADASDET (
+                                 IDREPORT
+                                ,SOLIID
+                                ,RECEID
+                                ,CODMEI
+                                ,MEINDESCRI
+                                ,LOTE
+                                ,DOSIS
+                                ,FORMULACION
+                                ,DIAS
+                                ,CANTSOLI
+                            ) VALUES (
+                                 CAB.IDREPORT
+                                ,CAB.SOLIID
+                                ,CAB.RECEID
+                                ,DET.CODMEI
+                                ,DET.MEINDESCRI
+                                ,DET.LOTE
+                                ,DET.DOSIS
+                                ,DET.FORMULACION
+                                ,DET.DIAS
+                                ,DET.CANTSOLI 				
+                            );
+                        END;
+                    END LOOP;
+                END;
+			END;
+		END LOOP;
+   END;
+
+End PRO_RPT_RECETASANULADAS;
+End PKG_RPT_RECETASANULADAS;

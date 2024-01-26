@@ -1,0 +1,107 @@
+<div class="card">
+    <!--menu - Búsqueda de productos-->
+    <div class="card-header">
+      <h3>{{titulo}}
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onCerrarSalir()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </h3>
+    </div>
+  
+    <div *ngFor="let alert of alerts" class="text-center">
+      <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)">{{ alert.msg }}
+      </alert>
+    </div>
+  
+    <div class="card m-2 border-primary" style="padding: 10px; background-color:azure;">
+      <form novalidate [formGroup]='lForm' autocomplete="off" spellcheck="false">
+        <div class="form-row">
+          <div class="form-group col-md-3">
+            <label for="estado">{{ 'key.estado' | translate}}</label>
+            <select name="estado" class='form-control form-control-sm' formControlName='estado' (focusout)="refrescar()" (ngModelChange)="refrescar()">
+                <option [ngValue]="null" disabled selected hidden>{{ 'key.mensaje.seleciona.opcion' | translate}}</option>
+              <option *ngFor='let registro of listaestado'
+                [ngValue]='registro.codestadooc'>
+                {{ registro.glsestadooc }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group col-sm-2">
+            <label for="desde">{{ 'key.fechadesde' | translate}} *</label>
+            <input appSelecttext type="text" placeholder="DD/MM/YYYY" class="form-control form-control-sm"
+                    [bsConfig]="bsConfig" bsDatepicker formControlName="desde" placement="right"
+                    />
+          </div>
+          <div class="form-group  col-sm-2">
+              <label for="hasta">{{ 'key.fechahasta' | translate}} *</label>
+              <div class="d-flex align-items-center">
+                <input appSelecttext type="text" placeholder="DD/MM/YYYY" class="form-control form-control-sm"
+                      [bsConfig]="bsConfig" bsDatepicker formControlName="hasta" placement="right"
+                      />
+              </div>
+          </div>
+          <div class="form-group col-md-1 align-self-end">
+            <button type="button" id="btncrear" class="btn btn-primary btn-sm" [disabled]="true"
+              (click)="refrescar()">{{ 'key.button.buscar' | translate}}<i class="fas fa-plus ml-1"></i>
+            </button>
+          </div>
+          <div *ngIf ="proveedor_nombre != '' " class="form-group  col-sm-4">
+            <label for="provnombre">{{ 'key.proveedor' | translate}}</label>
+            <input type="text" class="form-control form-control-sm text-center" 
+            [readonly]="true" [(ngModel)]="proveedor_nombre" formControlName='proveedornombre' /> 
+          </div>
+        </div>
+        <div class="form-row">
+        </div>
+        <!-- tabla para búsqueda en otras pantallas-->
+        <table *ngIf ="detalleoc.length > 0" class="table table-stripped table-condensed table-hovered">
+          <thead>
+            <tr>
+              <th>{{ 'key.numero.orden.compra' | translate}}</th>
+              <th>{{ 'key.proveedor' | translate}}</th>
+              <th>{{ 'key.fecha.emision' | translate}}</th>
+              <th>{{ 'key.estado' | translate}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let oc of detalleoc" (click)="onCerrar(oc)" let id=index
+              style="cursor: pointer;">
+              <td>{{oc.orconumdoc}}</td>
+              <td>{{oc.descripcionprov}}</td>
+              <td>{{oc.fechaemision}}</td>
+              <td>{{oc.estadodesc}} </td>
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf ="detalleoc.length == 0" >
+          <h4 class="text-center">{{ 'key.mensaje.no.resultados.busqueda.oc' | translate}}</h4>
+        </div>  
+        <div class="row m-1">
+          <pagination
+            *ngIf="detalleocpag.length > 0"
+            [boundaryLinks]="true" [directionLinks]="true" [maxSize]="6"
+            [totalItems]="detalleocpag.length" [itemsPerPage]=8 [previousText]="'key.pagination.anterior' | translate"
+            [nextText]="'key.pagination.siguiente' | translate" [firstText]="'&laquo;'" [lastText]="'&raquo;'" (pageChanged)="pageChanged($event)">
+          </pagination>
+        </div>
+      </form>
+    </div>
+  
+    <div class="row float-right mt-1">
+      <div class="form-group col-md-9 align-self-end text-right">
+        <button type="button" id="btnlimpiar" class="btn  btn-primary btn-sm button-my-styles-busqueda_02"
+          (click)="Limpiar()">{{ 'key.button.limpiar' | translate}} <i class="fas fa-eraser ml-1"></i>
+        </button>
+      </div>
+      <div class="form-group col-md-3 align-self-end text-right">
+        <button type="button" id="btnlimpiar" class="btn  btn-primary btn-sm button-my-styles-busqueda_02"
+          (click)="onCerrarSalir()">{{ 'key.button.salir' | translate}} <i class="fas fa-window-close ml-1"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+  <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+  <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+  <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+  

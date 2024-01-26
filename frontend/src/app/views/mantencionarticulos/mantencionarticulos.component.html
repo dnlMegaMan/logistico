@@ -1,0 +1,9 @@
+<!-- <app-navbar ></app-navbar>
+<app-sidebar></app-sidebar>
+<div class="content-wrapper pl-4"> -->
+<app-main-nav>
+    <div *ngIf="idioma=='es-CL'"><app-mantencionarticulos-chile></app-mantencionarticulos-chile></div>
+    <div *ngIf="idioma=='es-CO'"><app-mantencionarticulos-form></app-mantencionarticulos-form></div>
+    <div *ngIf="idioma=='en-US'"><app-mantencionarticulos-chile></app-mantencionarticulos-chile></div>
+    <div *ngIf="idioma=='pt-BR'"><app-mantencionarticulos-chile></app-mantencionarticulos-chile></div>    
+</app-main-nav>

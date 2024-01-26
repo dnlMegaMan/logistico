@@ -1,0 +1,237 @@
+ <div class="card">
+    <div class="card-header">
+        {{titulo}}
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onCerrarSalir()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="card m-1 border-primary" style="padding: 10px; background-color:azure;">
+        <!-- Cabecera Bodega -->
+        <div class="form-row" *ngIf="cabecera">
+            <div for="fecha" class="form-group col-md-2">
+                <label class=" mr-2">{{ 'key.solicitud.numero' | translate}}</label>
+                <input type="text" class="form-control form-control-sm" value="{{movimientobod.soliid}}" disabled>
+                <label class=" mr-2">{{ 'key.bodega.solicitante' | translate}}</label>
+                <input type="text" class="form-control form-control-sm" value="{{movimientobod.bodegaorigen}}" disabled>
+            </div>
+            <div for="estado" class="form-group col-md-3">
+                <label class=" mr-2">{{ 'key.estado' | translate}}</label>
+                <input type="text" class="form-control form-control-sm" value="{{movimientobod.interpestado}}" disabled>
+                <label class=" mr-2">{{ 'key.bodega.suministro' | translate}}</label>
+                <input type="text" class="form-control form-control-sm" value="{{movimientobod.bodegadestino}}" disabled>
+            </div>
+            <div for="bodegaorigen" class="form-group col-md-6">
+                <label class=" mr-2">{{ 'key.observacion' | translate}}</label>
+                <textarea type="text" class="form-control form-control-sm"
+                style="overflow-y: scroll; height: 100px; resize: none;"
+                value="{{movimientobod.interperror}}" disabled ></textarea>
+            </div>
+        </div>
+        <!-- Cabecera Paciente -->
+        <div class="form-row" *ngIf="!cabecera">
+            <div for="fecha" class="form-group col-md-2">
+                <label class=" mr-2">{{ 'key.solicitud.numero' | translate}}</label>
+                <input type="text" class="form-control form-control-sm" value="{{movimientopac.soliid}}" disabled>
+                <label class=" mr-2">{{ 'key.servicio' | translate}}</label>
+                <input type="text" class="form-control form-control-sm" value="{{movimientopac.servicio}}" disabled>
+                <label class=" mr-2">{{ 'key.numero.identificacion' | translate}}</label>
+                <input type="text" class="form-control form-control-sm" value="{{movimientopac.identificacion}}" disabled>
+            </div>
+            <div for="estado" class="form-group col-md-3">
+                <label class=" mr-2">{{ 'key.estado' | translate}}</label>
+                <input type="text" class="form-control form-control-sm" value="{{movimientopac.interpestado}}" disabled>
+                <label class=" mr-2">{{ 'key.numero.cuenta' | translate}}</label>
+                <input type="text" class="form-control form-control-sm" value="{{movimientopac.ctanumcuenta}}" disabled>
+                <label class=" mr-2">{{ 'key.nombres' | translate}}</label>
+                <input type="text" class="form-control form-control-sm" value="{{movimientopac.paciente}}" disabled>
+            </div>
+            <div for="bodegaorigen" class="form-group col-md-6">
+                <label class=" mr-2">{{ 'key.observacion' | translate}}</label>
+                <textarea type="text" class="form-control form-control-sm"
+                style="overflow-y: scroll; height: 100px; resize: none;"
+                value="{{movimientopac.interperror}}" disabled ></textarea>
+            </div>
+        </div>
+        <div>
+          <label class=" mr-2">{{ 'key.quitar.sobregiros' | translate}} </label>
+          <input class="mr-2  " type="checkbox"
+            (click)="CambioSobregiro($event)" [disabled]="checkSobreGiro"
+            [checked]="checkboxSobreGiro">
+        </div>
+    </div>
+    <div class="card m-1 border-primary" style="padding: 10px; background-color:azure;">
+        <div id="table" class="table-responsive mt-1">
+            <div class="table-responsive mt-1" style="max-height: auto;min-height: 100px;" *ngIf="cabecera">
+                <table class="table table-sm table-condensed table-bordered  table-striped text-center">
+                    <tr class="table table-sm  table-primary table-bordered ">
+                        <th>#{{ 'key.id' | translate}}</th>
+                        <th>{{ 'key.tipo.movimiento' | translate}}</th>
+                        <th>{{ 'key.codigo' | translate}}</th>
+                        <th>{{ 'key.descripcion' | translate}}</th>
+                        <th>{{ 'key.cantidad' | translate}}</th>
+                        <th>{{ 'key.estado' | translate}}</th>
+                        <th>{{ 'key.accion' | translate}}</th>
+                    </tr>
+                    <tr class="table-secondary"
+                        *ngFor="let registro of listaDetalleMovimientoPaginacion; let id = index">
+                        <td>
+                            <small><span>{{registro.id}}</span></small>
+                        </td>
+                        <td>
+                            <small><span> {{registro.tipomovimiento }}</span></small>
+                        </td>
+                        <td>
+                            <small><span>{{registro.codigoarticulo }} </span></small>
+                        </td>
+                        <td>
+                            <small><span>{{registro.descripcionproducto }} </span></small>
+                        </td>
+                        <td>
+                            <small><span>{{registro.cantidad }} </span></small>
+                        </td>
+                        <td class="text-nowrap help   " tooltip="{{registro.interperror}}">
+                            <small><span>{{registro.interpestado }} </span></small>
+                        </td><td>
+                            <span>
+                                <button type="button" id="btnenviar0" class="btn btn-info btn-sm ml-2"
+                                    *ngIf="registro.interpestado =='OBSERVADO' || registro.interpestado =='PENDIENTE' "
+                                    (click)="Enviar_bodegas(registro)"><small>{{ 'key.enviar' | translate}}</small>
+                                </button>
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="table-responsive mt-1" style="max-height: 500px;min-height: 100px;" *ngIf="!cabecera">
+                <table class="table table-sm table-condensed table-bordered  table-striped text-center">
+                    <tr class="table table-sm  table-primary table-bordered ">
+                        <th>#{{ 'key.id' | translate}}
+                            <svg (click)="sortbyPac('detid')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                            </svg>
+                            <form [formGroup]="FormFiltroPac">
+                                <input type="number" class="form-control form-control-xs text-right"
+                                style="width: 100px;"
+                                (input)="filtroPaciente()" formControlName="detid">
+                            </form>
+                       </th>
+                        <th>{{ 'key.tipo.movimiento' | translate}}
+                            <svg (click)="sortbyPac('tipomovimiento')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                            </svg>
+                            <form [formGroup]="FormFiltroPac">
+                                <input type="number" class="form-control form-control-xs text-right"
+                                style="width: 200px;"
+                                (input)="filtroPaciente()" formControlName="tipomovimiento">
+                            </form>
+                       </th>
+                        <th>{{ 'key.codigo' | translate}}
+                            <svg (click)="sortbyPac('mfdemeincodmei')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                            </svg>
+                            <form [formGroup]="FormFiltroPac">
+                                <input type="text" class="form-control form-control-xs text-right"
+                                style="width: 100px;"
+                                (input)="filtroPaciente()" formControlName="mfdemeincodmei">
+                            </form>
+                       </th>
+                        <th>{{ 'key.descripcion' | translate}}
+                            <svg (click)="sortbyPac('descripcionproducto')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                            </svg>
+                            <form [formGroup]="FormFiltroPac">
+                                <input type="number" class="form-control form-control-xs text-right"
+                                style="width: 300px;"
+                                (input)="filtroPaciente()" formControlName="descripcionproducto">
+                            </form>
+                       </th>
+                        <th>{{ 'key.cantidad' | translate}}
+                            <svg (click)="sortbyPac('mfdecantidad')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                            </svg>
+                            <form [formGroup]="FormFiltroPac">
+                                <input type="number" class="form-control form-control-xs text-right"
+                                style="width: 100px;"
+                                (input)="filtroPaciente()" formControlName="mfdecantidad">
+                            </form>
+                       </th>
+                        <th>{{ 'key.estado' | translate}}
+                            <svg (click)="sortbyPac('interpestado')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                            </svg>
+                            <form [formGroup]="FormFiltroPac">
+                                <input type="number" class="form-control form-control-xs text-right"
+                                style="width: 100px;"
+                                (input)="filtroPaciente()" formControlName="interpestado">
+                            </form>
+                       </th>
+                        <th>{{ 'key.accion' | translate}}</th>
+                    </tr>
+
+                    <tr class="table-secondary"
+                        *ngFor="let registro of listapacientesPaginacion; let id = index">
+                        <td>
+                            <small><span>{{registro.detid}}</span></small>
+                        </td>
+                        <td>
+                            <small><span> {{registro.tipomovimiento }}</span></small>
+                        </td>
+                        <td>
+                            <small><span>{{registro.mfdemeincodmei }} </span></small>
+                        </td>
+                        <td class="text-nowrap help   " tooltip="{{registro.descripcionproducto}}">
+                            <small>{{registro.descripcionproducto| slice:0:30 }}</small>
+                        </td>
+                        <td>
+                            <small><span>{{registro.mfdecantidad }} </span></small>
+                        </td>
+                        <td class="text-nowrap help " tooltip="{{registro.interperror}}">
+                            <small><span>{{registro.interpestado }} </span></small>
+                        </td><td>
+                            <span>
+                                <button type="button" id="btnenviar0" class="btn btn-info btn-sm ml-2"
+                                    *ngIf="registro.interpestado =='OBSERVADO' || registro.interpestado =='PENDIENTE' "
+                                    (click)="Enviar_bodegas(registro)"><small>{{ 'key.enviar' | translate}}</small>
+                                </button>
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+            <div class="row m-1">
+                <pagination [boundaryLinks]="true" [directionLinks]="true" [maxSize]="8"
+                    [totalItems]="detallesolicitudmovimiento.length" [itemsPerPage]=20 [previousText]="'key.pagination.anterior' | translate"
+                    [nextText]="'key.pagination.siguiente' | translate" [firstText]="'&laquo;'" [lastText]="'&raquo;'"
+                    (pageChanged)="pageChanged($event)">
+                </pagination>
+            </div>
+            <!-- <div class="row m-1" *ngIf="listapacientes.length>20 && !cabecera">
+                <pagination [boundaryLinks]="true" [directionLinks]="true" [maxSize]="8"
+                    [totalItems]="listapacientes.length" [itemsPerPage]=20 [previousText]="'Anterior'"
+                    [nextText]="'Siguiente'" [firstText]="'&laquo;'" [lastText]="'&raquo;'"
+                    (pageChanged)="pageChanged($event)">
+                </pagination>
+            </div> -->
+        </div>
+
+    </div>
+
+    <div class="card-footer">
+        <div class="row float-right">
+            <!-- <div class="form-group col-md-6  align-self-end">
+
+            </div> -->
+            <div class="form-group col-md-6 align-self-end text-right">
+                <button type="button" class="btn btn-primary btn-sm button-my-styles-busqueda_01 ml-1" tooltip="CERRAR"
+                    (click)="onCerrarSalir()">{{ 'key.button.cerrar' | translate}}<i class="fas fa-window-close ml-1"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+    <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+    <swal #alertSwalError title="" text="" type="warning" [showCancelButton]="false"> </swal>
+    <swal #alertSwalConfirmar title="" text="" type="question" [showCancelButton]="true"> </swal>
+    <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+</div>

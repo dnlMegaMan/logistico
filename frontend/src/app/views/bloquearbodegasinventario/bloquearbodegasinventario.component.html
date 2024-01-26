@@ -1,0 +1,80 @@
+<app-main-nav>
+  <div>
+    <div style="margin: 10px;">
+      <!-- Contenedor feneral de la página -->
+      <div class="my-2 ml-2 titulo text-center">
+        <!--menu -->
+        <h3>
+          {{ 'key.title.inventario.bloquear.bodegas' | translate }}
+        </h3>
+      </div>
+      <!-- lineas de edición y bpusqueda -->
+      <div class="card border-primary" style="padding: 15px;">
+        <div class="row">
+          <div class="col-sm-4 d-flex justify-content" style="padding: 15px;">
+            <div class="col-md-5">
+              <label for="fechaapertura">{{ 'key.fecha.apertura' | translate }}</label>
+            </div>
+            <div class="col-md-6">
+              <input type="text" id="fechaapertura" class='form-control form-control-sm' disabled="true"
+                [value]="fechaapertura">
+            </div>
+          </div>
+          <div class="col-sm-4 d-flex justify-content" style="padding: 15px;">
+            <div class="col-md-5">
+              <label for="fechacierre"> {{ 'key.fecha.cierre' | translate }} </label>
+            </div>
+            <div class="col-md-6 ">
+              <input type="text" id="fechacierre" class='form-control form-control-sm' disabled="true"
+                [value]="fechacierre">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card border-primary" style="padding: 15px;">
+        <table class="table ml-1 table-condensed table-responsive-md table-bordered text-center" style="max-width: 800px; ">
+          <thead class="table-primary  table-sm">
+            <tr>
+              <th colspan="2">{{ 'key.lista.bodegas' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="table-secondary" *ngFor="let bodega of detallesBodegasInventariosPaginacion; let id = index">
+              <td> {{ bodega.descripcion }}</td>
+              <td><input type="checkbox"
+                 [checked]="bodega.bloqueo_x_inventario"
+                  [disabled]="btnGuardar"
+                  (change)="editarBloqueo(bodega.codigo, $event.target.checked)"
+                  > </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="row m-1">
+        <pagination [boundaryLinks]="true" [directionLinks]="true" [maxSize]="6"
+          [totalItems]="detallesBodegasInventariosActualizar.length" [itemsPerPage]=20 [previousText]="'key.pagination.anterior' | translate "
+          [nextText]=" 'key.pagination.siguiente' | translate " [firstText]="'&laquo;'" [lastText]="'&raquo;'"
+          (pageChanged)="pageChanged($event)">
+        </pagination>
+      </div>
+      <!--  Botones de página -->
+      <div class="row float-right mr-1 mt-2">
+        <div class="form-group  align-self-end">
+          <button type="button" id="btnlimpiar" class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+            [disabled]="btnGuardar || !activarBotonGuardar" (click)="guardarCambiosBodegas()"> {{ 'key.button.modificar' | translate }}
+            <i class="fa fa-save ml-1"></i>
+          </button>
+        </div>
+        <div class="form-group align-self-end">
+          <button type="button" id="btnsalir" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+            routerLink='../home'>{{ 'key.button.salir'  | translate}} <i class="fas fa-window-close ml-1"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px', fullScreenBackdrop: true }"> </ngx-loading>
+    <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+    <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+    <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+  </div>
+</app-main-nav>

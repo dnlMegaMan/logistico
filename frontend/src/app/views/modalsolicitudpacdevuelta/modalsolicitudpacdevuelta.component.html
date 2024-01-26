@@ -1,0 +1,127 @@
+<div class="card">
+    <!--menu - productos -mantencion de articulos-->
+    
+    <div class="card-header">
+        {{titulo}}
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onCerrarSalir()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="card m-2 border-primary" style="padding: 10px; background-color:azure;">
+        <form novalidate [formGroup]='FormSolicitudDevuelta' autocomplete="off" spellcheck="false">
+            <div class="form-row">
+                <div class="form-group col-md-2">
+                    <label for="numsolicitud">{{ 'key.numero.solicitud' | translate}}</label>
+                    <input type="text" class="form-control form-control-sm" formControlName="numsolicitud">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="nombrepaciente">{{ 'key.nombre.paciente' | translate}}</label>
+                    <input type="text" class="form-control form-control-sm" formControlName="nombrepaciente">
+                </div>
+            </div>
+        </form>
+        <div id="table" class="table-editable">
+            <div class="table-responsive mt-2" style="max-height: auto;min-height: 100px;">
+                <table class="table table-sm table-condensed table-bordered  table-striped text-center">
+                    <tr class="table table-sm  table-primary table-bordered ">
+                        <th class="text-center">{{ 'key.codigo' | translate}}</th>
+                        <th class="text-center">{{ 'key.descripcion' | translate}}</th>
+                        <th class="text-center">{{ 'key.cantidad.solicitada' | translate}}</th>
+                        <!-- <th class="text-center">Cant. Devuelta</th> -->
+                        <th class="text-center">{{ 'key.cantidad.devuelta' | translate}}</th>
+                        <th class="text-center">{{ 'key.cantidad.aceptada' | translate}}</th>
+                        <th class="text-center">{{ 'key.cantidad.rechazada' | translate}}</th>
+                        <th class="text-center">{{ 'key.tipo.rechazo' | translate}}</th>
+                        <th class="text-center">{{ 'key.observaciones' | translate}}</th>
+                    </tr>
+                    <tr class="table-secondary"
+                        *ngFor="let registro of arregloSolicitudDevueltaPaginacion; let id = index">
+                        <td>
+                            <small><span>{{registro.codmei}}</span></small>
+                        </td>
+                        <td>
+                            <small><span> {{registro.meindescri }}</span></small>
+                        </td>
+                        <td>
+                            <small><span>{{registro.cantsoli }} </span></small>
+                        </td>
+                        <!-- <td>
+                            <small><span>{{registro.cantdevolucion }} </span></small>
+                        </td> -->
+                        <td>
+                            <small><span>{{registro.sodecantadev }}</span></small>
+                        </td>
+                        <td>
+                            <small><span>
+                                <input type="number" class="form-control form-control-sm text-right" min="1"
+                                    max="100" [(ngModel)]="registro.cantidadarecepcionar"
+                                    [disabled]="registro.bloqcampogrilla3"
+                                    (focusout)="CantidadADevolver(registro)"
+                                    (keydown.tab)="CantidadADevolver(registro)">
+                            </span></small>
+                        </td>
+                        <td>
+                            <small><span>
+                                <input type="number" class="form-control form-control-sm text-right" min="1"
+                                    max="100" [(ngModel)]="registro.cantidadarechazar"
+                                    [disabled]="registro.bloqcampogrilla3"
+                                    (focusout)="CantidadRechazo(registro)"
+                                    (keydown.tab)="CantidadRechazo(registro)">
+                            </span></small>
+                        </td>
+                        <td>
+                            <small>
+                                <span>
+                                    <select name="lote" class='form-control form-control-sm'
+                                        [disabled]="registro.bloqcampogrilla"
+                                        (change)="SeleccionaRechazo(registro,$event.target.value)">
+                                        <option *ngFor="let detalleprod of registro.tiporechazo" [ngValue]='detalleprod'
+                                            value={{detalleprod.codtiporechazo}} >
+                                            <small> {{ detalleprod.glstiporechazo }} </small>
+                                        </option>
+                                    </select>
+                                </span>
+                            </small>
+                        </td>
+                        <td>
+                            <small><span>
+                                <input type="text" class="form-control form-control-sm text-right" min="1" max="200"
+                                    [(ngModel)]="registro.observaciones" [disabled]="registro.bloqcampogrilla2"
+                                    (input)="logicaVacios()">
+                                </span>
+                            </small>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="row m-1" *ngIf="arregloSolicitudDevuelta.length>20">
+                <pagination [boundaryLinks]="true" [directionLinks]="true" [maxSize]="8"
+                    [totalItems]="arregloSolicitudDevuelta.length" [itemsPerPage]=20 [previousText]="'key.pagination.anterior' | translate"
+                    [nextText]="'key.pagination.siguiente' | translate" [firstText]="'&laquo;'" [lastText]="'&raquo;'"
+                    (pageChanged)="pageChanged($event)">
+                </pagination>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="row float-right">
+            <div class="form-group col-md-6  align-self-end" *ngIf="modelopermisos.btnrecepciondevolpac">
+                <button type="button" id="btnguardar" [disabled]="!verificanull" 
+                    (click)="onDevolver()"
+                    class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02">
+                    {{ 'key.button.recepcionar' | translate}} <i class="fas fa-save ml-1"></i>
+                </button>
+            </div>
+            <div class="form-group col-md-6 align-self-end text-right">
+                <button type="button" class="btn btn-primary btn-sm button-my-styles-busqueda_01 ml-1" tooltip="CERRAR"
+                    (click)="onCerrarSalir()">{{ 'key.button.cerrar' | translate}}<i class="fas fa-window-close ml-1"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <swal #alertSwal title="" text="" type="success" [showCancelButton]="false" (confirm)="onCerrar()"> </swal>
+    <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+    <swal #alertSwalError title="" text="" type="warning" [showCancelButton]="false"> </swal>
+    <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+</div>

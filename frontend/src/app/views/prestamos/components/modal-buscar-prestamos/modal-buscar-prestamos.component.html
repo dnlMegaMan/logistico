@@ -1,0 +1,114 @@
+<div class="container">
+  <div class="card">
+
+    <div class="card-header">
+      Busqueda de préstamos
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onSalir()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="card m-2 border-primary" style="padding: 10px; background-color:azure;">
+      <form [formGroup]="formDatosPrestamo" novalidate autocomplete="off" spellcheck="false">
+        <div class="clas form-row">
+          <div class="form-group col-md-2">
+            <label for="numeroPrestamo">Numero Préstamos</label>
+            <input appSelecttext type="number" id="numeroPrestamo" min="0" formControlName="numeroPrestamo"
+            (keyup.enter)="onBuscarPrestamos()"
+            (keydown.tab)="onBuscarPrestamos()"
+            (input)="onInput($event)"
+            class='form-control form-control-sm'>
+          </div>
+          <div class="form-group col-md-3">
+            <label for="origen">Origen</label>
+            <select name="origen" class='form-control form-control-sm' formControlName="origen">
+              <option *ngFor='let bodega of listOrigen' [ngValue]='bodega.id' [selected]="bodega.id == idOrigen">
+                {{ bodega.descripcion }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group col-md-3">
+            <label for="destino">Destino</label>
+            <select name="destino" class='form-control form-control-sm' formControlName="destino">
+              <option *ngFor='let bodega of listDestino' [ngValue]='bodega.id' [selected]="bodega.id == idDestino">
+                {{ bodega.descripcion }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group col-md-1 align-self-end text-left">
+            <button type="button" id="btnbuscar" class="btn btn-primary btn-sm button-my-styles-busqueda_01 pl-4"
+              [disabled]="!estadoBotones" (click)="onBuscarPrestamos()">Buscar
+              <i class="fas fa-search ml-1"></i>
+            </button>
+          </div>
+        </div>
+        <div class="clas form-row">
+          <div class="form-group col-md-2">
+            <label for="fechadesde">Fecha Desde</label>
+            <input appSelecttext appSelecttext type="text" placeholder="DD/MM/YYYY" id="fechaDes" formControlName="fechaDes" [bsConfig]="bsConfig" bsDatepicker
+              class='form-control form-control-sm'>
+          </div>
+          <div class="form-group col-md-2">
+            <label for="fechahasta">Fecha Hasta</label>
+            <input appSelecttext appSelecttext type="text" placeholder="DD/MM/YYYY" id="fechaHas" formControlName="fechaHas" [bsConfig]="bsConfig" bsDatepicker
+              class='form-control form-control-sm'>
+          </div>
+        </div>
+      </form>
+
+      <table class="table table-stripped table-condensed table-hovered" >
+        <thead>
+          <tr>
+            <th>Préstamo</th>
+            <th>Origen</th>
+            <th>Destino</th>
+            <th>Fecha</th>
+            <th>Responsable</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let prestamo of listaPrestamosPag" let id=index (click)="onCerrar(prestamo)"
+            style="cursor: pointer;">
+            <td>{{prestamo.id}}</td>
+            <ng-container *ngIf="prestamo.tipoMov == 'S';else selectOrigenDestido">
+              <td>{{prestamo.origen}}</td>
+              <td>{{prestamo.destino}}</td>
+            </ng-container>
+            <ng-template #selectOrigenDestido>
+              <td>{{prestamo.destino}}</td>
+              <td>{{prestamo.origen}}</td>
+            </ng-template>
+            <td>{{prestamo.fecha_prestamo}}</td>
+            <td>{{prestamo.responsable}}</td>
+            <td>{{prestamo.estadoDes}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="row m-1">
+        <pagination *ngIf="listaPrestamos.length > 0" [boundaryLinks]="true" [directionLinks]="true" [maxSize]="6"
+          [totalItems]="listaPrestamos.length" [itemsPerPage]=8 [previousText]="'Anterior'" [nextText]="'Siguiente'"
+          [firstText]="'&laquo;'" [lastText]="'&raquo;'" (pageChanged)="pageChanged($event)">
+        </pagination>
+      </div>
+    </div>
+    <!--  Botones de página -->
+
+    <div class="row float-right mt-1">
+      <div class="form-group col-md-8 align-self-end text-right">
+        <button type="button" id="btnlimpiar" class="btn  btn-primary btn-sm button-my-styles-busqueda_02"
+          (click)="limpiar()" [disabled]="!estadoBotones">LIMPIAR <i class="fas fa-eraser ml-1"></i>
+        </button>
+      </div>
+      <div class="form-group col-md-3 align-self-end text-right">
+        <button type="button" id="btnsalir" class="btn  btn-primary btn-sm button-my-styles-busqueda_02"
+          (click)="onSalir()">SALIR <i class="fas fa-window-close ml-1"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+  <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+  <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+  <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+  <swal #alertSwalConfirmar title="" text="" type="question" [showCancelButton]="true"> </swal>
+</div>

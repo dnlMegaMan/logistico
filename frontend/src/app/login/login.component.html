@@ -1,0 +1,51 @@
+<div *ngIf="!cargoInformacionGeneral" class="py-5 my-5 container">
+    <div  class="row">
+        <div  class="m-auto spinner-border text-info" role="status" style="width: 5rem; height: 5rem; border-width: 0.4rem;">
+            <span class="sr-only"></span>
+        </div>
+    
+    </div>
+    <div class="mt-4 row">
+        <p class="m-auto text-center"> {{ 'key.login.cargando' | translate}}</p>
+
+    </div>
+</div>
+
+<div *ngIf="cargoInformacionGeneral" class="row">
+    <div  class="col-md-4 mx-auto mt-4">
+        <div class="card">
+            <div class="col-md-12 login-form-header">
+                <p  *ngIf="('country.code' | translate)!='US'" class="login-form-font-header text-center">{{ 'key.login.title.sistema' | translate}}<span>{{ 'key.login.title.logistico' | translate}}</span><p></p>
+                <p  *ngIf="('country.code' | translate)=='US'" class="login-form-font-header text-center">{{ 'key.login.title.logistico' | translate}}<span>{{ 'key.login.title.sistema' | translate}}</span><p>
+                
+            </div>
+
+            <div class="card-body">
+                <form novalidate [formGroup]="FormLogin" autocomplete="off" spellcheck="false">
+                    <div>
+                        <div class="form-group m-4">
+                            <h6>{{ 'key.login.usuario' | translate}}</h6>
+                            <input type="text" name="usuario" id="usuario" class="form-control" formControlName="usuario">
+                        </div>
+                        <div class="form-group m-4">
+                            <h6>{{ 'key.login.contrasena' | translate}} </h6>
+                            <input type="password" name="Contraseña" id="Contraseña" class="form-control"
+                                formControlName="password" (keyup.enter)="autenticacion()"
+                                >
+
+                        </div>
+                        <input type="button" [attr.value]="'key.button.enviar' | translate" class="btn btn-primary btn-block btn-lg"
+                            (click)="autenticacion()" [disabled]="!FormLogin.valid">
+                        <div>
+                            <p class="small text-right">v.{{version}}</p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+<swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+<swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>

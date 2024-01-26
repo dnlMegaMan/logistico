@@ -1,0 +1,9 @@
+LLAVE PRIVADA
+
+openssl genrsa -out private.rsa 1024 Generating RSA private key, 1024 bit long modulus
+Generating RSA private key, 1024 bit long modulus
+
+
+LLAVE PUBLICA
+
+openssl rsa -in private.rsa -pubout > public.rsa.pub

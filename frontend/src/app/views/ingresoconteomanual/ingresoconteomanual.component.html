@@ -1,0 +1,224 @@
+<app-main-nav>
+  <div>
+    <div class="pl-4">
+      <form [formGroup]="FormIngresoConteoManual">
+        <!-- Contenedor general de la página -->
+        <div class="my-2 ml-2 titulo text-center">
+          <!--menu -->
+          <h5>
+            {{'key.ingreso.conteo.manual' | translate}}
+
+          </h5>
+        </div>
+        <!-- lineas de edición y bpusqueda -->
+        <div class="card border-primary" style="padding: 5px;">
+          <div class="form-row mt-2">
+            <div class="form-group col-md-3">
+              <label for="codigobodega">{{ 'key.title.bodegas' | translate}} *</label>
+              <select name="boddescodigo" class='form-control form-control-sm'
+                [attr.disabled]="detallesinventarios.length > 0 ? true : null" formControlName='boddestino'
+                (change)="BuscaPeriodoInventario(FormIngresoConteoManual.value.boddestino)">
+                <option *ngFor='let listaBodegasSolictante of bodegasSolicitantes'
+                  [ngValue]='listaBodegasSolictante.id'>
+                  {{ listaBodegasSolictante.descripcion }}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-md-2">
+              <label for="periodo">{{ 'key.periodo' | translate}} *</label>
+              <select name="periodo" class="form-control form-control-sm " formControlName="periodo"
+                [attr.disabled]="detallesinventarios.length > 0 ? true : null">
+                <option *ngFor="let periodo of periodos" [ngValue]="periodo.fechainventario">
+                  {{ periodo.fechainventario }}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-md-2">
+              <label for="tiporegistro">{{ 'key.tipo.producto' | translate}} *</label>
+              <select name="tiporegistro" class='form-control form-control-sm' formControlName='tiporegistro'
+                [attr.disabled]="detallesinventarios.length > 0 ? true : null">
+                <option *ngFor="let tipoderegistro of listaTipoProductos" [ngValue]="tipoderegistro.valor">
+                  {{ tipoderegistro.descripcion }}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-md-2 align-self-end">
+              <button type="button" id="btnbuscar" class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                [disabled]="!hasFormIngresoConteoManual || detallesinventarios.length > 0"
+                (click)="BusquedaDeInventarios()">{{ 'key.button.buscar' | translate}} <i class="fas fa-search"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+      <form [formGroup]="FormBusquedaManual">
+        <div class="card border-primary mt-2 mb-2">
+          <div class="form-row mt-2 ml-2">
+            <div class="form-group col-md-2 mt-2">
+              <input class="form-control form-control-sm" type="text" formControlName='codigo'
+              [attr.disabled]="!(detallesinventarios.length > 0) ? true : null  "
+              placeholder="{{ 'key.placeholder.ingrese.codigo' | translate}}">
+            </div>
+
+            <div class="form-group col-ml-2 align-self-end" >
+              <button type="button" id="btnbuscar" class="btn btn-info btn-sm button-my-styles-busqueda_01"
+              [disabled]="!(detallesinventarios.length > 0)"
+              (click)="buscarPorCodigo()">{{ 'key.button.buscar' | translate}} <i class="fas fa-search"></i>
+            </button>
+            </div>
+            <div class="form-group col-md-1 align-self-end">
+              <button type="button" id="btnbuscar" class="btn btn-danger btn-sm button-my-styles-busqueda_01"
+              [disabled]="!(detallesinventarios.length > 0)"
+              (click)="limpiarBusqueda()">{{'key.button.limpiar' | translate}} <i class="fas fa-eraser"></i>
+            </button>
+            </div>
+          </div>
+        </div>
+      </form>
+      <li class="card border-primary" style="padding: 5px;">
+        <h5 class="card-header text-center ">{{ 'key.detalle.articulos' | translate}}</h5>
+        <div id="table" class="table-editable">
+          <a class="btn-floating btn-lg purple-gradient"></a>
+          <div id="table" class="table-editable">
+            <table class="table table-sm table-primary table-bordered table-responsive-md table-striped text-center">
+              <tr>
+                <th class="text-center">{{ 'key.codigo' | translate}}</th>
+                <th class="checkbox-container text-center" *ngIf="hdgcodigo == 2">{{ 'key.codigo.cum' | translate }}
+                  <input type="checkbox" (click)="CambioEstadoFiltoCums($event)"></th>
+                <th class="text-center">{{ 'key.descripcion.articulo' | translate}}</th>
+                <th class="text-center">{{ 'key.forma.farmaceutica' | translate}}</th>
+                <th class="text-center">{{ 'key.concentracion' | translate}}</th>
+                <th class="text-center">{{ 'key.unidad.medida' | translate}}</th>
+                <th class="text-center">{{ 'key.lote' | translate}}</th>
+                <th class="text-center"> {{ 'key.fecha.vencimiento' | translate}}</th>
+                <th *ngIf="verificarHabilitarConteo(1)" class="text-center">{{ 'key.stock.manual' | translate}} 1</th>
+                <th *ngIf="verificarHabilitarConteo(2)" class="text-center">{{ 'key.stock.manual' | translate}} 2</th>
+                <th *ngIf="verificarHabilitarConteo(3)" class="text-center">{{ 'key.stock.manual' | translate}} 3</th>
+              </tr>
+              <tr class="table-success" *ngFor="let detalleinv of detallesinventariosPaginacion; let id = index">
+                <td>
+                  <span>{{detalleinv.codigomein}}</span>
+                </td>
+                <td *ngIf="hdgcodigo == 2">
+                  <span>{{detalleinv.codigocums}}</span>
+                </td>
+                <td class="text-nowrap help   " tooltip="{{detalleinv.productodesc }}">
+                  <span> {{detalleinv.productodesc | slice:0:30}}</span>
+                </td>
+                <td>
+                  <span>{{detalleinv.formafarma}}</span>
+                </td>
+                <td>
+                  <span>{{detalleinv.concentracion}}</span>
+                </td>
+                <td>
+                  <span>{{detalleinv.unidadmedida}}</span>
+                </td>
+                <td>
+                  <span>{{detalleinv.lote}}</span>
+                </td>
+                <td>
+                  <span>{{detalleinv.fechavencimiento}}</span>
+                </td>
+                <td *ngIf="verificarHabilitarConteo(1)" class="text-center help">
+                  <small *ngIf="detalleinv.actualizacionconteo1 == '';else agregarcantidadDevolver">
+                    <input type="number" min="0" class="form-control form-control-sm text-right"
+                      [ngClass]="{'fondoAjuste': fondoAjuste(1, detalleinv)}"
+                      (change)="editarCantidadConteoManual(detalleinv,1,$event.target.value)"
+                      [(ngModel)]="detalleinv.conteomanual1">
+                  </small>
+                  <ng-template #agregarcantidadDevolver>
+                    <small>
+                      {{ detalleinv.conteomanual1 }}
+                    </small>
+                  </ng-template>
+                </td>
+                <td *ngIf="verificarHabilitarConteo(2)" class="text-center help">
+                  <small *ngIf=" detalleinv.actualizacionconteo2 == '';else agregarcantidadDevolver">
+                    <input type="number" min="0" class="form-control form-control-sm text-right"
+                      [ngClass]="{'fondoAjuste': fondoAjuste(2, detalleinv)}"
+                      (change)="editarCantidadConteoManual(detalleinv,2,$event.target.value)"
+                      [(ngModel)]="detalleinv.conteomanual2">
+                  </small>
+                  <ng-template #agregarcantidadDevolver>
+                    <small>
+                      {{ detalleinv.conteomanual2 }}
+                    </small>
+                  </ng-template>
+                </td>
+                <td *ngIf="verificarHabilitarConteo(3)" class="text-center help">
+                  <small *ngIf="detalleinv.actualizacionconteo3 == '';else agregarcantidadDevolver">
+                    <input type="number" min="0" class="form-control form-control-sm text-right"
+                      [ngClass]="{'fondoAjuste': fondoAjuste(3, detalleinv)}"
+                      (change)="editarCantidadConteoManual(detalleinv,3,$event.target.value)"
+                      [(ngModel)]="detalleinv.conteomanual3">
+                  </small>
+                  <ng-template #agregarcantidadDevolver>
+                    <small>
+                      {{ detalleinv.conteomanual3 }}
+                    </small>
+                  </ng-template>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="row m-1">
+            <pagination [boundaryLinks]="true" [directionLinks]="true" [maxSize]="6"
+              [totalItems]="detallesinventariosActualizar.length" [itemsPerPage]=20 [previousText]="'key.pagination.anterior' | translate"
+              [nextText]="'key.pagination.siguiente' | translate" [firstText]="'&laquo;'" [lastText]="'&raquo;'"
+              (pageChanged)="pageChanged($event)">
+            </pagination>
+          </div>
+        </div>
+      </li>
+
+      <!--  Botones de página -->
+      <div class="row float-left mr-1 mt-2" style="padding: 5px; margin: auto;">
+        <input type="file" #fileInput style="display: none" (change)="onFileChange($event)" accept=".xlsx, .xls">
+        <button (click)="fileInput.click()" class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+          [disabled]="verifiCargagaExcel">{{ 'key.cargar.desde.plantilla' | translate }}</button>
+      </div>
+
+      <div class="row float-right mr-1 mt-2" style="padding: 5px; margin: auto;">
+        <div class="form-group  align-self-end">
+          <button [disabled]="!verificarNuevoConteo || verificarCierreManual" type="button" id="btnguardar"
+            class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02" (click)="crearNuevoConteo()">{{ 'key.nuevo.conteo' | translate }}
+          </button>
+        </div>
+        <div class="form-group  align-self-end" *ngIf="modelopermisos.btnimprimirdifconteo">
+          <button [disabled]="!(detallesinventarios.length > 0)" type="button" id="btnguardar"
+            class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02" (click)="Imprimir()">{{ 'key.imprimir.dif.conteo' | translate }}
+          </button>
+        </div>
+        <div class="form-group  align-self-end" *ngIf="modelopermisos.btncerrarconteo">
+          <button [disabled]="!verificarCierreManual || verificacionConteos" type="button" id="btnactualizar"
+            class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+            (click)="ConfirmaCerrarConteoManual()">{{ 'key.cerrar.conteo' | translate}} <i class="fas fa-save ml-1"></i>
+          </button>
+        </div>
+        <div class="form-group  align-self-end">
+          <button [disabled]="!verificacionConteos" type="button" id="btnguardar"
+            class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+            (click)="ConfirmaIngresoConteoManual()">{{ 'key.button.grabar' | translate}} <i class="fas fa-save ml-1"></i>
+          </button>
+        </div>
+
+        <div class="form-group  align-self-end">
+          <button type="button" id="btnlimpiar" class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+            (click)="Limpiar()">{{ 'key.button.limpiar' | translate}}<i class="fas fa-eraser ml-1"></i>
+          </button>
+        </div>
+        <div class="form-group  align-self-end">
+          <button type="button" id="btnsalir" class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+            routerLink='../home'>{{ 'key.button.salir' | translate}}<i class="fas fa-window-close ml-1"></i>
+          </button>
+        </div>
+      </div>
+      <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px', fullScreenBackdrop: true }"> </ngx-loading>
+      <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+      <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+      <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+      <swal #alertSwalConfirmar title="" text="" type="question" [showCancelButton]="true"> </swal>
+    </div>
+  </div>
+</app-main-nav>

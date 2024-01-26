@@ -1,0 +1,83 @@
+<div class="card">
+    <!--menu - Búsqueda de productos-->
+    <div class="card-header">
+        {{titulo}}
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onCerrar()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="card m-2 border-primary" style="padding: 10px; background-color:azure;">
+        <form novalidate [formGroup]='uForm' autocomplete="off" spellcheck="false">
+            <div class="form-row">
+                <div class="form-group col-md-2">
+                    <label for="numcuenta">{{ 'key.numero.cuenta' | translate}}</label>
+                    <input type="text" class="form-control form-control-sm" formControlName="numcuenta">
+                </div>
+                <div class="form-group col-md-5">
+                    <label for="nompaciente">{{ 'key.nombre.paciente' | translate}}</label>
+                    <input type="text" class="form-control form-control-sm text-uppercase" formControlName="nompaciente">
+                </div>
+                <div class="form-group col-md-5">
+                  <label for="codproducto">{{ 'key.codigo' | translate}}</label>
+                  <input type="text" class="form-control form-control-sm text-uppercase" formControlName="codproducto">
+              </div>
+            </div>
+            <div class="form-row">
+                <!-- <div class="col-sm-3">
+                    <label class=" control-label"></label>
+                </div>
+                <div class="col-sm-2">
+                    <label><input type="radio" (click)="onInsumos()" /> &nbsp;Insumos</label>
+                </div>
+                <div class="col-sm-2">
+                    <label><input type="radio" (click)="onMedicamenos()"/> &nbsp;Medicamentos</label>
+                </div> -->
+            </div>
+            <table class="table table-stripped table-condensed table-hovered">
+                <thead>
+                    <tr>
+                        <th>{{ 'key.solicitud.numero' | translate | uppercase}}</th>
+                        <th>{{ 'key.fecha.creacion' | translate | uppercase}}</th>
+                        <th>{{ 'key.numero.identificacion' | translate | uppercase}} {{ 'key.paciente' | translate | uppercase}}</th>
+                        <th>{{ 'key.estado' | translate | uppercase}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let solicitud of arrsolicitudesctapaginacion"
+                        style="cursor: pointer;" (click)="onDetallesol(solicitud.numsol)">
+                        <td>
+                          <small>{{ solicitud.numsol }}</small>
+                        </td>
+                        <td>
+                          <small>{{ solicitud.fechacreacion | date:'dd/MM/yyyy HH:MM:ss'}}</small>
+                        </td>
+                        <td>
+                            <small>{{solicitud.rut}}</small>
+                        </td>
+                        <td>
+                            <small>{{solicitud.flgestado}}</small>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="row m-1">
+                <pagination [boundaryLinks]="true" [directionLinks]="true" [maxSize]="8"
+                    [totalItems]="arrsolicitudescta.length" [itemsPerPage]="8" [previousText]="'key.pagination.anterior' | translate"
+                    [nextText]="'key.pagination.siguiente' | translate" [firstText]="'&laquo;'" [lastText]="'&raquo;'"
+                    (pageChanged)="pageChanged($event)">
+                </pagination>
+            </div>
+        </form>
+    </div>
+    <div class="form-row float-right text-right mt-2">
+        <div class="form-group col-md-12 text-right pr-3 align-self-end">
+            <button type="button" id="btnsalir" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+                (click)="onSalir()">{{ 'key.button.salir' | translate}} <i class="fas fa-window-close ml-1"></i>
+            </button>
+        </div>
+    </div>
+    <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+    <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+    <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+    <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+</div>

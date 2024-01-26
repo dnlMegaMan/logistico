@@ -1,0 +1,174 @@
+<div class="container">
+    <div class="card">
+        <!--menu - productos -mantencion de articulos-->
+        <div class="card-header">
+            {{titulo}}
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onSalir()">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <div class="card m-2 border-primary" style="padding: 10px; background-color:azure;">
+            <form novalidate [formGroup]='FormBusquedaSolPac' autocomplete="off" spellcheck="false">
+                <div class="clas form-row">
+                    <div class="form-group col-md-2">
+                        <label for="soliid">{{ 'key.numero.solicitud' | translate}}</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="soliid">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="fechadesde">{{ 'key.fechadesde' | translate}} *</label>
+                        <input appSelecttext type="text" placeholder="DD/MM/YYYY" id="fechadesde"
+                            class='form-control form-control-sm' [bsConfig]="bsConfig" bsDatepicker
+                            formControlName="fechadesde">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="fechahasta">{{ 'key.fechahasta' | translate}} *</label>
+                        <input appSelecttext type="text" placeholder="DD/MM/YYYY" id="fechahasta"
+                            class='form-control form-control-sm' [bsConfig]="bsConfig" bsDatepicker
+                            formControlName="fechahasta">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="esticod">{{ 'key.estado' | translate}} *</label>
+                        <select name="esticod" class='form-control form-control-sm' formControlName='estado'>
+                            <option *ngFor="let estadosolicitud of estadossolicitudes"
+                                [ngValue]="estadosolicitud.estsolcodigo">
+                                {{ estadosolicitud.estsoldescripcion }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="clas form-row">
+
+                  <div class="form-group col-md-2">
+                    <label for="esticod">{{ 'key.ambito' | translate}} *</label>
+                    <select name="esticod" class='form-control form-control-sm' formControlName='ambito'>
+                        <option *ngFor="let tipoambito of tiposambitos" [ngValue]="tipoambito.ambitocodigo">
+                            {{ tipoambito.ambitodescripcion }}
+                        </option>
+                    </select>
+                  </div>
+
+                  <div class="form-group col-md-2">
+                    <label for="prioridad">{{ 'key.prioridad' | translate}} *</label>
+                    <select name="prioridad" class='form-control form-control-sm' formControlName='prioridad'>
+                        <option *ngFor="let prioridad of prioridades" [ngValue]="prioridad.codprioridad">
+                            {{ prioridad.desprioridad }}
+                        </option>
+                    </select>
+                  </div>
+
+                  <div class="form-group col-md-3">
+                    <label for="servicio">{{ 'key.servicio' | translate}} *</label>
+                    <select name="servicio" class='form-control form-control-sm' formControlName='servicio'
+                        (change)="onSelectServicio($event.target.value)">
+                        <option *ngFor='let unidad  of unidades' value='{{ unidad.codservicio }}'>
+                            {{ unidad.servdescripcion }}
+                        </option>
+                    </select>
+                  </div>
+
+                  <div class="form-group col-md-3">
+                    <label for="esticod">{{ 'key.pieza' | translate}} *</label>
+                    <select name="esticod" class='form-control form-control-sm'
+                      formControlName='pieza'
+                      (change)="onSelectPieza($event.target.value)">
+                        <option *ngFor='let pieza of piezas' value='{{ pieza.piezaid }}'>
+                            {{ pieza.piezadescripcion }}
+                        </option>
+                    </select>
+                  </div>
+
+                </div>
+
+                <div class="form-row">
+
+                  <div class="form-group col-md-3">
+                      <label for="esticod">{{ 'key.cama' | translate}} *</label>
+                      <select name="esticod" class='form-control form-control-sm' formControlName='cama'>
+                          <option *ngFor='let cama of camas' value='{{ cama.camid }}'>
+                              {{ cama.camadescripcion }}
+                          </option>
+                      </select>
+                  </div>
+
+                  <div class="form-group col-md-2">
+                    <label for="tipoidentificacion">{{ 'key.tipo.identificacion' | translate}} *</label>
+                    <select name="tipoidentificacion" class='form-control form-control-sm'
+                        formControlName='tipoidentificacion'>
+                        <option *ngFor="let docidenti of docsidentis" [ngValue]="docidenti.docidentcodigo">
+                            {{ docidenti.docidentdescripcion }}
+                        </option>
+                    </select>
+                  </div>
+
+                  <div class="form-group col-md-3">
+                      <label for="numeroidentificacion">{{ 'key.numero.identificacion' | translate}}*</label>
+                      <input type="text" class="form-control form-control-sm" formControlName="numeroidentificacion">
+                  </div>
+
+                  <div class="form-group col-md-3 align-self-end text-left">
+                    <button type="button" id="btnbuscar" class="btn btn-primary btn-sm button-my-styles-busqueda_01 pl-4"
+                        (click)="BuscarSolicitudesPacientes()">{{ 'key.button.buscar' | translate}} <i class="fas fa-search ml-1"></i>
+                    </button>
+                  </div>
+
+                </div>
+
+                <table class="table table-stripped table-condensed table-hovered">
+                    <thead>
+                        <tr>
+                            <th>{{ 'key.solicitud.numero' | translate}}</th>
+                            <th>{{ 'key.estado' | translate}}</th>
+                            <th>{{ 'key.fecha.hora' | translate}}</th>
+                            <th>{{ 'key.nombre.paciente' | translate}}</th>
+                            <th>{{ 'key.pieza' | translate}}</th>
+                            <th>{{ 'key.cama' | translate}}</th>
+                            <th>{{ 'key.unidad.actual' | translate}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="table-secondary" *ngFor="let listapacientes of listasolicitudespacientespaginacion"
+                            (click)="onCerrar(listapacientes)" style="cursor: pointer;">
+                            <td>{{listapacientes.soliid}}</td>
+                            <td>{{listapacientes.estadosolicitudde}}</td>
+                            <td>{{listapacientes.fechacreacion | date:'dd/MM/yyyy HH:mm:ss'}}</td>
+                            <td
+                                tooltip="{{listapacientes.nombrespac }} {{ listapacientes.apepaternopac }} {{ listapacientes.apematernopac }}">
+                                {{listapacientes.nombrespac |slice:0:15}} {{listapacientes.apepaternopac |slice:0:12}}
+                                {{listapacientes.apematernopac | slice:0:11}}
+                            </td>
+                            <td>{{listapacientes.pzagloza}} </td>
+                            <td>{{listapacientes.camglosa}} </td>
+                            <td>{{listapacientes.undglosa}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="row m-1">
+                    <pagination [boundaryLinks]="true" [directionLinks]="true" [maxSize]="6"
+                        [totalItems]="listasolicitudespacientes.length" [itemsPerPage]=8 [previousText]="'key.pagination.anterior' | translate"
+                        [nextText]="'key.pagination.siguiente' | translate" [firstText]="'&laquo;'" [lastText]="'&raquo;'"
+                        (pageChanged)="pageChanged($event)">
+                    </pagination>
+                </div>
+            </form>
+        </div>
+        <!--  Botones de página -->
+
+        <div class="row float-right mt-1">
+            <div class="form-group col-md-8 align-self-end text-right">
+                <button type="button" id="btnlimpiar" class="btn  btn-primary btn-sm button-my-styles-busqueda_02"
+                    (click)="Limpiar()">{{ 'key.button.limpiar' | translate}} <i class="fas fa-eraser ml-1"></i>
+                </button>
+            </div>
+            <div class="form-group col-md-3 align-self-end text-right">
+                <button type="button" id="btnsalir" class="btn  btn-primary btn-sm button-my-styles-busqueda_02"
+                    (click)="onCerrarSalir()">{{ 'key.button.salir' | translate}} <i class="fas fa-window-close ml-1"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+    <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+    <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+    <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+</div>

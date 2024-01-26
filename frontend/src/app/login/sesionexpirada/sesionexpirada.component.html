@@ -1,0 +1,20 @@
+<!-- Pantalla de Expirasion de sesion -->
+<nav class="container-fluid py-3" [ngStyle]="colorFondo">
+    <div class="row">
+            <img src="./assets/images/{{imagen}}" alt="Logo" class="d-block m-auto"/>
+    </div>
+</nav>
+
+<div class="container m-auto py-5 text-center">
+    <div class="row">
+        <h3 class="m-auto text-center">{{ 'key.sesion.expirado' | translate}}</h3>
+    </div>
+    <div class="row py-3">
+        <p class="m-auto text-center text-secondary">{{ 'key.mensaje.expirado' | translate}}</p>
+    </div>
+    <div class="row py-4">
+        <button type="button" id="btnsalir" class="m-auto px-5 btn btn-sm btn-primary" routerLink="../login">
+            {{ 'key.ir.login' | translate}} <i class="fas fa-user ml-1"></i>
+        </button>
+    </div>
+</div>

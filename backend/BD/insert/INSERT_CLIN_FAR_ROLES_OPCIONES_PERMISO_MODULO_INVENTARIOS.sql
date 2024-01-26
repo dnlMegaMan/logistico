@@ -1,0 +1,149 @@
+INSERT INTO CLIN_FAR_ROLES_OPCIONES (
+    ID_ROL,
+    ID_OPCION,
+    HDGCODIGO,
+    ESACODIGO,
+    CMECODIGO
+) VALUES (
+    '1000',
+    '1500000',
+    '1',
+    '2',
+    '1'
+);
+/
+
+INSERT INTO CLIN_FAR_ROLES_OPCIONES (
+    ID_ROL,
+    ID_OPCION,
+    HDGCODIGO,
+    ESACODIGO,
+    CMECODIGO
+) VALUES (
+    '1000',
+    '1510000',
+    '1',
+    '2',
+    '1'
+);
+/
+
+INSERT INTO CLIN_FAR_ROLES_OPCIONES (
+    ID_ROL,
+    ID_OPCION,
+    HDGCODIGO,
+    ESACODIGO,
+    CMECODIGO
+) VALUES (
+    '1000',
+    '1520000',
+    '1',
+    '2',
+    '1'
+);
+/
+
+INSERT INTO CLIN_FAR_ROLES_OPCIONES (
+    ID_ROL,
+    ID_OPCION,
+    HDGCODIGO,
+    ESACODIGO,
+    CMECODIGO
+) VALUES (
+    '1000',
+    '1530000',
+    '1',
+    '2',
+    '1'
+);
+/
+
+INSERT INTO CLIN_FAR_ROLES_OPCIONES (
+    ID_ROL,
+    ID_OPCION,
+    HDGCODIGO,
+    ESACODIGO,
+    CMECODIGO
+) VALUES (
+    '1000',
+    '1540000',
+    '1',
+    '2',
+    '1'
+);
+/
+
+INSERT INTO CLIN_FAR_ROLES_OPCIONES (
+    ID_ROL,
+    ID_OPCION,
+    HDGCODIGO,
+    ESACODIGO,
+    CMECODIGO
+) VALUES (
+    '1000',
+    '1550000',
+    '1',
+    '2',
+    '1'
+);
+/
+
+INSERT INTO CLIN_FAR_ROLES_OPCIONES (
+    ID_ROL,
+    ID_OPCION,
+    HDGCODIGO,
+    ESACODIGO,
+    CMECODIGO
+) VALUES (
+    '1000',
+    '1551000',
+    '1',
+    '2',
+    '1'
+);
+/
+
+INSERT INTO CLIN_FAR_ROLES_OPCIONES (
+    ID_ROL,
+    ID_OPCION,
+    HDGCODIGO,
+    ESACODIGO,
+    CMECODIGO
+) VALUES (
+    '1000',
+    '1552000',
+    '1',
+    '2',
+    '1'
+);
+/
+
+INSERT INTO CLIN_FAR_ROLES_OPCIONES (
+    ID_ROL,
+    ID_OPCION,
+    HDGCODIGO,
+    ESACODIGO,
+    CMECODIGO
+) VALUES (
+    '1000',
+    '1560000',
+    '1',
+    '2',
+    '1'
+);
+/
+
+INSERT INTO CLIN_FAR_ROLES_OPCIONES (
+    ID_ROL,
+    ID_OPCION,
+    HDGCODIGO,
+    ESACODIGO,
+    CMECODIGO
+) VALUES (
+    '1000',
+    '1570000',
+    '1',
+    '2',
+    '1'
+);
+/

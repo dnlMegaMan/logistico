@@ -1,0 +1,466 @@
+CREATE OR REPLACE PACKAGE BODY "FARMACIACLINICA"."PCK_FARM_CONSULTA02" AS
+/******************************************************************************
+   NAME:       PCK_FARM_CONSULTA01
+   PURPOSE:
+
+   REVISIONS:
+   Ver        Date        Author           Description
+   ---------  ----------  ---------------  ------------------------------------
+   1.0        01-10-2007             1. Created this package body.
+******************************************************************************/
+PROCEDURE P_FAR_DATOS_CTACTE(pinFOLIO IN VARCHAR2,
+                vCURSOR IN OUT CURSORTYPE)
+IS
+BEGIN
+  OPEN vCURSOR FOR
+      SELECT cli.cliapepaterno||' '||cli.cliapematerno||' '||cli.clinombres NOMBRE,
+       TO_CHAR(cgo.cgofecaplicacion,'DD/MM/YYYY')     FECHA_CARGO,
+       cgo.codcargo           CODIGO_CARGO,
+       CFM.MEIN_DESCRI             DESC_CODIGO,
+       DECODE(substr(cgo.codcargo,1,1),'M','Medicamento','I','Insumo')  TIPO_CARGO,
+       BOD.FBOD_DESCRIPCION            BODEGA_CARGO,
+       FM.MOVF_RECETA             NUM_RECETA,
+       FM.MOVF_SOLI_ID             NUM_SOLICITUD,
+       cgo.cgocantidad            CANTIDAD,
+       FMDET.MFDE_VALOR_COSTO_UNITARIO         COSTO_UNITARIO,
+       cgo.cgomtotarif          VALOR_VENTA                
+   FROM  desa1.cliente cli, 
+       desa1.cuenta      CTA,
+       desa1.cargocuenta cgo,
+       CLIN_FAR_MAMEIN   CFM,
+       CLIN_FAR_MOVIM  FM,
+       CLIN_FAR_MOVIMDET FMDET,
+       CLIN_FAR_BODEGAS  BOD
+   WHERE  cli.cliid = pinFOLIO
+   AND    CTA.pcliid = cli.cliid
+   And    cta.ctaid = cgo.pctaid
+   AND    cgo.codtipocvt = 2 
+   AND    CFM.MEIN_CODMEI = cgo.codcargo
+   AND    FMDET.MFDE_CTAS_ID = CTA.CTAid
+   AND    FM.MOVF_ID = FMDET.MFDE_MOVF_ID
+   AND    BOD.FBOD_CODIGO = FM.MOVF_BOD_ORIGEN;
+EXCEPTION
+WHEN OTHERS THEN
+NULL;
+
+END P_FAR_DATOS_CTACTE;
+
+PROCEDURE P_FAR_DATOS_CTACTE_I_M(pinFOLIO IN VARCHAR2,
+           pinINSU  IN VARCHAR2,
+         pinMED   IN VARCHAR2,
+                    vCURSOR IN OUT CURSORTYPE)
+IS
+vSQL VARCHAR(3000);
+BEGIN
+   vSQL := 'SELECT cli.cliapepaterno||'' ''||cli.cliapematerno||'' ''||cli.clinombres NOMBRE,';
+  vSQL := vSQL || 'TO_CHAR(cgo.cgofecaplicacion,''DD/MM/YYYY'')    FECHA_CARGO,';
+  vSQL := vSQL || 'cgo.codcargoO           CODIGO_CARGO,';
+  vSQL := vSQL || 'CFM.MEIN_DESCRI          DESC_CODIGO,';
+  vSQL := vSQL || 'DECODE(substr(cgo.codcargo,1,1),''M'',''Medicamento'',''I'',''Insumo'')  TIPO_CARGO,';
+  vSQL := vSQL || 'BOD.FBOD_DESCRIPCION         BODEGA_CARGO,';
+  vSQL := vSQL || 'FM.MOVF_RECETA          NUM_RECETA,';
+  vSQL := vSQL || 'FM.MOVF_SOLI_ID          NUM_SOLICITUD,';
+  vSQL := vSQL || 'cgo.cgocantidad          CANTIDAD,';
+  vSQL := vSQL || 'FMDET.MFDE_VALOR_COSTO_UNITARIO      COSTO_UNITARIO,';
+  vSQL := vSQL || 'cgo.cgomtotarif         VALOR_VENTA  ';
+  vSQL := vSQL || 'FROM   desa1.cliente  cli,';
+  vSQL := vSQL || '   desa1.cuenta      CTA,';
+  vSQL := vSQL || '   desa1.cargocuenta cgo,'; 
+  vSQL := vSQL || '   CLIN_FAR_MAMEIN   CFM,';
+  vSQL := vSQL || '   CLIN_FAR_MOVIM    FM,';
+  vSQL := vSQL || '   CLIN_FAR_MOVIMDET FMDET,';
+  vSQL := vSQL || '   CLIN_FAR_BODEGAS  BOD  ';
+  vSQL := vSQL || 'WHERE  cli.cliid = ' || pinFOLIO  ;
+  vSQL := vSQL || ' AND  CTA.pcliid = cli.cliid ';
+  vSQL := vSQL || ' and  cta.ctaid = cgo.pctaid ';
+  vSQL := vSQL || ' AND  CFM.MEIN_CODMEI = cgo.codcargo  ';
+  vSQL := vSQL || ' AND  FMDET.MFDE_CTAS_ID = CTA.CTAID ';
+  vSQL := vSQL || ' AND  FM.MOVF_ID = FMDET.MFDE_MOVF_ID ';
+  vSQL := vSQL || ' AND  BOD.FBOD_CODIGO = FM.MOVF_BOD_ORIGEN ';
+  IF  pinINSU = 'I' THEN
+   vSQL := vSQL || ' AND cgo.cgotipocvt = ''' || pinINSU || ''' ';
+  END IF;
+  IF pinMED = 'M' THEN
+   vSQL := vSQL || ' AND  cgo.cgotipocvt = ''' || pinMED || ''' ';
+  END IF;
+  
+  OPEN vCURSOR FOR vSQL;
+   
+EXCEPTION
+WHEN OTHERS THEN
+NULL;
+
+END P_FAR_DATOS_CTACTE_I_M;
+
+
+PROCEDURE P_FAR_FECHA(pinFECHAINI IN VARCHAR2,
+         pinFECHAFIN IN VARCHAR2,
+         vCURSOR    IN OUT CURSORTYPE)
+IS
+BEGIN
+  OPEN vCURSOR FOR
+    SELECT MFDE_MEIN_CODMEI CODIGO,
+       MEIN_DESCRI DESCRIPCIóN, 
+       MFDE_CANTIDAD CANT, 
+       MFDE_VALOR_COSTO_UNITARIO COSTO_UNIT, 
+       CGO.CGOMTOTARIF TOTAL_VENTA,
+       FPAR_DESCRIPCION MOVIMIENTO, 
+       MOVF_USUARIO RESPONSABLE, 
+       MOVF_RECETA RECETA,
+       FBOD_DESCRIPCION BODEGA_CARGO, 
+       EST.ESTID FOLIO,
+       PAC.CLIID FICHA,
+       CLINUMIDENTIFICACION RUT_PAC,
+       CLIAPEPATERNO||' '||CLIAPEMATERNO||' '||CLINOMBRES NOM_PACIENTE, 
+       MOVF_FECHA_GRABACION FECHA_CARGO
+   FROM   CLIN_FAR_MOVIM,
+       CLIN_FAR_MOVIMDET,
+       CLIN_FAR_PARAM,
+       CLIN_FAR_BODEGAS,
+       CLIN_FAR_MAMEIN,
+       desa1.CUENTA,
+       desa1.CLIENTE PAC,
+       desa1.ESTADIA EST,
+       desa1.CARGOCUENTA CGO
+   WHERE TO_CHAR(MOVF_FECHA_GRABACION,'YYYYMMDD') BETWEEN TO_CHAR(TO_DATE(pinFECHAINI,'DD/MM/YYYY'),'YYYYMMDD') 
+   AND   TO_CHAR(TO_DATE(pinFECHAFIN,'DD/MM/YYYY'),'YYYYMMDD')
+   AND   MOVF_ID = MFDE_MOVF_ID
+   AND   MOVF_ESTID = EST.ESTID
+   AND   EST.PCLIID = PAC.CLIID
+   AND   MOVF_TIPO = FPAR_CODIGO AND FPAR_TIPO = 8
+   AND   MFDE_CTAS_ID = CGO.CGOID
+   AND   MOVF_BOD_ORIGEN = FBOD_CODIGO
+   AND   MFDE_MEIN_ID = MEIN_ID
+   ORDER BY cgoid;
+
+EXCEPTION
+WHEN OTHERS THEN
+NULL;
+
+END P_FAR_FECHA;
+
+
+
+PROCEDURE P_FAR_RECETA(
+pinRECETA    IN VARCHAR2,
+pinSOLICITUD IN VARCHAR2,
+pinRUT    IN VARCHAR2,
+pinFOLIO   IN VARCHAR2,
+pinFICHA   IN VARCHAR2,
+pinPRODUCTO  IN VARCHAR2,
+vCURSOR   IN OUT CURSORTYPE)
+IS
+vSQL VARCHAR(3000);
+BEGIN
+  
+  vSQL := 'SELECT MFDE.MFDE_MEIN_CODMEI     CODIGO,'; 
+  vSQL := vSQL || 'MEIN.MEIN_DESCRI    DESC_CODIGO,';
+  vSQL := vSQL || 'MFDE.MFDE_CANTIDAD     CANT,';
+  vSQL := vSQL || 'MFDE.MFDE_VALOR_COSTO_UNITARIO  COSTO_UNIT,';
+  vSQL := vSQL || 'CTAS.CTAS_VALOR_TOTAL     TOTAL_VENTA,';
+  vSQL := vSQL || 'FPAR.FPAR_DESCRIPCION     MOVIMIENTO,';
+  vSQL := vSQL || 'MOVF.MOVF_USUARIO      RESPONSABLE,';
+  vSQL := vSQL || 'MOVF.MOVF_SOLI_ID      SOLICITUD,';
+  vSQL := vSQL || 'MOVF.MOVF_RECETA      RECETA,';
+  vSQL := vSQL || 'MOVF.MOVF_FICH_ID      FOLIO,';
+  vSQL := vSQL || 'DECODE(GPC.VALOR,''F'',pac.NUMERO_FICHA,pac.CORRELATIVO)    FICHA,';
+  vSQL := vSQL || 'FICH.FICH_NUMRUTP||''-''||FICH.FICH_DIGRUTP  RUT_PAC,';
+  vSQL := vSQL || 'FICH.FICH_APPATE||'' ''||FICH.FICH_APMATE||'' ''||FICH.FICH_NOMPAC NOM_PACIENTE,';
+  vSQL := vSQL || 'TO_CHAR(MOVF.MOVF_FECHA_GRABACION,''DD/MM/YYYY'') FECHA_CARGO  ';
+  vSQL := vSQL || 'FROM   CLIN_FAR_MOVIM  MOVF,';
+  vSQL := vSQL || '   CLIN_FAR_MOVIMDET MFDE,';
+  vSQL := vSQL || '   CLIN_FICHA_HOSP FICH,';
+  vSQL := vSQL || '   CLIN_FAR_PARAM FPAR,';
+  vSQL := vSQL || '   CLIN_CTACTE CTAS,';
+  vSQL := vSQL || '   CLIN_FAR_MAMEIN MEIN,  ';
+  vSQL := vSQL || '    SPP_PACIENTES   PAC,  ';
+  vSQL := vSQL || '    GLO_PARAMETROS_CLIN  GPC  ';
+  vSQL := vSQL || 'WHERE  MOVF.MOVF_ID = MFDE.MFDE_MOVF_ID';
+  vSQL := vSQL || ' AND   MOVF.MOVF_FICH_ID = FICH.FICH_ID ';
+  vSQL := vSQL || ' AND   MOVF.MOVF_TIPO = FPAR.FPAR_CODIGO';
+  vSQL := vSQL || ' AND   FPAR.FPAR_TIPO = 8';
+  vSQL := vSQL || ' AND  MFDE.MFDE_CTAS_ID = CTAS.CTAS_ID  ';
+  vSQL := vSQL || ' AND  MEIN.MEIN_CODMEI = MFDE.MFDE_MEIN_CODMEI  ';
+  vSQL := vSQL || ' AND GPC.CODIGO=''FICHID'' '; 
+  vSQL := vSQL || ' AND GPC.SISTEMA=''CLIN'' ';
+  vSQL := vSQL || ' AND PAC.CORRELATIVO = FICH.FICH_SPP_CORRELATIVO ';
+  IF NOT pinRECETA IS NULL AND pinRECETA > 0 THEN  
+   vSQL := vSQL || ' AND MOVF_RECETA = ' || pinRECETA ;
+  END IF;
+  IF NOT pinSOLICITUD IS NULL AND pinSOLICITUD > 0 THEN  
+   vSQL := vSQL || ' AND MOVF_SOLI_ID = ' || pinSOLICITUD;
+  END IF;
+ 
+ IF pinRUT  IS NOT NULL THEN 
+    vSQL := vSQL ||' AND    FICH.FICH_NUMRUTP = '||pinRUT;  
+ END IF;  
+  
+ IF pinFOLIO  IS NOT NULL THEN 
+    vSQL := vSQL ||' AND    FICH.FICH_ID='||pinFOLIO;  
+ END IF;  
+  
+ IF pinFICHA IS NOT NULL THEN 
+    vSQL := vSQL ||' AND    DECODE(GPC.VALOR,''F'',pac.NUMERO_FICHA,pac.CORRELATIVO) = '||pinFICHA;
+ END IF; 
+ 
+ IF pinPRODUCTO  IS NOT NULL THEN 
+    vSQL := vSQL ||' AND MEIN.MEIN_CODMEI = '''||pinPRODUCTO||''' ';  
+ END IF;  
+
+ 
+  
+  OPEN vCURSOR FOR vSQL; 
+
+EXCEPTION
+WHEN OTHERS THEN
+NULL;
+
+END P_FAR_RECETA;
+
+PROCEDURE P_FAR_PRODUCTO
+(
+pinPROD      IN VARCHAR2,
+pinRUT    IN VARCHAR2,
+pinFOLIO   IN VARCHAR2,
+pinFICHA   IN VARCHAR2,
+pinRECETA   IN VARCHAR2,
+pinSOLICITUD IN VARCHAR2,
+pinPRODUCTO  IN VARCHAR2,
+vCURSOR   IN OUT CURSORTYPE
+)
+IS 
+STRSQL VARCHAR2(2000);
+
+BEGIN
+
+STRSQL := ' SELECT MFDE.MFDE_MEIN_CODMEI     CODIGO,';
+STRSQL := STRSQL ||' MEIN.MEIN_DESCRI       DESCRIPCION,'; 
+STRSQL := STRSQL ||' MFDE.MFDE_CANTIDAD      CANT, ';
+STRSQL := STRSQL ||' MFDE.MFDE_VALOR_COSTO_UNITARIO   COSTO_UNIT,'; 
+STRSQL := STRSQL ||' CTAS.CTAS_VALOR_TOTAL     TOTAL_VENTA,';
+STRSQL := STRSQL ||' FPAR.FPAR_DESCRIPCION     MOVIMIENTO, ';
+STRSQL := STRSQL ||' MOVF.MOVF_USUARIO      RESPONSABLE, ';
+STRSQL := STRSQL ||' MOVF.MOVF_RECETA       RECETA,';
+STRSQL := STRSQL ||' FBOD.FBOD_DESCRIPCION     BODEGA_CARGO,'; 
+STRSQL := STRSQL ||' MOVF.MOVF_FICH_ID      FOLIO,';
+STRSQL := STRSQL ||' DECODE(GPC.VALOR,''F'',pac.NUMERO_FICHA,pac.CORRELATIVO)    FICHA,';
+STRSQL := STRSQL ||' FICH.FICH_NUMRUTP||''-''||FICH_DIGRUTP  RUT_PAC,';
+STRSQL := STRSQL ||' FICH.FICH_APPATE||'' ''||FICH_APMATE||'' ''||FICH_NOMPAC NOM_PACIENTE,'; 
+STRSQL := STRSQL ||' MOVF.MOVF_FECHA_GRABACION    FECHA_CARGO';
+STRSQL := STRSQL ||' FROM   CLIN_FAR_MOVIM MOVF,';
+STRSQL := STRSQL ||' CLIN_FAR_MOVIMDET   MFDE,';
+STRSQL := STRSQL ||' CLIN_FICHA_HOSP    FICH,';
+STRSQL := STRSQL ||' CLIN_FAR_PARAM    FPAR,';
+STRSQL := STRSQL ||' CLIN_CTACTE     CTAS,';
+STRSQL := STRSQL ||' CLIN_FAR_BODEGAS   FBOD,';
+STRSQL := STRSQL ||' CLIN_FAR_MAMEIN    MEIN,';
+STRSQL := STRSQL || '    SPP_PACIENTES   PAC,  ';
+STRSQL := STRSQL || '    GLO_PARAMETROS_CLIN  GPC  ';
+STRSQL := STRSQL ||' WHERE  TRIM(MFDE.MFDE_MEIN_CODMEI) ='''||pinPROD||''' ';
+STRSQL := STRSQL ||' AND    MFDE.MFDE_MEIN_CODMEI=MEIN.MEIN_CODMEI';
+STRSQL := STRSQL ||' AND    MOVF.MOVF_ID = MFDE.MFDE_MOVF_ID';
+STRSQL := STRSQL ||' AND    MOVF.MOVF_FICH_ID = FICH.FICH_ID(+)';
+STRSQL := STRSQL ||' AND    MOVF.MOVF_TIPO = FPAR.FPAR_CODIGO(+) ';
+STRSQL := STRSQL ||' AND    FPAR.FPAR_TIPO = 8';
+STRSQL := STRSQL ||' AND    MFDE.MFDE_CTAS_ID = CTAS.CTAS_ID(+)';
+STRSQL := STRSQL ||' AND    MOVF.MOVF_BOD_ORIGEN = FBOD.FBOD_CODIGO(+)';  
+  STRSQL := STRSQL || ' AND GPC.CODIGO=''FICHID'' '; 
+  STRSQL := STRSQL || ' AND GPC.SISTEMA=''CLIN'' ';
+  STRSQL := STRSQL || ' AND PAC.CORRELATIVO = FICH.FICH_SPP_CORRELATIVO ';
+ 
+IF pinRUT  IS NOT NULL THEN 
+   STRSQL := STRSQL ||' AND    FICH.FICH_NUMRUTP = '||pinRUT;  
+END IF;  
+ 
+IF pinFOLIO  IS NOT NULL THEN 
+   STRSQL := STRSQL ||' AND    FICH.FICH_ID='||pinFOLIO;  
+END IF;  
+ 
+IF pinFICHA IS NOT NULL THEN 
+   STRSQL := STRSQL ||' AND    DECODE(GPC.VALOR,''F'',pac.NUMERO_FICHA,pac.CORRELATIVO)  = '||pinFICHA;
+END IF; 
+
+IF pinRECETA IS NOT NULL THEN   
+   STRSQL := STRSQL ||' AND  MOVF.MOVF_RECETA=  '||pinRECETA;  
+END IF;  
+  
+IF pinSOLICITUD IS NOT NULL THEN 
+   STRSQL := STRSQL ||' AND MOVF.MOVF_SOLI_ID = ' || pinSOLICITUD; 
+END IF;  
+
+IF pinPRODUCTO  IS NOT NULL THEN 
+   STRSQL := STRSQL ||' AND MEIN.MEIN_DESCRI LIKE '''||pinPRODUCTO||'%'' ';  
+END IF;  
+ 
+  OPEN vCURSOR FOR STRSQL ;
+  
+EXCEPTION
+WHEN OTHERS THEN
+RAISE_APPLICATION_ERROR(-20000,'ERROR'||SUBSTR(SQLERRM,1,200));
+
+END P_FAR_PRODUCTO;
+
+-----------------------------------
+-----------------------------------
+
+
+PROCEDURE P_FAR_DESCPRODUCTO(
+pinDESC_PROD      IN VARCHAR2,
+pinRUT    IN VARCHAR2,
+pinFOLIO   IN VARCHAR2,
+pinFICHA   IN VARCHAR2,
+pinRECETA   IN VARCHAR2,
+pinSOLICITUD IN VARCHAR2,
+pinPRODUCTO  IN VARCHAR2,
+vCURSOR   IN OUT CURSORTYPE
+)
+IS
+
+STRSQL VARCHAR2(2000);
+
+BEGIN
+
+STRSQL := ' SELECT MFDE.MFDE_MEIN_CODMEI     CODIGO,';
+STRSQL := STRSQL ||' MEIN.MEIN_DESCRI       DESCRIPCION,'; 
+STRSQL := STRSQL ||' MFDE.MFDE_CANTIDAD      CANT, ';
+STRSQL := STRSQL ||' MFDE.MFDE_VALOR_COSTO_UNITARIO   COSTO_UNIT,'; 
+STRSQL := STRSQL ||' CTAS.CTAS_VALOR_TOTAL     TOTAL_VENTA,';
+STRSQL := STRSQL ||' FPAR.FPAR_DESCRIPCION     MOVIMIENTO, ';
+STRSQL := STRSQL ||' MOVF.MOVF_USUARIO      RESPONSABLE, ';
+STRSQL := STRSQL ||' MOVF.MOVF_RECETA       RECETA,';
+STRSQL := STRSQL ||' FBOD.FBOD_DESCRIPCION     BODEGA_CARGO,'; 
+STRSQL := STRSQL ||' MOVF.MOVF_FICH_ID      FOLIO,';
+STRSQL := STRSQL ||' DECODE(GPC.VALOR,''F'',pac.NUMERO_FICHA,pac.CORRELATIVO)    FICHA,';
+STRSQL := STRSQL ||' FICH.FICH_NUMRUTP||''-''||FICH_DIGRUTP  RUT_PAC,';
+STRSQL := STRSQL ||' FICH.FICH_APPATE||'' ''||FICH_APMATE||'' ''||FICH_NOMPAC NOM_PACIENTE,'; 
+STRSQL := STRSQL ||' MOVF.MOVF_FECHA_GRABACION    FECHA_CARGO';
+STRSQL := STRSQL ||' FROM   CLIN_FAR_MOVIM MOVF,';
+STRSQL := STRSQL ||' CLIN_FAR_MOVIMDET   MFDE,';
+STRSQL := STRSQL ||' CLIN_FICHA_HOSP    FICH,';
+STRSQL := STRSQL ||' CLIN_FAR_PARAM    FPAR,';
+STRSQL := STRSQL ||' CLIN_CTACTE     CTAS,';
+STRSQL := STRSQL ||' CLIN_FAR_BODEGAS   FBOD,';
+STRSQL := STRSQL ||' CLIN_FAR_MAMEIN    MEIN,';
+STRSQL := STRSQL || '    SPP_PACIENTES   PAC,  ';
+STRSQL := STRSQL || '    GLO_PARAMETROS_CLIN  GPC  ';
+STRSQL := STRSQL ||' WHERE  MEIN.MEIN_DESCRI LIKE '''||pinDESC_PROD||'%'' ';
+STRSQL := STRSQL ||' AND    MFDE.MFDE_MEIN_CODMEI=MEIN.MEIN_CODMEI';
+STRSQL := STRSQL ||' AND    MOVF.MOVF_ID = MFDE.MFDE_MOVF_ID';
+STRSQL := STRSQL ||' AND    MOVF.MOVF_FICH_ID = FICH.FICH_ID(+)';
+STRSQL := STRSQL ||' AND    MOVF.MOVF_TIPO = FPAR.FPAR_CODIGO(+) ';
+STRSQL := STRSQL ||' AND    FPAR.FPAR_TIPO = 8';
+STRSQL := STRSQL ||' AND    MFDE.MFDE_CTAS_ID = CTAS.CTAS_ID(+)';
+STRSQL := STRSQL ||' AND    MOVF.MOVF_BOD_ORIGEN = FBOD.FBOD_CODIGO(+)';  
+STRSQL := STRSQL || ' AND GPC.CODIGO=''FICHID'' '; 
+STRSQL := STRSQL || ' AND GPC.SISTEMA=''CLIN'' ';
+STRSQL := STRSQL || ' AND PAC.CORRELATIVO = FICH.FICH_SPP_CORRELATIVO ';
+
+IF pinRUT  IS NOT NULL THEN 
+   STRSQL := STRSQL ||' AND    FICH.FICH_NUMRUTP = '||pinRUT;  
+END IF;  
+ 
+IF pinFOLIO  IS NOT NULL THEN 
+   STRSQL := STRSQL ||' AND    FICH.FICH_ID='||pinFOLIO;  
+END IF;  
+ 
+IF pinFICHA IS NOT NULL THEN 
+   STRSQL := STRSQL ||' AND    DECODE(GPC.VALOR,''F'',pac.NUMERO_FICHA,pac.CORRELATIVO)  = '||pinFICHA;
+END IF; 
+
+
+IF pinRECETA IS NOT NULL THEN   
+   STRSQL := STRSQL ||' AND  MOVF.MOVF_RECETA=  '||pinRECETA;  
+END IF;  
+  
+IF pinSOLICITUD IS NOT NULL THEN 
+   STRSQL := STRSQL ||' AND MOVF.MOVF_SOLI_ID = ' || pinSOLICITUD; 
+END IF;  
+
+-- IF pinPRODUCTO  IS NOT NULL THEN 
+--    STRSQL := STRSQL ||' AND MEIN.MEIN_CODMEI = '''||pinPRODUCTO||''' ';  
+-- END IF;  
+ 
+  OPEN vCURSOR FOR STRSQL ;
+
+
+EXCEPTION
+WHEN OTHERS THEN
+NULL;
+
+END P_FAR_DESCPRODUCTO;
+
+PROCEDURE P_FAR_DATOS_PAC
+         (pinFOLIO   IN VARCHAR2,
+          pinFICHA   IN VARCHAR2,
+          pinRUT     IN VARCHAR2,
+          pinPATERNO IN VARCHAR2,
+          pinMATERNO IN VARCHAR2,
+          pinNOMBRE  IN VARCHAR2,
+          vCURSOR	   IN OUT CURSORTYPE)
+IS
+vSQL VARCHAR(5000);
+BEGIN
+    
+    vSQL :=         'SELECT FH.ESTID                                                    FOLIO,';
+    vSQL := vSQL || 'FH.PCLIID                                                          FICHA,';
+    vSQL := vSQL || 'PAC.CLINUMIDENTIFICACION                                           RUT,';
+    vSQL := vSQL || 'PAC.CLINOMBRES                                                     NOMBRE,';
+    vSQL := vSQL || 'PAC.CLIAPEPATERNO                                                  AP_PATERNO,';
+    vSQL := vSQL || 'PAC.CLIAPEMATERNO                                                  AP_MATERNO';
+    vSQL := vSQL || 'FH.ESTFECHOSP                                                      FECHA_HOSP,';
+    vSQL := vSQL || 'FH.ESTFECALTAADM                                                   FECHA_ALTA,';
+    vSQL := vSQL || 'CTA.CTAFECCIECUENTA                                                FECHA_CIERRE_CTA,';
+    vSQL := vSQL || 'SI.CLIAPEPATERNO||'' ''||SI.CLIAPEMATERNO||'' ''||SI.CLINOMBRES    PREVISION';
+    vSQL := vSQL || '''         ''                                                      TIPO_PACIENTE';
+    vSQL := vSQL || '(floor((sysdate - pac.CLIFECNACIMIENTO)/365))                      EDAD,';
+    vSQL := vSQL || 'FH.CODESTCUENTA                                                    ESTADO,';
+    vSQL := vSQL || 'FH.ESTDIGTEXTO                                                     DIAGNOSTICO_INGRESO';
+    vSQL := vSQL || ' '' ''                                                             PACIENTE_GES,';
+    vSQL := vSQL || ' '' ''                                                             ACEPTA_GES,';
+    vSQL := vSQL || 'SPR.CLIAPEPATERNO||'' ''||SPR.CLIAPEMATERNO||'' ''||SPR.CLINOMBRES MEDICO_TRATANTE';    
+    vSQL := vSQL || 'FROM ESTADIA   FH,';
+    vSQL := vSQL || '     CLIENTE   SI,';
+    vSQL := vSQL || '     CLIENTE   SPR,  ';
+    vSQL := vSQL || '     CLIENTE   PAC,  ';
+    vSQL := vSQL || '     CUENTA    CTA  ';
+    vSQL := vSQL || 'WHERE  SI.CLIID = FH.CODPREVISION';
+    vSQL := vSQL || ' AND   SPR.CLIID = FH.PCLIIDMEDTRATANTE';
+    vSQL := VSQL || ' AND   FH.PCLIID = PAC.CLIID'; 
+    vSQL := VSQL || ' AND   FH.ESTID  = CTA.PESTID';
+    IF NOT pinFOLIO IS NULL AND pinFOLIO > 0 THEN
+       vSQL := vSQL || 'AND FH.ESTID = ' || pinFOLIO ;
+    
+    END IF;
+    IF NOT pinFICHA IS NULL AND pinFICHA > 0 THEN
+       vSQL := vSQL || ' AND pac.CLIID) = ' || pinFICHA ;
+    
+    END IF;
+    IF NOT pinRUT IS NULL AND pinRUT > 0 THEN
+       vSQL := vSQL || 'PAC.CLINUMIDENTIFICACION LIKE :pinRUT||''%';
+    END IF;
+    IF NOT pinPATERNO IS NULL THEN
+       vSQL := vSQL || ' AND FH.ESTCLIAPEPATERNO LIKE ''' || pinPATERNO ||'%''';
+    
+    END IF;
+    IF NOT pinMATERNO IS NULL THEN
+       vSQL := vSQL || ' AND FH.ESTCLIAPEMATERNO LIKE ''' || pinMATERNO ||'%''';
+    
+    END IF;
+    IF NOT pinNOMBRE IS NULL THEN
+       vSQL := vSQL || ' AND FH.ESTCLINOMBRES LIKE ''' || pinNOMBRE ||'%''';
+    
+    END IF;
+  
+    --insert into paso_errores_eo (descripcion,fecha) values (vsql,sysdate);
+    --commit;
+  
+    OPEN vCURSOR FOR vSQL;
+             
+EXCEPTION
+WHEN OTHERS THEN
+NULL;
+
+END P_FAR_DATOS_PAC;
+
+END PCK_FARM_CONSULTA02;
+/

@@ -1,0 +1,64 @@
+<app-navbar (hdgcodigo)="getHdgcodigo($event)" (esacodigo)="getEsacodigo($event)"
+(cmecodigo)="getCmecodigo($event)"></app-navbar>
+<app-sidebar></app-sidebar>
+<div class="content-wrapper pl-4">
+    <div style="margin: 10px;">
+        <form [formGroup]="FormInfAjustePrecios">
+            <!-- Contenedor feneral de la página -->
+            <div class="my-2 ml-2 titulo text-center">
+                <h5>
+                    Informe de Ajustes de Precios
+                </h5>
+            </div>
+            <div class="card border-primary" style="padding: 5px;">
+                <div class="form-row mt-2">
+                    <div class="form-group col-md-2">
+                        <label for="tipoprod">Tipo Producto *</label>
+                        <select name="tipoprod" class='form-control form-control-sm' formControlName='tipoprod'>
+                            <option *ngFor='let tipoproducto of tiposderegistros'
+                                [ngValue]='tipoproducto.idtiporegistro'>{{ tipoproducto.desctiporegistro }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="fechadesde">Fecha Desde *</label>
+                        <input appSelecttext type="text" placeholder="DD/MM/YYYY" id="fechadesde" class='form-control form-control-sm'
+                        [bsConfig]="bsConfig" bsDatepicker formControlName="fechadesde">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="fechahasta">Fecha Hasta *</label>
+                        <input appSelecttext type="text" placeholder="DD/MM/YYYY" id="fechahasta" class='form-control form-control-sm'
+                        [bsConfig]="bsConfig" bsDatepicker formControlName="fechahasta">
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <!--  Botones de página -->
+        <div class="form-row float-right mt-2">
+            <div class="form-group col-md-3 align-self-end">
+                <button type="button" id="btnguardar" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+                    (click)="ConfirmarImprimirPDF()">Imprimir PDF
+                </button>
+            </div>
+            <div class="form-group col-md-3 align-self-end">
+                <button type="button" id="btnguardar" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+                    (click)="ConfirmarImprimirExcel()">Imprimir Excel
+                </button>
+            </div>
+            <div class="form-group col-md-3 align-self-end">
+                <button type="button" id="btnlimpiar" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+                    (click)="Limpiar()">LIMPIAR <i class="fas fa-eraser ml-1"></i>
+                </button>
+            </div>
+            <div class="form-group col-md-3 align-self-end">
+                <button type="button" id="btnsalir" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+                    routerLink='../home'>SALIR <i class="fas fa-window-close ml-1"></i>
+                </button>
+            </div>
+        </div>
+        <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+        <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+        <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+    </div>
+</div>

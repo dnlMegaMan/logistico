@@ -1,0 +1,58 @@
+import { Loteproducto } from './loteproducto';
+
+
+export class Detalleproducto {
+    constructor(
+        public sodeid            ?: number,
+        public soliid            ?: number,
+        public repoid            ?: number,
+        public codmei            ?: string,
+        public meinid            ?: number,
+        public unidad            ?: string,
+        public dosis             ?: number,
+        public formulacion       ?: number,
+        public meindescri        ?: string,
+        public dias              ?: number,
+        public cantsoli          ?: number,
+        public pendientedespacho ?: number,
+        public cantdespachada    ?: number,
+        public cantadespachar    ?: number,
+        public estado            ?: number,
+        public observaciones     ?: string,
+        public stockorigen       ?: number,
+        public stockdestino      ?: number,
+        public usuariomodifica   ?: string,
+        public fechamodifica     ?: string,
+        public usuarioelimina    ?: string,
+        public fechaelimina      ?: string,
+        public viaadministracion ?: string,
+        public acciond           ?: string,
+        public marca             ?: string,
+        public cantdevolucion    ?: number,
+        public fechavto          ?: string,
+        public lote              ?: string,
+        public descunidadmedida  ?: string,
+        public cantrecepcionado  ?: number,
+        public cantrecepcionada  ?: number,
+        public cantidadarecepcionar?:number,
+        public cantidadadevolver ?: number,
+        public unidadcompra      ?: number,
+        public unidaddespacho    ?: number,
+        public glosaunidadcompra ?: string,
+        public glosaunidaddespacho ?:string,
+        public tiporegmein       ?: string,
+        public marcacheckgrilla  ?: boolean, 
+        public recetaentregaprogdet?: string,
+        public diasentregacodigodet?: number,
+        public tienelote         ?: string,
+        public backgroundcolor   ?: string,
+        public controlado        ?: string,
+        public consignacion      ?: string,
+        public detallelote       ?: Loteproducto[], 
+        public nomplantilla      ?: string,
+        public idplantilla       ?: number,
+        public sodecantrecepdevo ?: number
+    ) { 
+        
+    }
+}

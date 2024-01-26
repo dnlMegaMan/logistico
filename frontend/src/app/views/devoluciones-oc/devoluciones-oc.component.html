@@ -1,0 +1,228 @@
+<app-main-nav>
+    <div>
+        <!-- Contenedor feneral de la página -->
+        <div class="my-2 ml-2 titulo text-center">
+            <!--menu -->
+            <h3>
+                {{ 'key.title.consulta.notas.credito' | translate}}
+            </h3>
+        </div>
+        <!-- Creacio nde filtros y datos ingresados por pantalla -->
+        <form [formGroup]='FormDevOc' >
+            <div class="card border-primary " style="padding: 5px;">
+                <div class="my-2 ml-2 titulo text-left">
+                    <!--menu -->
+                    <h4>
+                        {{ 'key.subtitle.busqueda.nota.credito' | translate}}
+                    </h4>
+                </div>
+                <div class="card border-primary " style="padding: 5px;">
+                    <div class="form-row d-flex justify-content">
+                        <div class="form-group col-md-1">
+                            <label for="fechadesde">{{ 'key.fechadesde' | translate}}</label>
+                        </div>
+                        <div class="form-group col-md-1">
+                            <input [readonly]="false" appSelecttext type="text" placeholder="DD/MM/YYYY" class="form-control form-control-sm"
+                            [bsConfig]="{dateInputFormat: 'DD-MM-YYYY'}" bsDatepicker formControlName="fechadesde" placement="right"/>
+                        </div>
+                        <div class="form-group col-md-1 text-right">
+                            <label for="fechahasta">{{ 'key.fechahasta' | translate}}</label>
+                        </div>
+                        <div class="form-group col-md-1">
+                            <input [readonly]="false" appSelecttext type="text" placeholder="DD/MM/YYYY" class="form-control form-control-sm"
+                            [bsConfig]="{dateInputFormat: 'DD-MM-YYYY'}" bsDatepicker formControlName="fechahasta" placement="right" />
+                        </div>
+                        <div class="form-group col-md-1 text-right">
+                            <label for="rutprov">{{ 'key.identificacion.proveedor' | translate}}</label>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <div class="d-flex align-items-center">
+                            <input  *ngIf="this.isButtonVisible" type="text" class="form-control form-control-sm" formControlName="rutprov"  [(ngModel)]="guia.rutprov" value="{{guia.rutprov}}"
+                            [readonly]="false"
+                            (keyup.enter)="cargarProveedor($event.target.value)">
+                            <button type="button" id="btnbuscar" class="btn btn-primary btn-sm" [disabled]="bloquear_formulario"
+                            (click)="abrirModalBusuqedaProv()"><i class="fas fa-search ml-1"></i>
+                            </button>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-1 text-right">
+                            <label for="tipodoc">{{ 'key.tipo.documento' | translate}}</label>
+                        </div>
+                        <div class="form-group col-md-1">
+                            <select name="tipodoc" class='form-control form-control-sm' formControlName="tipodoc"
+                                ngDefaultControl >
+                                <option [ngValue]="null" disabled selected hidden>{{ 'key.mensaje.seleciona.opcion' | translate}}</option>
+                                <option *ngFor="let tipodoc of listatipodocumentodev" [value]="tipodoc.codtipodocumento" >
+                                    {{tipodoc.glstipodocumento}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-1 text-right">
+                            <label for="numerodoc">{{ 'key.numero.documento' | translate}}</label>
+                        </div>
+                        <div class="form-group col-md-1">
+                            <input type="number" class="form-control form-control-sm" onKeyPress="if(this.value.length==10) return false;" formControlName="numerodoc" >
+                        </div>
+                    </div>
+                    <div class="form-row d-flex justify-content-center">
+                        <div class="form-group col-md-1 align-self-end">
+                            <label for="btnbuscar"></label>
+                            <div class="d-flex align-items-center">
+                                <button type="button" id="btnbuscar" class="btn btn-primary btn-sm d-inline-block" [disabled]="bloquear_formulario"
+                                (click)="buscarNotaFiltro(0,0)">{{ 'key.button.buscar' | translate}}<i class="fas fa-search ml-1"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-2 align-self-end">
+                            <label for="btnbuscaritem"></label>
+                            <div class="d-flex align-items-center">
+                            <button type="button" id="btnbuscaritem" class="btn btn-primary btn-sm d-inline-block" [disabled]="bloquear_formulario"
+                                (click)="abrirModalArticulos()">{{ 'key.button.buscar.articulos' | translate}}<i class="fas fa-search ml-1"></i>
+                            </button>
+                            </div>
+                        </div>
+                    </div>  
+                </div>
+    
+            </div>
+            <input type="hidden" class="form-control form-control-sm" formControlName="provid" >
+            <div class="card border-primary" style="padding: 5px;">
+                <div class="my-2 ml-2 titulo text-left">
+                    <!--menu -->
+                    <h4>
+                        {{ 'key.subtitle.datos.recepcion' | translate}}
+                    </h4>
+                </div>
+                <div class="form-row d-flex justify-content">
+                    <div class="form-group col-md-1">
+                        <label for="totaldoc">{{ 'key.total.documento' | translate}}</label>
+                    </div>
+                    <div class="form-group col-md-1">
+                        <input type="text" class="form-control form-control-sm" formControlName="totaldoc" [(ngModel)]="guia.montototal" [readonly]="true">
+                    </div>
+                    <div class="form-group col-md-1 text-right">
+                        <label for="totalitems">{{ 'key.total.items' | translate}}</label>
+                    </div>
+                    <div class="form-group col-md-1">
+                        <input type="number" class="form-control form-control-sm" formControlName="totalitems" [(ngModel)]="cantidad_items" [readonly]="true" >
+                    </div>
+                    <div class="form-group col-md-1 text-right">
+                        <label for="totalitemsfecha">{{ 'key.fecha.documento' | translate}}</label>
+                    </div>
+                    <div class="form-group col-md-1">
+                        <input type="text" class="form-control form-control-sm" formControlName="fechaemision" [(ngModel)]="guia.fechaemision" [readonly]="true">
+                    </div>
+                    <div class="form-group col-md-1 text-right">
+                        <label for="razonsocial">{{ 'key.razon.social' | translate}}</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control form-control-sm" formControlName="razonsocial" [(ngModel)]="proveedor_aux.descripcionprov" value="{{proveedor_aux.descripcionprov}}" [readonly]="true"> 
+                    </div>
+                </div>
+                <div class="form-row d-flex justify-content">
+                    <div class="form-group col-md-1">
+                        <label for="direccion">{{ 'key.direccion' | translate}}</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control form-control-sm" formControlName="direccion" [(ngModel)]="proveedor_aux.direccionprov" value="{{proveedor_aux.direccionprov}}" [readonly]="true">
+                    </div>
+                    <div class="form-group col-md-1 text-right">
+                        <label for="ciudad">{{ 'key.ciudad' | translate}}</label>
+                    </div>
+                    <div class="form-group col-md-1">
+                        <input type="text" class="form-control form-control-sm" formControlName="ciudad" [(ngModel)]="proveedor_aux.ciudaddescripcion" value="{{proveedor_aux.ciudaddescripcion}}" [readonly]="true">
+                    </div>
+                    <div class="form-group col-md-1 text-right">
+                        <label for="comuna">{{ 'key.comuna' | translate}}</label>
+                    </div>
+                    <div class="form-group col-md-1">
+                        <input type="text" class="form-control form-control-sm" formControlName="comuna" [(ngModel)]="proveedor_aux.comunadesdescripcion" value="{{proveedor_aux.comunadesdescripcion}}" [readonly]="true">
+                    </div>
+                </div>   
+                <div class="form-row d-flex justify-content">
+                    <div class="form-group col-md-1">
+                        <label for="giro">{{ 'key.giro' | translate}}</label>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="text" class="form-control form-control-sm" formControlName="giro" [(ngModel)]="proveedor_aux.giro" value="{{proveedor_aux.giro}}"[readonly]="true">
+                    </div>
+                    <div class="form-group col-md-1 text-right">
+                        <label for="telefono">{{ 'key.telefono' | translate}}</label>
+                    </div>
+                    <div class="form-group col-md-1">
+                        <input type="text" class="form-control form-control-sm" formControlName="telefono" [(ngModel)]="proveedor_aux.telefono" value="{{proveedor_aux.telefono}}" [readonly]="true">
+                    </div>
+                    <div class="form-group col-md-1 text-right">
+                        <label for="fono">{{ 'key.fono' | translate}}</label>
+                    </div>
+                    <div class="form-group col-md-1">
+                        <input type="text" class="form-control form-control-sm" formControlName="fono" [(ngModel)]="proveedor_aux.telefono2" value="{{proveedor_aux.telefono2}}" [readonly]="true">
+                    </div>
+                    <div class="form-group col-md-1 text-right">
+                        <label for="tipodocrecep">{{ 'key.tipo.documento' | translate}}</label>
+                    </div>
+                    <div class="form-group col-md-1">
+                        <input type="text" class="form-control form-control-sm" formControlName="tipodocrecep" [(ngModel)]="guia.tipodoc" value="{{guia.tipodoc}}" [readonly]="true">
+                    </div>
+                </div>            
+            </div>
+        </form>
+         <!-- listado de articulos -->
+         <div class="card border-primary" style="padding: 5px;margin-top: 10px">
+            <div id="table" class="table-editable">
+              <div class="table-responsive mt-2" style="max-height: 500px;min-height: 100px;">
+                <table class="table table-sm table-condensed table-bordered  table-striped text">
+                  <tr class="table table-sm  table-primary table-bordered ">
+                    <th class="text-center">{{ 'key.codigo' | translate}}</th>
+                    <th class="text-center">{{ 'key.descripcion' | translate}}</th>
+                    <th class="text-center">{{ 'key.lote' | translate}}</th>
+                    <th class="text-center">{{ 'key.cantidad.recepcionada' | translate}}</th>
+                    <th class="text-center">{{ 'key.cantidad.devuelta' | translate}}</th>
+                    <th class="text-center">{{ 'key.motivo' | translate}}</th>
+                  </tr>
+                  <tr class="table-secondary"
+                    *ngFor="let registro of listado_movimientos; let id = index">
+                    <td>
+                      <small><span>{{registro.meincodmei}}</span></small>
+                    </td>
+                    <td class="text-nowrap help   " tooltip="{{registro.meindescri }}">
+                      <small><span> {{registro.meindescri| slice:0:20 }}</span></small>
+                    </td>
+                    <td class="text-nowrap help   " tooltip="{{registro.lote }}">
+                        <small><span> {{registro.lote| slice:0:20 }}</span></small>
+                      </td>
+                    <td class="text-nowrap help text-right " tooltip="{{registro.descunidadmedida }}">
+                      <small><span> {{registro.odmocantidad}}</span></small>
+                    </td>
+                    <td class="text-right">
+                        <small><span>{{registro.odmdcantidad}} </span></small>
+                    </td>
+                    <td class="text-right">
+                        <small><span>{{registro.motivodevdesc}} </span></small>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+         </div>
+
+
+        <!--  Botones de página -->
+        <div class="form-row float-right mt-2 mr-1">
+            <div class="form-group  align-self-end">
+                <button type="button" id="btnlimpiar" class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+                    (click)="ConfirmaLimpiarTodo()">{{ 'key.button.limpiar' | translate}} <i class="fas fa-eraser ml-1"></i>
+                </button>
+            </div>
+            <div class="form-group align-self-end">
+                <button type="button" id="btnsalir" class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+                    (click)=salir()>{{ 'key.button.salir' | translate}} <i class="fas fa-window-close ml-1"></i>
+                </button>
+            </div>
+        </div>
+
+        <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+        <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+        <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+    </div>
+</app-main-nav>

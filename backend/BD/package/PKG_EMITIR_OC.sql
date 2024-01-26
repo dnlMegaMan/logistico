@@ -1,0 +1,18 @@
+create or replace PACKAGE PKG_EMITIR_OC as
+    PROCEDURE P_EMITIR_OC(
+		NUM_OC IN NUMBER
+    );
+END PKG_EMITIR_OC;
+/
+create or replace PACKAGE BODY PKG_EMITIR_OC AS
+
+    PROCEDURE P_EMITIR_OC(
+		NUM_OC IN NUMBER
+    ) AS
+    BEGIN
+		UPDATE CLIN_FAR_OC SET ORCO_ESTADO=2, ORCO_FECHA_emision = sysdate
+		WHERE orco_numdoc=NUM_OC;
+        COMMIT;
+    END P_EMITIR_OC;
+END PKG_EMITIR_OC;
+/

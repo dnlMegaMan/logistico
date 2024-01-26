@@ -1,0 +1,214 @@
+<form [formGroup]="lForm">
+
+<div class="form-row">
+    <div class="form-group col-md-3">
+        <label for="grupo">{{ 'key.grupo' | translate}} </label>
+        <select name="grupoid" class='form-control form-control-sm' formControlName='grupoid'   (change)="listarsubgrupos(lForm.value.grupoid)">
+          <option *ngFor='let registrogrupo of listaGurpoConsumo' [ngValue]='registrogrupo.grupoid'>
+            {{ registrogrupo.grupodescripcion }}
+          </option>
+        </select>
+      </div>
+      <div class="form-group col-md-3">
+        <label for="subgrupo">{{ 'key.sub.grupo' | translate}} </label>
+        <select name="subgrupoid" class='form-control form-control-sm' formControlName='subgrupoid' (change)="construyeCodigo()">
+          <option *ngFor='let registrosubgrupo of listaSubGurpoConsumo' [ngValue]='registrosubgrupo.subgrupoid' >
+            {{ registrosubgrupo.subgrupodescripcion }}
+          </option>
+        </select>
+      </div>
+</div>    
+<div class="form-row">
+    <div class="form-group col-md-3">
+        <label for="familia">{{ 'key.familia' | translate}} </label>
+        <select name="familia" class='form-control form-control-sm'
+            formControlName='familia' (change)="construyeCodigo()">
+            <option *ngFor='let familia of familias' [ngValue]='familia.idfamilia'>
+                {{ familia.descripcion }}
+            </option>
+        </select>
+    </div>
+
+    <div class="form-group col-md-3">
+        <label for="subfamilia">{{ 'key.subfamilia' | translate}} </label>
+        <select name="subfamilia" class='form-control form-control-sm'
+            formControlName='subfamilia' (change)="construyeCodigo()">
+            <option *ngFor='let subfamilia of subfamilias' [ngValue]='subfamilia.idsubfamilia'>
+                {{ subfamilia.descripcion }}
+            </option>
+        </select>
+    </div>
+</div>
+<div class="form-row">
+    <div class="form-group col-md-2">
+      <label for="codigo">{{ 'key.codigo' | translate}}</label>
+      <input type="text" class="form-control form-control-sm" formControlName="codigo">
+    </div>
+    <div class="form-group col-md-4">
+      <label for="descripcion">{{ 'key.descripcion' | translate}}</label>
+      <input type="text" class="form-control form-control-sm" formControlName="descripcion">
+    </div>
+    <div class="form-group col-md-3">
+        <label for="tipoproducto">{{ 'key.tipo.producto' | translate}}</label>
+        <select name="tipoproducto" class='form-control form-control-sm' formControlName='tipoproducto'>
+          <option *ngFor='let registrotipoproducto of arreglotipoproducto'
+            [ngValue]='registrotipoproducto.fparvalor'>
+            {{ registrotipoproducto.fpardescripcion }}
+          </option>
+        </select>
+      </div>
+</div>    
+
+<!-- triada-->
+
+<div class="form-row">
+
+    <div class="form-group col-md-3">
+        <label for="unidadcompra">{{ 'key.tipo.unidad.medida' | translate}} </label>
+        <select name="unidadcompra" class='form-control form-control-sm'
+            formControlName='unidadcompra'>
+            <option *ngFor='let unidadcompra of unidadescompra' [ngValue]='unidadcompra.codigoudecompra'>
+                {{ unidadcompra.descripcion }}
+            </option>
+        </select>
+    </div>
+
+
+    <div class="form-group col-md-3">
+        <label for="presentacion">{{ 'key.um.consumo' | translate}} </label>
+        <select name="idpresentacion" class='form-control form-control-sm'
+            formControlName='codpres'>
+            <option *ngFor='let presentacion of Presenta' [ngValue]='presentacion.idprese'>
+                {{ presentacion.descriprese }}
+            </option>
+        </select>
+    </div>
+
+
+    <div class="form-group col-md-3">
+        <label for="forma">{{ 'key.presentacion' | translate}} </label>
+        <select name="idforma" class='form-control form-control-sm' formControlName='codffar'>
+            <option *ngFor='let formafarma of FormaFar' [ngValue]='formafarma.idforma'>
+                {{ formafarma.descriforma }}
+            </option>
+        </select>
+    </div>
+
+    <div class="form-group col-md-3">
+        <label for="clasificacion">{{ 'key.label.clasificacion.riesgo' | translate}} </label>
+        <select name="idclasificacion" class='form-control form-control-sm' formControlName='clasificacion'>
+            <option *ngFor='let cla of Clasificacion' [ngValue]='cla.idclasificacion'>
+                {{ cla.clase }}
+            </option>
+        </select>
+    </div>
+    
+</div>
+<div class="card m-2 border-primary" style="padding: 10px;">
+    <div class="form-row">
+        <div class="form-group col-md-2">            
+            <input type="checkbox" name="chkProductoStock" formControlName="chkProductoStock">
+            <label for="forma"> {{ 'key.label.checkbox.chkProductoStock' | translate}} </label>
+        </div>
+
+        <div class="form-group col-md-2">            
+            <input type="checkbox" name="chkVigente" formControlName="chkVigente">
+            <label for="forma"> {{ 'key.label.checkbox.chkVigente' | translate}} </label>
+        </div>
+
+        <div class="form-group col-md-2">            
+            <input type="checkbox" name="chkConsumoRes" formControlName="chkConsumoRes">
+            <label for="forma"> {{ 'key.label.checkbox.chkConsumoRes' | translate}} </label>
+        </div>
+
+        <div class="form-group col-md-2">            
+            <input type="checkbox" name="chkRepoAuto" formControlName="chkRepoAuto">
+            <label for="forma"> {{ 'key.label.checkbox.chkRepoAuto' | translate}} </label>
+        </div>
+
+        <div class="form-group col-md-2">            
+            <input type="checkbox" name="chkFechaVence" formControlName="chkFechaVence">
+            <label for="forma"> {{ 'key.label.checkbox.chkFechaVence' | translate}} </label>
+        </div>        
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-2">            
+            <input type="checkbox" name="chkMagistral" formControlName="chkMagistral">
+            <label for="forma"> {{ 'key.label.checkbox.chkMagistral' | translate}} </label>
+        </div>
+
+        <div class="form-group col-md-2">            
+            <input type="checkbox" name="chkValorVariable" formControlName="chkValorVariable">
+            <label for="forma"> {{ 'key.label.checkbox.chkValorVariable' | translate}} </label>
+        </div>
+
+        <div class="form-group col-md-2">            
+            <input type="checkbox" name="chkPos" formControlName="chkPos">
+            <label for="forma"> {{ 'key.label.checkbox.chkPos' | translate}} </label>
+        </div>
+
+        <div class="form-group col-md-2">            
+            <input type="checkbox" name="chkPoss" formControlName="chkPoss">
+            <label for="forma"> {{ 'key.label.checkbox.chkPoss' | translate}} </label>
+        </div>
+
+        <div class="form-group col-md-2">            
+            <input type="checkbox" nam="chkConsumoGen" formControlName="chkConsumoGen">
+            <label for="forma"> {{ 'key.label.checkbox.chkConsumoGen' | translate}} </label>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-2">            
+            <input type="checkbox" name="chkPrecioReg" formControlName="chkPrecioReg">
+            <label for="forma"> {{ 'key.label.checkbox.chkPrecioReg' | translate}} </label>
+        </div>
+
+        <div class="form-group col-md-2">            
+            <input type="checkbox" name="chkAcondi" formControlName="chkAcondi">
+            <label for="forma"> {{ 'key.label.checkbox.chkAcondi' | translate}} </label>
+        </div>
+
+        <div class="form-group col-md-2">            
+            <input type="checkbox" name="chkAdecuado" formControlName="chkAdecuado">
+            <label for="forma"> {{ 'key.label.checkbox.chkAdecuado' | translate}} </label>
+        </div>
+
+        <div class="form-group col-md-3">            
+            <input type="checkbox" name="chkArticuloInspEsp" formControlName="chkArticuloInspEsp">
+            <label for="forma"> {{ 'key.label.checkbox.chkArticuloInspEsp' | translate}} </label>
+        </div>
+    </div>
+</div>    
+</form>
+
+<div class="form-row float-right mr-2">
+
+    <div class="form-group  align-self-end">
+        <button type="button" id="btnmodificar" class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_01"
+            *ngIf="modelopermisos.btnmodificarma" 
+            
+            (click)="ConfirmarGuardadoArticulo(lForm.value,'CREAR')">
+            {{ 'key.button.guardar' | translate}} <i class="fas fa-save ml-1"></i>
+        </button>
+
+    </div>
+
+    <div class="form-group  align-self-end">
+        <button type="button" id="btnlimpiar" class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_01"
+            (click)="Limpiar(lForm.value)">{{ 'key.button.limpiar' | translate}} <i class="fas fa-eraser ml-1"></i>
+        </button>
+    </div>
+
+    <div class="form-group  align-self-end">
+        <button type="button" id="btnsalir" class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_01"
+        (click)="Salir()">{{ 'key.button.salir' | translate}} <i class="fas fa-window-close ml-1"></i>
+        </button>
+    </div>
+</div>
+
+<swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+<swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+<swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>

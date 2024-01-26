@@ -1,0 +1,30 @@
+[
+  {
+    "name": "DESARROLLO",
+    "stringconnection": "FarmaciaClinica/sisaFarmaDes20XX@//10.0.1.9:1521/pdb_qa.sub09012156411.vcnmodernizacio.oraclevcn.com",
+    "username" : "FarmaciaClinica",
+	"password" : "sisaFarmaDes20XX",
+	"connectstring" : "10.0.1.9:1521/pdb_qa.sub09012156411.vcnmodernizacio.oraclevcn.com"
+  },
+  {
+    "name": "MULTI-LENGUAJE",
+    "stringconnection": "FarmaciaClinica/sisaFarmaDes20XX@//10.0.1.9:1521/pdb_qa.sub09012156411.vcnmodernizacio.oraclevcn.com",
+    "username" : "FarmaciaClinica",
+        "password" : "sisaFarmaDes20XX",
+        "connectstring" : "10.0.1.9:1521/pdb_qa.sub09012156411.vcnmodernizacio.oraclevcn.com"
+  },
+  {
+    "name": "TESTING_PROD",
+	  "stringconnection": "FarmaciaClinica/sisaFarmaQA20XX@//10.0.1.9:1521/pdb_qa.sub09012156411.vcnmodernizacio.oraclevcn.com",
+    "username" : "FarmaciaClinica",
+	"password" : "sisaFarmaQA20XX",
+	"connectstring" : "10.0.1.9:1521/pdb_qa.sub09012156411.vcnmodernizacio.oraclevcn.com"
+  },
+  {
+    "name": "TESTING",
+	  "stringconnection": "FarmaciaClinica/sisaFarmaQA20XX@//10.0.1.9:1521/pdb_qa.sub09012156411.vcnmodernizacio.oraclevcn.com",
+    "username" : "FarmaciaClinica",
+	"password" : "sisaFarmaQA20XX",
+	"connectstring" : "10.0.1.9:1521/pdb_qa.sub09012156411.vcnmodernizacio.oraclevcn.com"
+  }
+]

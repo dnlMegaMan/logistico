@@ -1,0 +1,13 @@
+table {
+  width: 100%;
+}
+
+td span {
+  display: block;
+  text-align: center;
+  width: 100%;
+}
+
+.fondoAjuste {
+  background-color: yellow
+}

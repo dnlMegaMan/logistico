@@ -1,0 +1,334 @@
+<app-main-nav>
+  <div>
+    <!-- Contenedor feneral de la página -->
+    <div class="my-2 ml-2 titulo text-center">
+      <!--menu -->
+      <h3>
+        {{ 'key.title.mantenedor.proveedores' | translate}}
+      </h3>
+    </div>
+    <!-- Creacio nde filtros y datos ingresados por pantalla -->
+    <form [formGroup]='FormCrearProv'>
+      <div class="card border-primary" style="padding: 5px;">
+        <div class="form-row d-flex justify-content">
+          <div class="col-sm-1 text-left">
+            <label for="rutprov">{{ 'key.identificacion.proveedor' | translate}}</label>
+          </div>
+          <div class="form-group col-md-2">
+            <input type="text" class="form-control form-control-sm" formControlName="rutprov" maxlength="12" [readonly]="habilitar_campos_rut"
+            (keyup.enter)="validaRut(0)"
+            (focusout)="validaRut(0)">
+          </div>
+          <div class="form-group col-md-1 align-self-end">
+            <button type="button" id="btnbuscar" class="btn btn-primary btn-sm" [disabled]="bloquear_buscarprov"
+              (click)="abrirModalBusuqedaProv(null)">{{ 'key.button.buscar' | translate}}<i class="fas fa-search ml-1"></i>
+              </button>
+          </div>
+          <div class="form-group col-md-1 align-self-end">
+            <button type="button" id="btncrear" class="btn btn-primary btn-sm" [disabled]="bloquear_crearprov"
+              (click)="crearProv()">{{ 'key.button.nuevo' | translate}}<i class="fas fa-plus ml-1"></i>
+            </button>
+          </div>
+          <div class="form-group col-md-6 align-self-end">
+          </div>
+          <input type="hidden" class="form-control form-control-sm" formControlName="provid" >
+          <input type="hidden" class="form-control form-control-sm" formControlName="rutprovori" >
+        </div>
+        <div class="form-row d-flex justify-content"> 
+          <div class="col-sm-1 text-left">
+            <label for="descprov">{{ 'key.nombre.proveedor' | translate}}</label>
+          </div>
+          <div class="form-group col-md-3">
+            <input type="text" class="form-control form-control-sm" formControlName="descprov"  [readonly]="habilitar_campos" [(ngModel)]="proveedor.descripcionprov" value="{{proveedor.descripcionprov}}">
+          </div>
+          <div class="col-sm-1 text-right">
+            <label for="giro">{{ 'key.giro' | translate}}</label>
+          </div>
+          <div class="form-group col-md-3">
+            <input type="text" [readonly]="habilitar_campos" class="form-control form-control-sm" formControlName="giro" [(ngModel)]="proveedor.giro" value="{{proveedor.giro}}" >
+          </div>
+        </div>
+        <div class="form-row d-flex justify-content"> 
+          <div class="col-sm-1 text-left">
+            <label for="dirprov">{{ 'key.direccion' | translate}}</label>
+          </div>
+          <div class="form-group col-md-3">
+            <input type="text" [readonly]="habilitar_campos" class="form-control form-control-sm" formControlName="dirprov" [(ngModel)]="proveedor.direccionprov" value="{{proveedor.direccionprov}}" >
+          </div>
+          <div class="col-sm-1 text-right">
+            <label for="ciudad">{{ 'key.pais' | translate}}</label>
+          </div>
+          <div class="form-group col-md-1">
+            <select name="pais" class='form-control form-control-sm' formControlName='pais' (change)="cargarCombosRegion(this.FormCrearProv.value.pais,0)"
+            ngDefaultControl>
+              <option [ngValue]="null" disabled selected hidden>{{ 'key.mensaje.seleciona.cuidad' | translate}}</option>
+              <option *ngFor="let pais of listapais" [value]="pais.paiscodigo">
+                {{pais.paisdescripcion}}
+              </option>
+            </select>          
+          </div>
+          <div class="col-sm-1 text-right">
+            <label for="region">{{ 'key.region' | translate}}</label>
+          </div>
+          <div class="form-group col-md-1">
+            <select name="region" class='form-control form-control-sm' formControlName='region' (change)="cargarCombosCiudad(this.FormCrearProv.value.region,0)"
+            ngDefaultControl>
+              <option [ngValue]="null" disabled selected hidden>{{ 'key.mensaje.seleciona.region' | translate}}</option>
+              <option *ngFor="let region of listaregion" [value]="region.regioncodigo">
+                {{region.regiondescripcion}}
+              </option>
+            </select>          
+          </div>
+          <div class="col-sm-1 text-right">
+            <label for="ciudad">{{ 'key.ciudad' | translate}}</label>
+          </div>
+          <div class="form-group col-md-1">
+            <select name="ciudad" class='form-control form-control-sm' formControlName='ciudad' (change)="cargarCombosComuna(this.FormCrearProv.value.ciudad,0)"
+            ngDefaultControl>
+              <option [ngValue]="null" disabled selected hidden>{{ 'key.mensaje.seleciona.cuidad' | translate}}</option>
+              <option *ngFor="let ciudad of listaciudad" [value]="ciudad.ciudadcodigo">
+                {{ciudad.ciudaddescripcion}}
+              </option>
+            </select>          
+          </div>
+          <div class="col-sm-1 text-right">
+            <label for="comuna">{{ 'key.comuna' | translate}}</label>
+          </div>
+          <div class="form-group col-md-1">
+            <select name="comuna" class='form-control form-control-sm' formControlName='comuna'
+            ngDefaultControl>
+              <option [ngValue]="null" disabled selected hidden>{{ 'key.mensaje.seleciona.comuna' | translate}}</option>
+              <option *ngFor="let comuna of listacomuna" [value]="comuna.comunacodigo">
+                {{comuna.comunadescripcion}}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row d-flex justify-content"> 
+          <div class="col-sm-1 text-left">
+            <label for="representanteprov">{{ 'key.representante' | translate}}</label>
+          </div>
+          <div class="form-group col-md-3">
+            <input type="text" [readonly]="habilitar_campos" class="form-control form-control-sm" formControlName="representanteprov" [(ngModel)]="proveedor.representante" value="{{proveedor.representante}}" >
+          </div>
+          <div class="col-sm-1 text-right">
+            <label for="emailprov">{{ 'key.email' | translate}}</label>
+          </div>
+          <div class="form-group col-md-3">
+            <input type="text" [readonly]="habilitar_campos" class="form-control form-control-sm" formControlName="emailprov" [(ngModel)]="proveedor.diremail" value="{{proveedor.diremail}}" >
+          </div>
+          <div class="col-sm-1 text-right">
+            <label for="urlprov">{{ 'key.url' | translate}}</label>
+          </div>
+          <div class="form-group col-md-3">
+            <input type="text" [readonly]="habilitar_campos" class="form-control form-control-sm" formControlName="urlprov" [(ngModel)]="proveedor.direccionurl" value="{{proveedor.direccionurl}}" >
+          </div>
+        </div>
+        <div class="form-row d-flex justify-content"> 
+          <div class="col-sm-1 text-right">
+            <label for="montominfact">{{ 'key.monto.min.fact' | translate}}</label>
+          </div>
+          <div class="form-group col-md-1">
+            <input type="number"  onKeyPress="if(this.value.length==10) return false;" class="form-control form-control-sm" formControlName="montominfact" [readonly]="habilitar_campos" [(ngModel)]="proveedor.montominfac" value="{{proveedor.montominfac}}">
+          </div>
+          <div class="col-sm-1 text-right">
+            <label for="telefono" class="text-right">{{ 'key.telefono' | translate}}</label>
+          </div>
+          <div class="form-group col-md-1">
+            <input type="number"  onKeyPress="if(this.value.length==9) return false;" [readonly]="habilitar_campos" class="form-control form-control-sm" formControlName="telefono" [(ngModel)]="proveedor.telefono" value="{{proveedor.telefono}}" >
+          </div>
+          <div class="col-sm-1 text-right">
+            <label for="telefono2">{{ 'key.telefono.2' | translate}}</label>
+          </div>
+          <div class="form-group col-md-1">
+            <input type="number"  onKeyPress="if(this.value.length==9) return false;" [readonly]="habilitar_campos" class="form-control form-control-sm" formControlName="telefono2" [(ngModel)]="proveedor.telefono2" value="{{proveedor.telefono2}}" >
+          </div>
+        </div>
+        <div class="form-row d-flex justify-content"> 
+          <div class="col-sm-1 text-left">
+            <label for="contactoprov">{{ 'key.contacto' | translate}}</label>
+          </div>
+          <div class="form-group col-md-3">
+            <input type="text" class="form-control form-control-sm" formControlName="contactoprov" [readonly]="habilitar_campos" [(ngModel)]="proveedor.contactoprov" value="{{proveedor.contactoprov}}">
+          </div>
+          <div class="col-sm-1 text-right">
+            <label for="contactotelefono">{{ 'key.contacto.fono' | translate}} </label>
+          </div>
+          <div class="form-group col-md-1">
+            <input type="number"  onKeyPress="if(this.value.length==9) return false;" [readonly]="habilitar_campos" class="form-control form-control-sm" formControlName="contactotelefono" [(ngModel)]="proveedor.telefono1contac" value="{{proveedor.telefono1contac}}" >
+          </div>
+          <div class="col-sm-1 text-right">
+            <label for="contactotelefono2">{{ 'key.contacto.fono.2' | translate}}</label>
+          </div>
+          <div class="form-group col-md-1">
+            <input type="number"  onKeyPress="if(this.value.length==9) return false;" [readonly]="habilitar_campos" class="form-control form-control-sm" formControlName="contactotelefono2" [(ngModel)]="proveedor.telefono2contac" value="{{proveedor.telefono2contac}}" >
+          </div>
+        </div>
+        <div class="form-row d-flex justify-content">
+          <div class="col-sm-1 text-left">
+            <label for="mediopago">{{ 'key.medio.pago' | translate}}</label>
+          </div>
+          <div class="form-group col-md-2">
+            <select name="mediopago" class='form-control form-control-sm' formControlName='mediopago'
+            ngDefaultControl>
+              <option [ngValue]="null" disabled selected hidden>{{ 'key.mensaje.seleciona.medioPago' | translate}}</option>
+              <option *ngFor="let mediopago of listamediopago" [value]="mediopago.codmediopago" (ngModelChange)="compararListas()">
+                {{mediopago.glsmediopago}}
+              </option>
+            </select>
+          </div>
+          <div class="col-sm-1 text-left">
+            &nbsp;&nbsp;&nbsp;
+          </div>
+          <div class="col-sm-1 text-right">
+            <label for="observaciones">{{ 'key.observaciones' | translate}}</label>
+          </div>
+          <div class="form-group col-md-5">
+            <textarea rows="1" cols="40" class="form-control form-control-sm" formControlName="observaciones" [readonly]="habilitar_campos" [(ngModel)]="proveedor.observaciones" value="{{proveedor.observaciones}}"></textarea>
+          </div>
+        </div>
+        <div class="form-row d-flex justify-content">
+          <div class="form-group col-md-2 align-self-end">
+            <label for="facturaelectr">{{ 'key.facturacion.electronica' | translate}}</label>
+            <label for="facturaelectr">&nbsp;&nbsp;&nbsp;</label>
+            <input style="transform: scale(2.5);" (click)="cambioCheckFactura($event)" type="checkbox"  [(ngModel)]="facturaelectr"
+            formControlName="facturaelectr" name="facturaelectr" >
+          </div>
+          
+        </div>
+      </div>   
+    </form>  
+      
+    <!-- listado de articulos -->
+    <div class="card border-primary" style="padding: 5px;margin-top: 10px">
+      <div id="table" class="table-editable">
+        <form [formGroup]="FormDatosProducto" autocomplete="off" spellcheck="false">
+          <div class="row form-group align-self-end ml-1">
+            <div class="form-group col-md-2">
+              <label for="codigo">{{ 'key.codigo' | translate}} *</label>
+              <input [readonly]="bloquear_btn_agregar" class="form-control form-control-sm"
+              (keyup.enter)="BuscaProducto()"
+              (keydown.tab)="BuscaProducto()"
+              matInput
+              placeholder="{{'key.placeholder.ingrese.codigo' | translate}}"
+              type="text"
+              formControlName="codigo"
+              #codigo
+              maxlength="10">                        
+            </div>
+            <div class="form-group col-md-2">
+              <label for="descripcion">{{ 'key.descripcion' | translate}} *</label>
+              <input [readonly]="bloquear_btn_agregar" class="form-control form-control-sm"
+              (keyup.enter)="BuscaProducto()"
+              (keydown.tab)="BuscaProducto()"
+              matInput
+              placeholder="{{'key.placeholder.ingrese.descripcion' | translate}}"
+              type="text"
+              formControlName="descripcion"
+              #codigo
+              maxlength="50"
+                >
+            </div>
+            <div class="row form-group align-self-end ml-1">
+              <button type="button" class="btn btn-info btn-rounded btn-sm ml-2"
+                (click)="BuscaProducto()" [disabled]="bloquear_btn_agregar">{{ 'key.agregar' | translate}}
+                <i class="fas fa-plus ml-2" aria-hidden="true"></i>
+              </button>
+              <button type="button" id="btnLimpiargrillamed" class="btn btn-danger text-right btn-sm ml-4 float-right"
+                [disabled]="(!listado_articulos.length)?true:false"
+                style="position: absolute; right: 0;" (click)="ConfirmaEliminarTodo()">{{ 'key.button.limpiar.grilla' | translate}}<i
+                  class="fas fa-brush ml-1"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <div class="table-responsive mt-2" style="max-height: 500px;min-height: 100px;">
+          <table class="table table-sm table-condensed table-bordered  table-striped text">
+            <tr class="table table-sm  table-primary table-bordered ">
+              <th class="text-center">{{ 'key.codigo' | translate}}</th>
+              <th class="text-center">{{ 'key.descripcion' | translate}}</th>
+              <th class="text-center">{{ 'key.tipo' | translate}}</th>
+              <th class="text-center">{{ 'key.fecha.creacion' | translate}}</th>
+              <th class="text-center">{{ 'key.plazo.entrega' | translate}}</th>
+              <th class="text-center">{{ 'key.valor' | translate}}</th>
+              <th class="text-center"><button type="button" id="btnElinaRegistro"
+                  class="btn btn-info btn-danger btn-sm ml-2 " (click)="ConfirmaEliminarSel()"
+                  [disabled]="(!lista_eliminados.length)?true:false">
+                  {{ 'key.button.eliminar' | translate}} <i class="fas fa-trash-restore-alt  ml-1"></i>
+                </button>
+              </th>
+            </tr>
+            <tr class="table-secondary"
+              *ngFor="let registro of listado_articulos; let id = index">
+              <td>
+                <small><span>{{registro.meincodigo}}</span></small>
+              </td>
+              <td class="text-nowrap help   " tooltip="{{registro.meindescri }}">
+                <small><span> {{registro.meindesc| slice:0:35 }}</span></small>
+              </td>
+              <td class="text-nowrap help" tooltip="{{registro.tipo }}">
+                <small><span> {{registro.meintipo| slice:0:15 }}</span></small>
+              </td>
+              <td>
+                <small><span>{{registro.fechacreacion}}</span></small>
+              </td>
+              <td > 
+                <small>
+                   <!-- (keyup.enter)="cambio_cantidad(id, 'odetcantreal',registro,$event.target.value)"
+                    (focusout)="cambio_cantidad(id, 'odetcantreal',registro,$event.target.value)" -->
+                  <input type="number" class="form-control form-control-sm text-right" min="1" max="10"
+                    [disabled]="bloquear_cantidad" [(ngModel)]="registro.plazo"
+                    onKeyPress="if(this.value.length==3) return false;"
+                    (keyup.enter)="compararListas()"
+                    (focusout)="compararListas()">
+                </small>
+              </td>
+              <td>
+                <small><span>{{registro.valor}} </span></small>
+              </td>
+              <td>
+                <small>
+                  <input class="mr-2  " type="checkbox" (change)="cambioCheck($event,id)">
+                </small>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!--  Botones de página -->
+    <div class="form-row float-right mt-2 mr-1">
+      <div *ngIf="creacion" class="form-group  align-self-end">
+        <!-- [disabled]="(!listado_articulos.length || bloquear_btn_crear || (this.FormCrearOc.value.mediopago == null || this.FormCrearOc.value.mediopago == undefined || this.FormCrearOc.value.mediopago == 0))?true:false"     -->
+        <button type="button" id="btnguardar" class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+        [disabled]="FormCrearProv.invalid"
+        (click)="ConfirmaGenerarSolicitud()">{{ 'key.button.crear.solicitud' | translate}}
+          <i class="fas fa-save ml-1"></i>
+        </button>
+      </div>
+      <div *ngIf="modificacion" class="form-group  align-self-end">
+         <!-- [disabled]="(bloquear_btn_crear || (this.FormCrearOc.value.mediopago == null || this.FormCrearOc.value.mediopago == undefined) || (this.modificacion_detalle == 0 &&  this.modificacion_cabecera == 0))?true:false"     -->
+        <button type="button" id="btnguardar" class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+        [disabled]="FormCrearProv.invalid"
+        (click)="ConfirmaModificarSolicitud()">{{ 'key.modificar.solicitud' | translate}}
+          <i class="fas fa-save ml-1"></i>
+        </button>
+      </div>
+      <div class="form-group  align-self-end">
+        <button type="button" id="btnlimpiar" class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_02" 
+          (click)="ConfirmaLimpiarTodo()">{{ 'key.button.limpiar' | translate}} <i class="fas fa-eraser ml-1"></i>
+        </button>
+      </div>
+      <div class="form-group align-self-end">
+        <button type="button" id="btnsalir" class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+          (click)=salir()>{{ 'key.button.salir' | translate}} <i class="fas fa-window-close ml-1"></i>
+        </button>
+      </div>
+    </div>
+
+    <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+    <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+    <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+  </div>
+</app-main-nav>

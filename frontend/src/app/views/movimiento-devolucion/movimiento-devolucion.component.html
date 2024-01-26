@@ -1,0 +1,125 @@
+<div class="container">
+  <form [formGroup]="FormDevoluciones">
+
+    <div class="my-2 ml-2 titulo">
+      <!--menu - productos -mantencion de articulos-->
+      <h5>
+        Movimientos Devolución
+      </h5>
+    </div>
+
+
+
+    <!-- lineas de edición y bpusqueda -->
+
+    <div class="card border-primary" style="padding: 10px;">
+
+
+      <h5 class="card-header text-center ">
+        Identificación del Movimiento
+      </h5>
+
+      <div class="form-row mt-2">
+      <div class="form-group col-md-3">
+        <label for="descripciontipomov"> Tipo Movimiento *</label>
+        <input type="text" class="form-control form-control-sm" formControlName="descripciontipomov" value={{descripciontipomov}} disabled>
+      </div>
+
+      <div class="form-group col-md-2">
+        <label for="movimfarid"> Núumero Movimiento *</label>
+        <input type="number" class="form-control form-control-sm" formControlName="movimfarid"
+          disabled>
+      </div>
+
+      <div class="form-group col-md-2">
+        <label for="codigomein">Código Producto *</label>
+        <input type="text" class="form-control form-control-sm" formControlName="codigomein" disabled>
+
+      </div>
+
+      <div class="form-group col-md-5">
+        <label for="descripcionmein">Descripción Producto *</label>
+        <input type="text" class="form-control form-control-sm" formControlName="descripcionmein"
+          disabled>
+      </div>
+      
+    </div>
+    <div class="form-row mt-2">
+      <div class="form-group col-md-3">
+        <label for="disponible"> Máximo Disponible *</label>
+        <input type="number" class="form-control form-control-sm" formControlName="disponible" disabled>
+      </div>
+    </div>
+    </div> 
+
+<div class="container">
+  <div class="card mt-2 border-primary" style="padding: 10px;">
+
+    <h5 class="card-header text-center ">Detalle Devoluciones</h5>
+    <div id="table" class="table-editable">
+      <a class="btn-floating btn-lg purple-gradient"><i class="fas fa-bolt"></i></a>
+
+      <button type="button" class="btn btn-info btn-rounded btn-sm ml-2" (click)="addDevolucionGrilla()">Agregar +<i
+          class="fas fa-heart ml-2" aria-hidden="true"></i>
+      </button>
+
+      <button type="button" class="btn btn-info btn-rounded btn-sm ml-2 ">Eliminar -<i class="fas fa-heart ml-2"
+          aria-hidden="true"></i></button>
+
+
+      <div id="table" class="table-editable">
+        <table class="table table-bordered table-responsive-md table-striped text-center">
+
+          <tr>
+            <th class="text-center">Fecha</th>
+            <th class="text-center">Cantidad Devuelta</th>
+            <th class="text-center">Responsable</th>
+          </tr>
+          <tr *ngFor="let registro of detalleDevolucionPaginacion; let id = index">
+            <td>
+              <span> {{registro.fechamovdevol | date:'dd/MM/yyyy'}}</span>
+            </td>
+            <td>
+              <span contenteditable="true" (keyup)="changeValue(id, 'cantidaddevol', $event)"
+                (blur)="updateList(id, 'cantidaddevol', $event,FormDevoluciones.value.disponible )"> {{registro.cantidaddevol}}              
+              </span>
+            </td>
+            <td>
+              <span> {{registro.responsablenom}}</span>
+            </td>
+            
+
+          </tr>
+        </table>
+        <div class="row m-1">
+          <pagination [boundaryLinks]="true" [directionLinks]="true" [maxSize]="6"
+            [totalItems]="detalleDevolucion.length" [itemsPerPage]=8 [previousText]="'key.pagination.anterior' | translate"
+            [nextText]="'key.pagination.siguiente' | translate" [firstText]="'&laquo;'" [lastText]="'&raquo;'" (pageChanged)="pageChanged($event)">
+          </pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+
+
+<!--  Botones de página -->
+
+
+<div class="form-row float-right">
+
+  <div class="form-group col-md-6 align-self-end">
+    <button type="button" id="btnguardar" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+    
+      (click)="ConfirmarGuradadoMovimientoDevolucion()">GUARDAR 
+    </button>
+  </div>
+  <div class="form-group col-md-6 align-self-end">
+    <button type="button" id="btnsalir" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+      (click)="onCerrar()">SALIR
+    </button>
+  </div>
+</div>
+
+</div>

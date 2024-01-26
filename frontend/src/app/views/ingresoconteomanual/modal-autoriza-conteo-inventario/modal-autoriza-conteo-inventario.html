@@ -1,0 +1,61 @@
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onCerrar()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="card m-2 border-primary" style="padding: 10px; background-color:azure;">
+      <div class="mt-4 col-md-12 login-form-header">
+        <p class="login-form-font-header text-center">
+          AUTORIZA CANTIDAD INGRESADA EN CONTEO DE INVENTARIO
+        <p>
+      </div>
+      <div class="col-md-8 mx-auto mt-8">
+        <form [formGroup]="FormLogin" autocomplete="off" spellcheck="false" class="px-3">
+          <div class="form-group">
+            <label>Usuario</label>
+            <input type="text" name="usuario" class="form-control"
+              [ngClass]=" {' is-invalid': FormLogin.get('usuario').touched && FormLogin.get('usuario').invalid }"
+              formControlName="usuario">
+            <div *ngIf="FormLogin.get('usuario').hasError('required')" class="invalid-feedback">
+              El nombre de usuario es obligatorio
+            </div>
+            <div *ngIf="FormLogin.get('usuario').hasError('maxlength')" class="invalid-feedback">
+              El nombre de usuario no puede tener mas de 30 caracteres
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Contraseña </label>
+            <input type="password" name="Contraseña" class="form-control"
+              [ngClass]=" {' is-invalid': FormLogin.get('password').touched && FormLogin.get('password').invalid }"
+              formControlName="password">
+            <div *ngIf="FormLogin.get('password').hasError('required')" class="invalid-feedback">
+              La contraseña es obligatoria
+            </div>
+            <div *ngIf="FormLogin.get('password').hasError('maxlength')" class="invalid-feedback">
+              La contraseña no puede tener mas de 30 caracteres
+            </div>
+            <div *ngIf="FormLogin.get('password').hasError('stringConEspaciosAlrededor')" class="invalid-feedback">
+              La contraseña no puede tener espacios al inicio o al final
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="observaciones">Observaciones</label>
+            <textarea name="observaciones" class="form-control" formControlName="observaciones"></textarea>
+          </div>
+          <div style="margin-top: 2rem;">
+            <button class="btn btn-primary w-100" (click)="autenticacion()"
+              [disabled]="FormLogin.invalid || estadoBotones">
+              <span class="text-uppercase">enviar</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+    <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+    <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+    <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+  </div>

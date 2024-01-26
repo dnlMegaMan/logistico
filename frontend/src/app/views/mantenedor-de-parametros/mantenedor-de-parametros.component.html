@@ -1,0 +1,180 @@
+<app-main-nav>
+  <ng-container *ngIf="tipoParametroSeleccionado; else sinTiposDeParametros">
+    <h3 class="my-4 text-center">Mantenedor de Parámetros</h3>
+    <!-- SELECTORDE PARAMETROS -->
+    <div class="mx-3 card">
+      <div class="card-body">
+        <form [formGroup]="parametrosForm">
+          <div class="form-row">
+            <div class="mb-1 form-group col-4">
+              <label>Tipo de parámetro</label>
+              <select class="form-control form-control-sm" formControlName="tipoParametro" (change)="onCambiarTipoParametro(true)">
+                <option *ngFor="let parametro of tiposParametros" [ngValue]="parametro">
+                  {{ parametro.descripcion }}
+                </option>
+              </select>
+            </div>
+            <div class="mb-1 form-group col-1">
+              <label>Vigente</label>
+              <input type="text" class="form-control form-control-sm" [readOnly]="true" [value]="tipoParametroSeleccionado.estado === 0 ? 'SÍ' : 'NO'" />
+            </div>
+            <div *ngIf="parametrosArray.controls.length === 0" class="mb-1 form-group col-7">
+              <label>&nbsp;</label>
+              <h6 class="ml-2 text-danger">Tipo de parámetro sin detalle</h6>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- PESTAÑAS -->
+    <div class="px-3">
+      <tabset #tabset>
+        <tab heading="Parámetros">
+          <div class="card">
+            <div class="card-body">
+              <form [formGroup]="parametrosForm">
+                <div class="mt-3 mb-4 row">
+                  <div class="col-3">
+                    <input type="search" class="form-control form-control-sm" formControlName="filtroBusqueda" placeholder="Descripción parámetro..." />
+                  </div>
+                  <div class="col-4">
+                    <button class="btn btn-sm btn-info" (click)="limpiarBusquedaEnTabla()">
+                      <span>Limpiar Búsqueda</span>
+                      <i class="fas fa-brush ml-2"></i>
+                    </button>
+                  </div>
+                  <div class="ml-auto col-5 d-flex justify-content-end">
+                    <button class="btn btn-sm btn-info" [disabled]="tipoParametroSeleccionado.modificable !== 'S'" (click)="agregarNuevoParametro()">
+                      <span>Nuevo Parámetro</span>
+                      <i class="fas fa-plus ml-2"></i>
+                    </button>
+                    <button class="ml-3 btn btn-sm btn-danger" (click)="borrarCambios()">
+                      <span>Borrar Cambios</span>
+                      <i class="fas fa-brush ml-2"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="row" formArrayName="parametros">
+                  <div class="col-12">
+                    <table class="table table-sm table-primary table-bordered">
+                      <thead>
+                        <tr class="table table-sm table-primary table-bordered">
+                          <th style="width: 50px"></th>
+                          <th class="text-center" style="width: 110px">Código</th>
+                          <th class="px-3">Descripción</th>
+                          <th class="text-center">Vigente</th>
+                          <th class="text-center">Sistema</th>
+                          <th class="px-3" style="width: 250px">Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr class="table-secondary" *ngFor="let param of obtenerParametrosFiltrados()">
+                          <td class="align-middle text-center">
+                            <i *ngIf="param.value.accion === 'I'" class="d-block material-icons" style="font-size: 22px">add_circle_outline</i>
+                            <i *ngIf="param.value.accion === 'M' && param.dirty" class="d-block material-icons" style="font-size: 22px">edit</i>
+                          </td>
+                          <td class="align-middle text-center">{{ param.value.codigo }}</td>
+                          <td class="px-3" [ngClass]="{ 'align-middle': !param.value.enEdicion }">
+                            <span *ngIf="!param.value.enEdicion" style="white-space: pre">{{ param.value.descripcion }}</span>
+                            <ng-container *ngIf="param.value.enEdicion">
+                              <input
+                                type="text"
+                                class="form-control form-control-sm"
+                                [ngClass]="{ 'is-invalid': param.get('descripcion').invalid }"
+                                [formControl]="param.get('descripcion')" />
+                              <div *ngIf="param.get('descripcion').hasError('required')" class="invalid-feedback">La descripción es obligatoria</div>
+                              <div *ngIf="param.get('descripcion').hasError('maxlength')" class="invalid-feedback">
+                                La descripción no puede tener más de 255 caracteres
+                              </div>
+                            </ng-container>
+                          </td>
+                          <td [ngClass]="{ 'text-center align-middle': !param.value.enEdicion }">
+                            <span *ngIf="!param.value.enEdicion">{{ param.value.estado === 0 ? 'SÍ' : 'NO' }}</span>
+                            <ng-container *ngIf="param.value.enEdicion">
+                              <select
+                                *ngIf="param.value.enEdicion"
+                                class="form-control form-control-sm"
+                                [ngClass]="{ 'is-invalid': param.get('estado').invalid }"
+                                [ngStyle]="{ 'background-image': param.get('estado').invalid ? 'none' : 'initial' }"
+                                [formControl]="param.get('estado')">
+                                <option [ngValue]="0">SÍ</option>
+                                <option [ngValue]="1">NO</option>
+                              </select>
+                              <div *ngIf="param.get('estado').hasError('required')" class="invalid-feedback">El estado es obligatorio</div>
+                            </ng-container>
+                          </td>
+                          <td class="align-middle text-center">{{ param.value.modificable === 'S' ? 'NO' : 'SÍ' }}</td>
+                          <td class="align-middle px-3">
+                            <ng-container *ngIf="!param.value.enEdicion">
+                              <button
+                                *ngIf="param.value.accion === 'I' || param.value.modificable === 'S'"
+                                type="button"
+                                class="p-0 btn btn-link text-primary"
+                                (click)="editarParametro(param)">
+                                Editar
+                              </button>
+                              <button
+                                *ngIf="param.value.accion === 'I'"
+                                type="button"
+                                class="p-0 btn btn-link ml-3 text-danger"
+                                (click)="eliminarParametro(param)">
+                                Eliminar
+                              </button>
+                            </ng-container>
+                            <ng-container *ngIf="param.value.enEdicion">
+                              <button type="button" class="p-0 btn btn-link text-primary" (click)="aceptarCambiosParametro(param)" [disabled]="param.invalid">
+                                Aceptar
+                              </button>
+                              <button type="button" class="p-0 btn btn-link ml-3 text-danger" (click)="cancelarCambiosParametro(param)">Cancelar</button>
+                              <button
+                                *ngIf="param.value.accion === 'I'"
+                                type="button"
+                                class="p-0 btn btn-link ml-3 text-danger"
+                                (click)="eliminarParametro(param)">
+                                Eliminar
+                              </button>
+                            </ng-container>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </tab>
+      </tabset>
+    </div>
+    <!-- BOTONES  -->
+    <div class="mt-4 mb-5 px-3 d-flex align-items-center justify-content-end">
+      <button
+        type="button"
+        class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+        [disabled]="parametrosArray.controls.length === 0 || parametrosForm.invalid || noHayParametrosEditables()"
+        (click)="grabarParametros()">
+        <span class="text-uppercase">Guardar Cambios</span>
+        <i class="fas fa-save ml-2"></i>
+      </button>
+      <button type="button" class="ml-2 btn btn-primary btn-sm button-my-styles-busqueda_02" (click)="salir()">
+        <span class="text-uppercase">Salir</span>
+        <i class="fas fa-window-close ml-2"></i>
+      </button>
+    </div>
+  </ng-container>
+
+  <ng-template #sinTiposDeParametros>
+    <h3 class="my-4 text-center">Mantenedor de Parámetros</h3>
+
+    <div class="mx-3 card">
+      <div class="card-body">
+        <h4 class="text-center">No hay parámetros para esta empresa y sucursal</h4>
+      </div>
+    </div>
+  </ng-template>
+</app-main-nav>
+
+<swal #alertSwal title="" text="" type="success" [showCancelButton]="false"></swal>
+<swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"></swal>
+<swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"></swal>
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>

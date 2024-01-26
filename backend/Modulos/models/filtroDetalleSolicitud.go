@@ -1,0 +1,60 @@
+package models
+
+// FiltroDetalleSolicitud is...
+type FiltroDetalleSolicitud struct{
+	Sodeid             		int 	`json:"sodeid"`
+	Soliid             		int 	`json:"soliid"`
+	Repoid             		int 	`json:"repoid"`
+	Codmei             		string 	`json:"codmei"`
+	Meinid             		int 	`json:"meinid"`
+	Unidad             		string 	`json:"unidad"`
+	Dosis              		int 	`json:"dosis"`
+	Formulacion        		int 	`json:"formulacion"`
+	Meindescri         		string 	`json:"meindescri"`
+	Dias               		int 	`json:"dias"`
+	Cantsoli           		int 	`json:"cantsoli"`
+	Pendientedespacho  		int 	`json:"pendientedespacho"`
+	Cantdespachada     		int 	`json:"cantdespachada"`
+	Cantadespachar     		int 	`json:"cantadespachar"`
+	Estado             		int 	`json:"estado"`
+	Observaciones      		string 	`json:"observaciones"`
+	Stockorigen        		int 	`json:"stockorigen"`
+	Stockdestino       		int 	`json:"stockdestino"`
+	Usuariomodifica    		string 	`json:"usuariomodifica"`
+	Fechamodifica      		string 	`json:"fechamodifica"`
+	Usuarioelimina     		string 	`json:"usuarioelimina"`
+	Fechaelimina       		string 	`json:"fechaelimina"`
+	Viaadministracion  		string 	`json:"viaadministracion"`
+	Acciond            		string 	`json:"acciond"`
+	Marca              		string 	`json:"marca"`
+	Cantdevolucion     		int 	`json:"cantdevolucion"`
+	Fechavto           		string 	`json:"fechavto"`
+	Lote               		string 	`json:"lote"`
+	Descunidadmedida   		string 	`json:"descunidadmedida"`
+	Cantrecepcionado   		int 	`json:"cantrecepcionado"`
+	Cantrecepcionada   		int 	`json:"cantrecepcionada"`
+	Cantidadarecepcionar 	int 	`json:"cantidadarecepcionar"`
+	Cantidadadevolver  		int 	`json:"cantidadadevolver"`
+	Unidadcompra       		int 	`json:"unidadcompra"`
+	Unidaddespacho     		int 	`json:"unidaddespacho"`
+	Glosaunidadcompra  		string 	`json:"glosaunidadcompra"`
+	Glosaunidaddespacho 	string 	`json:"glosaunidaddespacho"`
+	Tiporegmein        		string 	`json:"tiporegmein"`
+	Marcacheckgrilla   		bool`json:"marcacheckgrilla"`
+	Recetaentregaprogdet 	string 	`json:"recetaentregaprogdet"`
+	Diasentregacodigodet 	int 	`json:"diasentregacodigodet"`
+	Tienelote          		string 	`json:"tienelote"`
+	Backgroundcolor    		string 	`json:"backgroundcolor"`
+	Controlado         		string 	`json:"controlado"`
+	Consignacion       		string 	`json:"consignacion"`
+	Detallelote[]        	Detallelote `json:"detallelote"`
+	Nomplantilla       		string 	`json:"nomplantilla"`
+	Idplantilla        		int 	`json:"idplantilla"`
+	Sodecantrecepdevo  		int 	`json:"sodecantrecepdevo"`
+	Cantadespacharresp 		int 	`json:"cantadespacharresp"`
+	Bloqcampogrilla    		bool `json:"bloqcampogrilla"`
+	Bloqcampogrilla2   		bool `json:"bloqcampogrilla2"`
+	Excedecant         		bool `json:"excedecant"`
+	Marcacheckgrillapro 	bool `json:"marcacheckgrillapro"`
+	Bloqcampogrilla3   		bool `json:"bloqcampogrilla3"`
+}

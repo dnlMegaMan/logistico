@@ -1,0 +1,231 @@
+<app-main-nav>
+  <div style="padding: 10px;">
+    <div style="margin: 10px;">
+        <form [formGroup]="FormConsultaKardex">
+            <!-- Contenedor feneral de la página -->
+            <div class="my-2 ml-2 titulo text-center">
+                <!--menu -->
+                <h5>
+                    {{ 'key.consulta.kardex' | translate}}
+                </h5>
+            </div>
+            <div class="card border-primary" style="padding: 5px;">
+                <div class="form-row mt-2">
+                    <div class="form-group col-md-3">
+                        <label for="boddestino">{{ 'key.bodega' | translate}} *</label>
+                        <select name="boddestino" class='form-control form-control-sm'
+                            (change)="BuscaPeriodoBodega(FormConsultaKardex.value.boddestino)"
+                            formControlName='boddestino'>
+                            <option *ngFor='let listaBodegasSolictante of bodegasdestino'
+                                [ngValue]='listaBodegasSolictante.bodcodigo'>
+                                {{ listaBodegasSolictante.boddescripcion }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="periodo">{{ 'key.periodo' | translate}} *</label>
+                        <select id="periodo" name="periodo" class="form-control form-control-sm"
+                            (change)="ActivaBotonBusqueda(FormConsultaKardex.value.boddestino,FormConsultaKardex.value.periodo)"
+                            (focusout)="ActivaBotonBusqueda(FormConsultaKardex.value.boddestino,FormConsultaKardex.value.periodo)"
+                            aria-describedby="helpAccountId" formControlName="periodo">
+                            <option *ngFor="let periodo of periodosmedskardex" [ngValue]="periodo.ckarid">
+                                {{ periodo.ckarperiodo }} {{periodo.ckarfechacierre}}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-1">
+                        <label for="codigo">{{ 'key.codigo' | translate}} *</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="codigo"
+                        (keyup.enter)="busquedaProductotab($event.target.value)"
+                        (keydown.tab)="busquedaProductotab($event.target.value)">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="descripcion">{{ 'key.descripcion' | translate}} </label>
+                        <input type="text" class="form-control form-control-sm" formControlName="descripcion"
+                        (keyup.enter)="setDatabusqueda($event.target.value)"
+                        (keydown.tab)="setDatabusqueda($event.target.value)">
+                    </div>
+
+                    <div class="form-group col-md-2 align-self-end text-right">
+                        <button type="button" id="btnbuscar" class="btn btn-primary btn-sm"
+                            [disabled]="!activbusqueda"
+                            (click)="busquedaProductobtn(FormConsultaKardex.controls.codigo.value)">
+                            {{txtBtnBuscar}} <i class="fas fa-search ml-1"></i>
+                        </button>
+
+                    </div>
+
+                    <div class="form-group col-md-1 align-self-end">
+                        <button type="button" id="btnlmp" class="btn btn-primary btn-sm btn-buscar"
+                            (click)="Limpiar()">
+                            {{ 'key.button.limpiar.L' | translate}} <i class="fas fa-eraser ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+        <div class="card border-primary mt-0" style="padding: 20px">
+
+            <div class="table-responsive mt-3" style="max-height: auto;min-height: 100px;">
+                <table class="table table-sm  table-primary table-bordered"*ngIf="!muestragrillacoddes">
+                    <tr>
+                        <th class="text-center" style="width: 5%;">{{ 'key.solicitud.numero' | translate}}</th>
+                        <th class="text-center" style="width: 10%;">{{ 'key.fecha.hora' | translate}}</th>
+                        <th class="text-center" style="width: 12%;">{{ 'key.bodega' | translate}}</th>
+                        <th class="text-center" style="width: 13%;">{{ 'key.tipo.movimiento' | translate}}</th>
+                        <th class="text-center" style="width: 8%;">{{ 'key.lote' | translate}}</th>
+                        <div [hidden]="!Fin700">
+                          <th class="text-center" style="width: 8%;">{{ 'key.referencia.fin700' | translate}}</th>
+                        </div>
+                        <th class="text-center" style="width: 10%;">{{ 'key.numero.identificacion' | translate}}</th>
+                        <th class="text-center" style="width: 10%;">{{ 'key.nombre.paciente' | translate}}</th>
+                        <th class="text-center" style="width: 8%;">{{ 'key.cantidad.entrada' | translate}}</th>
+                        <th class="text-center" style="width: 8%;">{{ 'key.cantidad.salida' | translate}}</th>
+                        <th class="text-center" style="width: 8%;">{{ 'key.saldo' | translate}}</th>
+                    </tr>
+                    <tr class="table-secondary" *ngFor="let kardex of datoskardexpaginacion
+                    |  paginate: {itemsPerPage: 15, currentPage: page, id:'kardex'}; let id = index"
+                    style="cursor: pointer;">
+                        <td style="text-align: right;">
+                            <small><span>{{kardex.soliid}} </span></small>
+                        </td>
+                        <td>
+                            <small><span>{{kardex.movimfecha}}</span></small>
+                        </td>
+                        <td class="text-nowrap" tooltip="{{kardex.fbodexternadesc }}">
+                            <small><span> {{kardex.fbodexternadesc | slice:0:20 }}</span></small>
+                        </td>
+                        <td class="text-nowrap" tooltip="{{kardex.movimdescri }}">
+                            <small><span> {{kardex.movimdescri}}</span></small>
+                        </td>
+                        <td>
+                            <small><span> {{kardex.lote | slice: 0:20}}</span></small>
+                        </td>
+                        <div [hidden]="!Fin700">
+                          <td  style="text-align: right;" tooltip="{{kardex.errorerp}}">
+                              <small><span>{{kardex.referencia}} </span></small>
+                          </td>
+                        </div>
+                        <td class="text-nowrap">
+                            <small><span> {{kardex.rutpaciente}} </span></small>
+                        </td>
+                        <td class="text-nowrap" tooltip="{{kardex.nombrepaciente }}">
+                            <small><span> {{kardex.nombrepaciente | slice:0:20}} </span></small>
+                        </td>
+                        <td style="text-align: right;">
+                            <small><span>{{kardex.cantidadentrada}} </span></small>
+                        </td>
+                        <td style="text-align: right;">
+                            <small><span>{{kardex.cantidadsalida}} </span></small>
+                        </td>
+                        <td style="text-align: right;">
+                            <small><span>{{kardex.cantidadsaldo}} </span></small>
+                        </td>
+                    </tr>
+                </table>
+                <table  *ngIf="muestragrillacoddes"
+                    class="table table-sm table-condensed table-bordered table-responsive-md table-striped text-center">
+                    <tr class="table table-sm  table-primary table-bordered ">
+                        <th class="text-center">{{ 'key.codigo' | translate}}</th>
+                        <th class="text-center">{{ 'key.descripcion' | translate}}</th>
+                        <th class="text-center">{{ 'key.fecha.movimiento' | translate}}</th>
+                        <th class="text-center">{{ 'key.movimiento' | translate}} </th>
+                        <th class="text-center">{{ 'key.motivo' | translate}}</th>
+                        <th class="text-center">{{ 'key.numero.identificacion' | translate}}</th>
+                        <th class="text-center">{{ 'key.nombre.paciente' | translate}}</th>
+                        <th class="text-center">{{ 'key.cantidad.entrada' | translate}}</th>
+                        <th class="text-center">{{ 'key.cantidad.salida' | translate}}</th>
+                        <th class="text-center">{{ 'key.saldo' | translate}}</th>
+                    </tr>
+                    <tr class="table-secondary" *ngFor="let registro of datoskardexpaginacion
+                    |  paginate: {itemsPerPage: 15, currentPage: page, id:'kardex'}; let id = index"
+                    style="cursor: pointer;">
+                        <td>
+                            <small><span>{{registro.meincodmei}}</span></small>
+                        </td>
+                        <td class="text-nowrap help   " tooltip="{{registro.meindescri }}">
+                            <small><span> {{registro.meindescri| slice:0:20 }}</span></small>
+                        </td>
+                        <td>
+                            <small><span>{{registro.movimfecha }}</span></small>
+                        </td>
+                        <td class="text-nowrap" tooltip="{{registro.movimdescri }}">
+                            <small><span>{{registro.movimdescri | slice:0:20}} </span></small>
+                        </td>
+                        <td class="text-nowrap" tooltip="{{registro.tipomotivodes }}">
+                            <small><span> {{registro.tipomotivodes | slice:0:20}} </span></small>
+                        </td>
+
+                        <td class="text-nowrap">
+                            <small><span> {{registro.rutpaciente}} </span></small>
+                        </td>
+                        <td class="text-nowrap" tooltip="{{registro.nombrepaciente }}">
+                            <small><span> {{registro.nombrepaciente | slice:0:20}} </span></small>
+                        </td>
+                        <td class="text-nowrap">
+                            <small><span> {{registro.cantidadentrada}} </span></small>
+                        </td>
+                        <td class="text-nowrap">
+                            <small><span> {{registro.cantidadsalida}} </span></small>
+                        </td>
+                        <td class="text-nowrap">
+                            <small><span> {{registro.cantidadsaldo}} </span></small>
+                        </td>
+                    </tr>
+                </table>
+                <div class="row align-self-center">
+                    <pagination-controls
+                    id="kardex"
+                      (pageChange)="page = $event"
+                      previousLabel="{{'key.pagination.anterior' | translate}}"
+                      nextLabel="{{'key.pagination.siguiente' | translate}}"
+                      autoHide="true">
+                    </pagination-controls>
+                  </div>
+            </div>
+            <!-- <div class="row m-1" *ngIf="datoskardex.length>20">
+                <pagination [boundaryLinks]="true" [directionLinks]="true" [maxSize]="6"
+                    [totalItems]="datoskardex.length" [itemsPerPage]=20 [previousText]="'Anterior'"
+                    [nextText]="'Siguiente'" [firstText]="'&laquo;'" [lastText]="'&raquo;'"
+                    (pageChanged)="pageChanged($event)">
+                </pagination>
+            </div>  -->
+
+        </div>
+
+        <!--  Botones de página -->
+        <div class="form-row float-right mt-2">
+            <div class="form-group col-md-3 align-self-end" *ngIf="modelopermisos.btnimprimeconskardex">
+                <button type="button" id="btnguardar" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+                (click)="onImprimir('pdf')" [disabled]="!btnimprime">{{ 'key.button.imprimir.pdf' | translate}}
+                    <i class="fas fa-file-pdf ml-1"></i>
+                </button>
+            </div>
+            <div class="form-group col-md-3 align-self-end" *ngIf="modelopermisos.btnimprimeconskardex">
+                <button type="button" id="btnguardar" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+                (click)="onImprimir('xls')" [disabled]="!btnimprime">{{ 'key.button.imprimir.excel' | translate}}
+                    <i class="fas fa-file-excel ml-1"></i>
+
+                </button>
+            </div>
+            <div class="form-group col-md-3 align-self-end">
+                <button type="button" id="btnlimpiar" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+                    (click)="Limpiar()">{{ 'key.button.limpiar' | translate}} <i class="fas fa-eraser ml-1"></i>
+                </button>
+            </div>
+            <div class="form-group col-md-3 align-self-end">
+                <button type="button" id="btnsalir" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+                (click)="salir()">{{ 'key.button.salir' | translate}} <i class="fas fa-window-close ml-1"></i>
+                </button>
+            </div>
+        </div>
+        <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+        <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+        <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+    </div>
+</div>
+</app-main-nav>
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+

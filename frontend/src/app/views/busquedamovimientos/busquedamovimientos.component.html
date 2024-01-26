@@ -1,0 +1,85 @@
+<div class="card">
+  <!--menu - productos -mantencion de articulos-->
+
+  <div class="card-header">
+    {{titulo}}
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onCerrarSalir()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="card m-2 border-primary" style="padding: 10px; background-color:azure;">
+    <form novalidate [formGroup]='lForm' autocomplete="off" spellcheck="false">
+      <div class="form-row">
+        <div class="form-group col-md-2">
+          <label for="tipomovimiento">Tipo de Movimiento *</label>
+          <select name="idtipodespacho" class='form-control form-control-sm' formControlName='idtipodespacho'>
+            <option *ngFor='let tipomovimiento  of Arreglotiposmovimientos' [ngValue]='tipomovimiento.idtipodespacho'>
+              {{tipomovimiento.tipodespachodes}}
+            </option>
+          </select>
+        </div>
+        <div class="form-group col-md-2">
+          <label for="numeromovimiento">Número Movimiento *</label>
+          <input type="number" class="form-control form-control-sm" formControlName="numeromovimiento">
+        </div>
+        <div class="form-group col-md-3">
+          <label for="fechadesde">Fecha Desde  *</label>
+          <input appSelecttext type="text" placeholder="DD/MM/YYYY" class="form-control form-control-sm"
+            [bsConfig]="bsConfig" bsDatepicker formControlName="fechadesde" />
+        </div>
+        <div class="form-group col-md-3">
+          <label for="fechahasta">Fecha Desde  *</label>
+          <input appSelecttext type="text" placeholder="DD/MM/YYYY" class="form-control form-control-sm"
+            [bsConfig]="bsConfig" bsDatepicker formControlName="fechahasta" />
+        </div>
+        <div class="form-group col-md-2 align-self-end">
+          <button type="button" id="btnbuscar" class="btn btn-primary btn-sm button-my-styles-busqueda_01" (click)="BuscarMovimientosFiltro(lForm.value.idtipodespacho,lForm.value.numeromovimiento,
+            lForm.value.fechadesde,lForm.value.fechahasta)">Buscar
+          </button>
+        </div>
+      </div>
+      <table class="table table-sm table-stripped table-condensed table-hovered">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Tipo Movimiento</th>
+            <th>Número Movimiento</th>
+            <th>Bodega Origen</th>
+            <th>Destino</th>
+            <th>Usuario</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let arreglomovimientos of listadomovimientospaginacion" (click)="onCerrar(arreglomovimientos)"
+            style="cursor: pointer;">
+            <td>{{arreglomovimientos.movimfecha | date:'dd/MM/yyyy' }}</td>
+            <td>{{arreglomovimientos.movimudescr}}</td>
+            <td>{{arreglomovimientos.movimfarid}}</td>
+            <td>{{arreglomovimientos.bodegadescr}}</td>
+            <td>{{arreglomovimientos.bodegadestinodes}}</td>
+            <td>{{arreglomovimientos.usuario}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="row m-1">
+        <pagination [boundaryLinks]="true" [directionLinks]="true" [maxSize]="6"
+          [totalItems]="listadomovimientos.length" [itemsPerPage]=8 [previousText]="'key.pagination.anterior' | translate" [nextText]="'key.pagination.siguiente' | translate"
+          [firstText]="'&laquo;'" [lastText]="'&raquo;'" (pageChanged)="pageChanged($event)">
+        </pagination>
+      </div>
+    </form>
+  </div>
+  <div class="row float-right mt-1">
+    <div class="form-group col-md-9 align-self-end text-right">
+      <button type="button" id="btnlimpiar" class="btn  btn-primary btn-sm button-my-styles-busqueda_02"
+        (click)="Limpiar()">LIMPIAR <i class="fas fa-eraser ml-1"></i>
+      </button>
+    </div>
+    <div class="form-group col-md-3 align-self-end text-right">
+      <button type="button" id="btnlimpiar" class="btn  btn-primary btn-sm button-my-styles-busqueda_02"
+        (click)="onCerrarSalir()">SALIR <i class="fas fa-window-close ml-1"></i>
+      </button>
+    </div>
+  </div>
+</div>

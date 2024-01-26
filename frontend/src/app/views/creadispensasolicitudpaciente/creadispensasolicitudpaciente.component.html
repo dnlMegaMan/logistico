@@ -1,0 +1,541 @@
+<!-- respaldo adm sol html -->
+<!-- <app-navbar ></app-navbar>
+<app-sidebar></app-sidebar>
+<div class="content-wrapper pl-4"> -->
+<app-main-nav>
+  <div style="padding: 10px;">
+    <div style="margin: 10px;">
+        <div class="my-2 ml-2 titulo text-center">
+            <!--menu -->
+            <h3>
+                {{ 'key.title.crea.dispensa.solicitud.pacientes' | translate}}
+            </h3>
+        </div>
+        <div class="card-body" [hidden]="this.alerts.length <= 0">
+            <div *ngFor="let alert of alerts">
+              <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)">{{ alert.msg }}
+              </alert>
+            </div>
+        </div>
+        <!-- lineas de edición y bpusqueda -->
+        <div class="card border-primary mt-0" style="padding: 5px; height: 300px;">
+
+            <tabset>
+                <tab heading="{{'key.tab.datos.paciente' | translate}}" id="tab1" style="height: 300px;">
+                    <form [formGroup]="FormDatosPaciente" autocomplete="off" spellcheck="false">
+                        <div class="table-responsive mt-1" style="height: 360px;">
+                            <div class="form-row">
+                                <div class="form-group col-sm-1">
+                                    <label for="numsolicitud"># {{ 'key.solicitud' | translate}} *</label>
+                                    <input type="text" class="form-control form-control-sm"
+                                        formControlName="numsolicitud">
+                                </div>
+                                <div class="form-group col-sm-1">
+                                    <label for="tipoDocumento">{{ 'key.tipo.documento' | translate}} *</label>
+                                    <select class="form-control form-control-sm"
+                                        formControlName="tipodocumento" (change)="SeleccionTipoDoc()">
+                                        <option *ngFor="let tipodoc of docsidentis"
+                                            [ngValue]='tipodoc.docidentcodigo'>
+                                            {{ tipodoc.docidentdescripcion }}
+                                        </option>
+                                    </select>
+                                    <!-- <input type="text" class="form-control form-control-sm"
+                                        formControlName="tipodocumento"> -->
+                                </div>
+                                <div class="form-group col-sm-1">
+                                    <label for="numidentificacion">{{ 'key.numero.documento' | translate}} *</label>
+                                    <input type="text" class="form-control form-control-sm"
+                                        formControlName="numidentificacion"
+                                        (keyup.enter)="getPacienteTipoDoc()"
+                                        (keydown.tab)="getPacienteTipoDoc()">
+                                </div>
+                                <div class="form-group col-sm-5">
+                                    <label for="nombrepaciente">{{ 'key.paciente' | translate}} *</label>
+                                    <input type="text" class="form-control form-control-sm"
+                                        formControlName="nombrepaciente">
+                                </div>
+                                <div class="form-group col-sm-1">
+                                    <label for="sexo">{{ 'key.sexo' | translate}} *</label>
+                                    <input type="text" class="form-control form-control-sm" formControlName="sexo">
+                                </div>
+
+                                <div class="form-group col-sm-1">
+                                    <label for="edad">{{ 'key.edad' | translate}} *</label>
+                                    <input type="text" class="form-control form-control-sm" formControlName="edad">
+                                </div>
+                                <div class="form-group col-sm-2 align-self-end text-right">
+                                    <button type="button" id="paciente"
+                                        class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                                        (click)="getPacienteTipoDoc()">{{ 'key.button.buscar.paciente' | translate}}
+                                        <i class="fas fa-search ml-1"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form-row">
+
+                                <div class="form-group col-sm-1">
+                                    <label for="numcuenta">{{ 'key.numero.cuenta' | translate}} *</label>
+                                    <input type="text" class="form-control form-control-sm" formControlName="numcuenta">
+                                </div>
+                                <div class="form-group col-sm-3">
+                                    <label for="unidad">{{ 'key.unidad' | translate}} *</label>
+                                    <input type="text" class="form-control form-control-sm" formControlName="unidad">
+                                </div>
+                                <div class="form-group col-sm-1">
+                                    <label for="pieza">{{ 'key.pieza' | translate}} *</label>
+                                    <input type="text" class="form-control form-control-sm" formControlName="pieza">
+                                </div>
+                                <div class="form-group col-sm-1">
+                                    <label for="cama">{{ 'key.cama' | translate}} *</label>
+                                    <input type="text" class="form-control form-control-sm" formControlName="cama">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="medico">{{ 'key.medico.tratante' | translate}} *</label>
+                                    <input type="text" class="form-control form-control-sm" formControlName="medico">
+                                </div>
+                                <div class="form-group col-sm-2 align-self-end text-right">
+                                    <button type="button" id="solicitud" (click)="onBuscar('Solicitud')"
+                                         class="btn btn-primary btn-sm button-my-styles-busqueda_01">
+                                         {{ 'key.button.buscar.solicitud' | translate}} <i class="fas fa-search ml-1"></i>
+                                    </button>
+                                </div>
+
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-2">
+                                    <label for="fechahora">{{ 'key.fecha.hora' | translate}} *</label>
+                                    <input type="text" appSelecttext placeholder="DD/MM/YYYY HH:MM:SS" [bsConfig]="bsConfig"
+                                        bsDatepicker id="fechahora" class="form-control form-control-sm"
+                                        formControlName="fechahora">
+                                </div>
+                                <div class="form-group col-md-2">
+                                    <label for="ambito">{{ 'key.ambito' | translate}} *</label>
+                                    <select class="form-control form-control-sm" formControlName="ambito">
+                                        <option *ngFor="let tipoambito of tipoambitos"
+                                            [ngValue]='tipoambito.ambitocodigo'>
+                                            {{ tipoambito.ambitodescripcion }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-2">
+                                    <label for="estado">{{ 'key.estado.solicitud' | translate}} *</label>
+                                    <select class="form-control form-control-sm" formControlName="estado">
+                                        <option *ngFor="let estadosolicitud of estadosolicitudes"
+                                            [ngValue]='estadosolicitud.estsolcodigo'>
+                                            {{ estadosolicitud.estsoldescripcion }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-2">
+                                    <label for="bodcodigo">{{ 'key.bodega' | translate}} *</label>
+                                    <select name="bodcodigo" class='form-control form-control-sm'
+                                        formControlName='bodcodigo' (change) ="SeleccionaBodega()">
+                                        <option *ngFor='let listaBodegasSolictante of bodegasdestino'
+                                            [ngValue]='listaBodegasSolictante.bodcodigo'>
+                                            {{ listaBodegasSolictante.boddescripcion }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-2">
+                                  <label for="servicio">{{ 'key.servicio' | translate}} *</label>
+                                  <select name="servicio" class='form-control form-control-sm'
+                                      formControlName='servicio' (change) ="SeleccionaServicio()">
+                                      <option *ngFor='let servicio of servicios'
+                                          [ngValue]='servicio.servcodigo'>
+                                          {{ servicio.servdescripcion }}
+                                      </option>
+                                  </select>
+                                </div>
+                                <div class="form-group col-md-2 align-self-end text-right">
+                                    <button type="button" id="btnevento" class="btn btn-primary btn-sm
+                                    button-my-styles-busqueda_01" [disabled]="(tipobusqueda==='Paciente'||tipobusqueda===null)?true:false"
+                                        (click)="eventosSolicitud()">
+                                        {{ 'key.button.eventos' | translate}}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </tab>
+            </tabset>
+        </div>
+        <div class="card">
+            <div class="card-body div-top">
+                <tabset #tabProducto>
+                    <tab heading="{{'key.tab.medicamentos' | translate}}" customClass="tabClass" id="tabMed" >
+                        <form [formGroup]="FormDatosProducto" autocomplete="off" spellcheck="false">
+                            <div class="row form-group align-self-end ml-1">
+                                <div class="form-group col-md-1">
+                                    <label for="codigo">{{ 'key.codigo' | translate}} *</label>
+                                    <input class="form-control form-control-sm"
+                                    (keyup.enter)="BuscaProducto($event.target.value)"
+                                    (keydown.tab)="BuscaProducto($event.target.value)"
+                                    matInput
+                                    placeholder="{{'key.placeholder.ingrese.codigo' | translate}}"
+                                    type="text"
+                                    formControlName="codigo"
+                                    #codigo
+                                  >
+                                </div>
+                                <div class="form-group col-md-2">
+                                    <label for="descripcion">{{ 'key.descripcion' | translate}} *</label>
+                                    <input class="form-control form-control-sm"
+                                    (keyup.enter)="getProductoDescrip()"
+                                    (keydown.tab)="getProductoDescrip()"
+                                    matInput
+                                    placeholder="{{'key.placeholder.ingrese.descripcion' | translate}}"
+                                    type="text"
+                                    formControlName="descripcion"
+                                  >
+                                </div>
+                                <div class="row form-group align-self-end ml-1">
+                                    <button [disabled]="!activaagregar" type="button"  class="btn btn-info btn-sm"
+                                        (click)="BuscaProducto(1)">{{ 'key.button.agregar.producto' | translate}}<i class="fas fa-plus ml-1"></i>
+                                    </button>
+                                    <button [disabled]="!activaagregar" type="button" class="btn btn-info btn-sm ml-4"
+                                        (click)="onBuscarPlantillas()">{{ 'key.agregar.plantillas' | translate}}<i class="fas fa-plus ml-1"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-info btn-sm ml-2"
+                                    [disabled]="!ActivaBotonBuscaGrilla" (click)="findArticuloGrillaMedicamento()">{{ 'key.button.buscar' | translate}}<i
+                                        class="fas fa-search ml-1"></i>
+                                </button>
+                                <button type="button" [disabled]="!ActivaBotonLimpiaBusca"
+                                    class="btn btn-danger btn-sm ml-2" (click)="limpiarCodigoMedicamento()">{{ 'key.button.limpiar.busqueda' | translate}}<i
+                                        class="fas fa-brush ml-1"></i>
+                                </button>
+                                    <button type="button" class="btn btn-danger text-right btn-sm mr-2 float-right"
+                                        [disabled]="(tipobusqueda===null || tipobusqueda==='Total' || !btnlimpiargrillamed)?true:false"
+                                        style="position: absolute; right: 0;"
+                                        (click)="limpiarGrillamedicamento()">{{ 'key.button.limpiar.grilla' | translate}}<i class="fas fa-brush ml-1"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="table-responsive mt-3" style="max-height: auto;min-height:100px;">
+                            <table id="tbldatosordendevolucion"
+                                class="table ml-1 table-condensed table-responsive-md table-bordered ">
+                                <thead class="table-primary  table-sm">
+                                    <tr class="text-center table-sm">
+                                        <th>{{ 'key.codigo' | translate}}
+                                            <svg (click)="sortbyMed('codigo')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                                <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                              </svg>
+                                        </th>
+                                        <th>{{ 'key.descripcion' | translate}}
+                                            <svg (click)="sortbyMed('descripcion')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                                <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                              </svg>
+                                        </th>
+                                        <th>{{ 'key.dosifica' | translate}}*</th>
+                                        <th>{{ 'key.veces.dia' | translate}}* </th>
+                                        <th>{{ 'key.cantidad.dias' | translate}}*</th>
+                                        <th>{{ 'key.total' | translate}}</th>
+                                        <th>{{ 'key.dispensado' | translate}}</th>
+                                        <th>{{ 'key.pendiente' | translate}}</th>
+                                        <th>{{ 'key.nom.plantilla' | translate}} </th>
+                                        <th>{{ 'key.lote.producto' | translate}}</th>
+                                        <th>{{ 'key.f.vencimiento' | translate}}</th>
+                                        <th>{{ 'key.button.eventos' | translate}}</th>
+                                        <th><button type="button" id="btnElinaRegistro" class="btn btn-info btn-danger btn-sm ml-2 "
+                                            (click)="ConfirmaEliminaProductoDeLaGrilla2()" [disabled]= "!desactivabtnelimmed">
+                                            {{ 'key.button.eliminar' | translate}} <i class="fas fa-trash-restore-alt  ml-1"></i>
+                                            </button>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let detalle of arrdetalleMedicamentos; let id = index"
+                                        class="table-secondary">
+                                        <td><small>{{ detalle.codmei }}</small></td>
+                                        <td class="text-nowrap help" tooltip="{{detalle.meindescri }}">
+                                            <small>{{ detalle.meindescri | slice:0:20 }}</small>
+                                        </td>
+                                        <td>
+                                            <small>
+                                                <input type="number" class="form-control form-control-sm text-right" min="1"
+                                                max="100" [(ngModel)]="detalle.dosis"
+                                                [disabled]="!detalle.bloqcampogrilla"
+                                                (focusout)="cantidadsolicitada(detalle)"
+                                                [disabled]="(tipobusqueda===null||tipobusqueda==='Total')?true:false">
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <small>
+                                                <input type="number" class="form-control form-control-sm text-right" min="1"
+                                                max="100" [(ngModel)]="detalle.formulacion" maxlength="2"
+                                                [disabled]="!detalle.bloqcampogrilla"
+                                                (focusout)="cantidadsolicitada(detalle)"
+                                                [disabled]="(tipobusqueda===null||tipobusqueda==='Total')?true:false">
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <small> <!--(keyup.enter)="cantidadsolicitada(detalle)"-->
+                                                <input type="number" class="form-control form-control-sm text-right" min="1"
+                                                max="1000" [(ngModel)]="detalle.dias"
+                                                [disabled]="!detalle.bloqcampogrilla"
+                                                (focusout)="cantidadsolicitada(detalle)"
+                                                [disabled]="(tipobusqueda===null||tipobusqueda==='Total')?true:false">
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <small>
+                                                <input type="number" class="form-control form-control-sm text-right" min="1"
+                                                max="1000" [(ngModel)]="detalle.cantsoli" (ngValue)="detalle.cantsoli"
+                                                (focusout)="cantidadsolicitada(detalle)"  disabled>
+                                                <!-- [disabled]="(tipobusqueda===null || detalle.nomplantilla===null || tipobusqueda==='Total')?true:false"> -->
+                                            </small>
+                                        </td>
+                                        <td><small>{{detalle.cantdespachada}} </small></td>
+                                        <td><small>{{detalle.cantsoli- detalle.cantdespachada}}</small> </td>
+                                        <td class="text-nowrap help" tooltip="{{detalle.nomplantilla }}"
+                                            ><small>{{detalle.nomplantilla | slice:0:20}} </small>
+                                        </td>
+                                        <td>
+                                            <select name="lote" class='form-control form-control-sm'
+                                            (change)="changeLotemedicamento($event.target.value, id,detalle)"
+                                            [disabled]="(tipobusqueda===null||tipobusqueda==='Total')?true:false">
+                                                <option *ngFor="let detalleprod of detalle.detallelote" [ngValue]='detalleprod'
+                                                value="{{ detalleprod.row }}">
+                                                    {{ detalleprod.glscombo }}
+                                                </option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control form-control-sm text-right"
+                                                value="{{ detalle.fechavto }}" disabled>
+                                        </td>
+                                        <td>
+                                            <small>
+                                                <span>
+                                                    <button type="button" id="btnVerEventos"
+                                                    class="btn btn-info btn-rounded btn-sm ml-2"
+                                                    (click)="eventosDetalleSolicitud(detalle)"
+                                                    [disabled]="(tipobusqueda==='Paciente'||tipobusqueda===null)?true:false">
+                                                    {{ 'key.button.eventos' | translate}}</button>
+                                                </span>
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <small>
+                                                <div class="checkbox text-center">
+                                                    <label>
+                                                        <input type="checkbox"  [disabled]="!detalle.bloqcampogrilla"
+                                                        (click)="CambioCheckMed(detalle,id,$event,detalle.marcacheckgrilla)"/>
+                                                    </label>
+                                                </div>
+                                            </small>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- <div class="row m-1" *ngIf="arrdetalleMedicamentos.length>20">
+                            <pagination [boundaryLinks]="true" [directionLinks]="true" [maxSize]="8"
+                                [totalItems]="arrdetalleMedicamentos.length" [itemsPerPage]=20 [previousText]="'Anterior'"
+                                [nextText]="'Siguiente'" [firstText]="'&laquo;'" [lastText]="'&raquo;'"
+                                (pageChanged)="pageChangedmedicamento($event)">
+                            </pagination>
+                        </div> -->
+
+                    </tab>
+
+                    <tab heading="{{'key.tab.insumos' | translate}}" customClass="tabClass" id="tabIns">
+                        <form [formGroup]="FormDatosProducto" autocomplete="off" spellcheck="false">
+                            <div class="row form-group align-self-end ml-1">
+                                <div class="form-group col-md-1">
+                                    <label for="codigo">{{ 'key.codigo' | translate}} *</label>
+                                    <input class="form-control form-control-sm"
+                                    (keyup.enter)="BuscaProducto($event.target.value)"
+                                    (keydown.tab)="BuscaProducto($event.target.value)"
+                                    matInput
+                                    placeholder="{{'key.placeholder.ingrese.codigo' | translate}}"
+                                    type="text"
+                                    formControlName="codigo"
+                                    #codigo
+                                  >
+                                </div>
+                                <div class="form-group col-md-2">
+                                    <label for="descripcion">{{ 'key.descripcion' | translate}} *</label>
+                                    <input type="text" class="form-control form-control-sm"
+                                      (keyup.enter)="getProductoDescrip()"
+                                      (keydown.tab)="getProductoDescrip()"
+                                      formControlName="descripcion"
+                                      placeholder="{{'key.placeholder.ingrese.descripcion' | translate}}">
+                                </div>
+                                <div class="form-group col-md-1">
+                                    <label for="cantidad">{{ 'key.cantidad' | translate}} *</label>
+                                    <input type="text" class="form-control form-control-sm"
+                                    formControlName="cantidad"
+                                    (keyup.enter)="validaCantidadDispensada($event.target.value)" (keydown.tab)="validaCantidadDispensada($event.target.value)">
+                                </div>
+                                <div class="row form-group align-self-end ml-1">
+                                    <button [disabled]="!activaagregar" type="button"  class="btn btn-info btn-sm"
+                                        (click)="BuscaProducto(2)">{{ 'key.button.agregar.producto' | translate}}<i class="fas fa-plus ml-1"></i>
+                                    </button>
+                                    <button [disabled]="!activaagregar" type="button" class="btn btn-info btn-sm ml-4"
+                                        (click)="onBuscarPlantillas()">{{ 'key.agregar.plantillas' | translate}}<i class="fas fa-plus ml-1"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-info btn-sm ml-2"
+                                        [disabled]="!ActivaBotonBuscaGrillaInsumo" (click)="findArticuloGrillaInsumo()">{{ 'key.button.buscar' | translate}}<i
+                                            class="fas fa-search ml-1"></i>
+                                    </button>
+                                    <button type="button" [disabled]="!ActivaBotonLimpiaBuscaInsumo"
+                                        class="btn btn-danger btn-sm ml-2" (click)="limpiarCodigoInsumo()">{{ 'key.button.limpiar.busqueda' | translate}}<i
+                                            class="fas fa-brush ml-1"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger text-right btn-sm mr-2 float-right"
+                                        [disabled]="(tipobusqueda===null || !btnlimpiargrillains||tipobusqueda==='Total')?true:false" style="position: absolute; right: 0;"
+                                        (click)="limpiarGrillainsumo()">{{ 'key.button.limpiar.grilla' | translate}}<i class="fas fa-brush ml-1"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="table-responsive mt-3" style="max-height: auto;min-height: 100px;">
+                            <table id="tbldatosordendevolucion"
+                                class="table ml-1 table-condensed table-responsive-md table-bordered ">
+                                <thead class="table-primary  table-sm">
+                                    <tr class="text-center table-sm">
+                                        <th>{{ 'key.codigo' | translate}}
+                                            <svg (click)="sortbyIns('codigo')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                                <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                              </svg>
+                                        </th>
+                                        <th>{{ 'key.descripcion' | translate}}
+                                            <svg (click)="sortbyIns('descripcion')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                                <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                              </svg>
+                                        </th>
+                                        <th>{{ 'key.cantidad' | translate}} *</th>
+                                        <th>{{ 'key.unidad.medida' | translate}}</th>
+                                        <th>{{ 'key.dispensado' | translate}}</th>
+                                        <th>{{ 'key.pendiente' | translate}}</th>
+                                        <th>{{ 'key.recepcionado' | translate}}</th>
+                                        <th>{{ 'key.cantidad.devuelta' | translate}} </th>
+                                        <th>{{ 'key.nom.plantilla' | translate}} </th>
+                                        <th>{{ 'key.lote' | translate}}</th>
+                                        <th>{{ 'key.f.vencimiento' | translate}}</th>
+                                        <th>{{ 'key.button.eventos' | translate}}</th>
+                                        <th><button type="button" id="btnElinaRegistro" class="btn btn-info btn-danger btn-sm ml-2 "
+                                            (click)="ConfirmaEliminaInsumoDeLaGrilla2()" [disabled]= "!desactivabtnelimins">
+                                            {{ 'key.button.eliminar' | translate}} <i class="fas fa-trash-restore-alt  ml-1"></i>
+                                            </button>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let detalle of arrdetalleInsumos; let id = index"
+                                        class="table-secondary">
+                                        <td><small>{{ detalle.codmei }}</small></td>
+                                        <td class="text-nowrap help" tooltip="{{detalle.meindescri }}">
+                                            <small>{{ detalle.meindescri | slice:0:20 }}</small>
+                                        </td>
+                                        <td>
+                                            <small>
+                                                <input type="number" class="form-control form-control-sm text-right" min="1"
+                                                max="1000" [(ngModel)]="detalle.cantsoli"
+                                                (focusout)="cantidadInsumo(detalle)"
+                                                [disabled]="!detalle.bloqcampogrilla">
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <small>{{ detalle.descunidadmedida }}</small>
+                                        </td>
+                                        <td><small>{{detalle.cantdespachada}}</small> </td>
+                                        <td><small>{{detalle.cantsoli- detalle.cantdespachada}} </small></td>
+                                        <td><small>{{detalle.cantrecepcionado}}</small> </td>
+                                        <td><small>{{detalle.cantdevolucion}} </small></td>
+                                        <td class="text-nowrap help" tooltip="{{detalle.nomplantilla }}">
+                                            <small>{{detalle.nomplantilla | slice:0:20}} </small>
+                                        </td>
+                                        <td>
+                                            <select name="lote" class='form-control form-control-sm'
+                                            (change)="changeLoteinsumo($event.target.value, id,detalle)" [disabled]="(tipobusqueda===null||tipobusqueda==='Total')?true:false">
+                                                <option *ngFor="let detalleprod of detalle.detallelote" [ngValue]='detalleprod'
+                                                value="{{ detalleprod.row }}">
+                                                    {{ detalleprod.glscombo }}
+                                                </option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control form-control-sm text-right"
+                                                value="{{ detalle.fechavto  }}" disabled>
+                                        </td>
+
+                                        <td>
+                                            <small><span>
+                                                <button type="button" id="btnVerEventos"
+                                                class="btn btn-info btn-rounded btn-sm ml-2"
+                                                (click)="eventosDetalleSolicitud(detalle)"
+                                                [disabled]="(tipobusqueda==='Paciente'||tipobusqueda===null)?true:false">
+                                                {{ 'key.button.eventos' | translate}}</button>
+                                                </span>
+                                                </small>
+                                        </td>
+                                        <td>
+											<small>
+                                                <div class="checkbox text-center">
+                                                    <label>
+                                                        <input type="checkbox"  [disabled]="!detalle.bloqcampogrilla"
+                                                        (click)="CambioCheckIns(detalle,id,$event,detalle.marcacheckgrilla)"/>
+                                                    </label>
+                                                </div>
+                                            </small>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </tab>
+                </tabset>
+            </div>
+        </div>
+    </div>
+       <!--  Botones de página -->
+       <div class="row float-right mr-1 mt-2">
+        <div class="form-group  align-self-end" *ngIf="modelopermisos.btngrabacreasolicpac">
+            <button type="button"
+                [disabled]="(tipobusqueda==='Solicitud'||tipobusqueda===null||verificanull===false||tipobusqueda==='Total')?true:false" id="btnguardar"
+                class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02" (click)="checkDuplicados(true)">{{ 'key.button.dispensar' | translate}} <i class="fas fa-save ml-1"></i>
+            </button>
+        </div>
+        <div class="form-group  align-self-end" *ngIf="modelopermisos.btnmodifcreasolicpac">
+            <button type="button" id="btnmodificar"
+                [disabled]="(tipobusqueda==='Paciente'||tipobusqueda===null||verificanull===false||tipobusqueda==='Total')?true:false"
+                class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02" (click)="checkDuplicados(false)">{{ 'key.button.modificar' | translate}}
+                 <i class="fas fa-save ml-1"></i>
+            </button>
+        </div>
+        <div class="form-group  align-self-end" *ngIf="modelopermisos.btnimprimecreasolicpac">
+            <button type="button" id="btnimprimir"
+                class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02" (click)="onImprimir()"
+                [disabled]="!imprimirsolicitud">{{ 'key.button.imprimir' | translate}}
+                <i class="fas fa-file-pdf ml-1"></i>
+            </button>
+        </div>
+        <div class="form-group  align-self-end" *ngIf="modelopermisos.btneliminacreasolicpac">
+            <button type="button" id="btneliminarsol"
+            [disabled]="(tipobusqueda==='Paciente'||tipobusqueda===null||tipobusqueda==='Total')?true:false"
+                class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+                (click)="onEliminarSolicitud()">{{ 'key.button.eliminar' | translate | uppercase}} <i class="fas fa-trash-alt"></i>
+            </button>
+        </div>
+        <div class="form-group  align-self-end">
+            <button type="button" id="btnlimpiar" (click)="limpiar()"
+                class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02">{{ 'key.button.limpiar' | translate}}
+                <i class="fas fa-eraser ml-1"></i>
+
+            </button>
+        </div>
+        <div class="form-group  align-self-end">
+            <button type="button" id="btnsalir" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+                (click)="salir()">{{ 'key.button.salir' | translate}} <i class="fas fa-window-close ml-1"></i>
+            </button>
+        </div>
+    </div>
+    <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+    <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+    <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+    <swal #alertSwalConfirmar title="" text="" type="question" [showCancelButton]="true"> </swal>
+</div>
+</app-main-nav>
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>

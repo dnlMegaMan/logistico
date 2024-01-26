@@ -1,0 +1,221 @@
+<!-- <app-navbar></app-navbar>
+<app-sidebar></app-sidebar>
+<div class="content-wrapper pl-4"> -->
+<app-main-nav>
+    <div>
+        <div style="margin: 10px;">
+            <form [formGroup]="FormDevolAutopedido">
+                <!-- Contenedor feneral de la página -->
+                <div class="my-2 ml-2 titulo text-center">
+                    <!--menu -->
+                    <h3>
+                        {{ 'key.title.devolucion.autopedido' | translate}}
+                    </h3>
+                </div>
+                <!-- lineas de edición y bpusqueda -->
+                <div class="card border-primary" style="padding: 5px;margin-top: 10px;height: 200px;">
+                    <div class="form-row mt-2">
+                        <div class="form-group col-md-2">
+                            <label for="numsolicitud"># {{ 'key.solicitud' | translate}} *</label>
+                            <input type="number" class="form-control form-control-sm"
+                                (keyup.enter)="getSolicitud(FormDevolAutopedido.value.numsolicitud)"
+                                (keydown.tab)="getSolicitud($event.target.value)" formControlName="numsolicitud">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="esticod">{{ 'key.estado.solicitud' | translate}} *</label>
+                            <select name="esticod" class='form-control form-control-sm' formControlName='esticod'>
+                                <option *ngFor='let listaEstado of estadossolbods' [ngValue]='listaEstado.codestado'>
+                                    {{ listaEstado.desestado }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="prioridad">{{ 'key.prioridad' | translate}} *</label>
+                            <select name="prioridad" class='form-control form-control-sm' formControlName='prioridad'>
+                                <option *ngFor="let prioridad of prioridades" [ngValue]="prioridad.codprioridad">
+                                    {{ prioridad.desprioridad }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="fecha">{{ 'key.fecha' | translate}} *</label>
+                            <input appSelecttext type="text" placeholder="DD/MM/YYYY" id="fecha"
+                                class='form-control form-control-sm' [bsConfig]="bsConfig" bsDatepicker
+                                formControlName="fecha">
+                        </div>
+                        <div class="form-group col-md-2 align-self-end text-right">
+                            <button type="button" id="btnbuscar" [disabled]="!activabtnbuscasolic"
+                                class="btn btn-primary btn-sm button-my-styles-busqueda_01 "
+                                (click)="BuscarSolicitudes()">{{ 'key.button.buscar.solicitud' | translate}} <i class="fas fa-search ml-1"
+                                    aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-row mt-2">
+                        <div class="form-group col-md-4">
+                            <label for="glosa">{{ 'key.observacion' | translate}} *</label>
+                            <input type="text" class="form-control form-control-sm" 
+                            formControlName="glosa">
+                          </div>
+
+                        <div class="form-group col-md-4">
+                            <label for="bodcodigo">{{ 'key.bodega.solicitante' | translate}} *</label>
+                            <select name="bodcodigo" class='form-control form-control-sm' formControlName='bodcodigo'>
+                                <option *ngFor='let listaBodegasSolictante of bodegasSolicitantes'
+                                    [ngValue]='listaBodegasSolictante.bodcodigo'>
+                                    {{ listaBodegasSolictante.boddescripcion }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4  align-self-end text-right">
+                            <button type="button" id="btnevento"
+                                class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                                [disabled]="!activabtnevento" (click)="eventosSolicitud()">{{ 'key.button.eventos' | translate}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="card border-primary" style="padding: 5px;margin-top: 10px">
+                <div id="table" class="table-editable">
+                    <form [formGroup]="FormBusquedaProducto" autocomplete="off" spellcheck="false">
+                        <div class="form-row ">
+                            <div class="form-group col-md-2">
+                                <label for="codigoproducto">{{ 'key.codigo' | translate}} *</label>
+                                <input type="text" class="form-control form-control-sm"
+                                    formControlName="codigoproducto">
+                            </div>
+                            <div class="form-group col-md-2"><!-- (keyup.enter)="getProductoDescrip()" (keydown.tab)="getProductoDescrip()"-->
+                                <label for="descripcion">{{ 'key.descripcion' | translate}} *</label>
+                                <input type="text" class="form-control form-control-sm"
+                                    formControlName="descripcion" >
+                            </div>
+                            <div class="form-group col-md-6 align-self-end">
+                                <button type="button" class="btn btn-info btn-sm ml-2"
+                                    [disabled]="!ActivaBotonBuscaGrilla" (click)="findArticuloGrilla()">{{ 'key.button.buscar' | translate}}<i
+                                        class="fas fa-search ml-1"></i>
+                                </button>
+                                <button type="button" [disabled]="!ActivaBotonLimpiaBusca"
+                                    class="btn btn-danger btn-sm ml-2" (click)="limpiarCodigo()">{{ 'key.button.limpiar.busqueda' | translate}}<i
+                                        class="fas fa-brush ml-1"></i>
+                                </button>
+
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="table-responsive mt-2" style="max-height: auto;min-height: 100px;">
+                        <table class="table table-sm table-condensed table-bordered  table-striped text-center">
+                            <tr class="table table-sm  table-primary table-bordered ">
+                                <th class="text-center">{{ 'key.codigo' | translate}}</th>
+                                <th class="text-center">{{ 'key.descripcion' | translate}}</th>
+                                <th class="text-center">{{ 'key.solicitado' | translate}}*</th>
+                                <th class="text-center">{{ 'key.despachado' | translate}}</th>
+                                <th class="text-center">{{ 'key.pend.despachar' | translate}}</th>
+                                <th class="text-center">{{ 'key.despachado' | translate}}</th>
+                                <th class="text-center">{{ 'key.lote' | translate}} </th>
+                                <th class="text-center">{{ 'key.fecha.vencimiento' | translate}}</th>
+                                <th class="text-center">{{ 'key.devolucion' | translate}}</th>
+                                <!-- <th class="text-center">Nombre Plantilla</th> -->
+                                <th class="text-center">{{ 'key.devolver' | translate}}</th>
+                            </tr>
+                            <tr class="table-secondary"
+                                *ngFor="let registro of arregloDetalleProductoSolicitudPaginacion; let id = index">
+                                <td>
+                                    <small><span>{{registro.codmei}}</span></small>
+                                </td>
+                                <td class="text-nowrap help   " tooltip="{{registro.meindescri }}">
+                                    <small><span> {{registro.meindescri| slice:0:20 }}</span></small>
+                                </td>
+                                <td>
+                                    <small><span>{{registro.cantsoli}}</span></small>
+                                </td>
+                                <td>
+                                    <small><span>{{registro.cantdespachada}} </span></small>
+                                </td>
+                                <td>
+                                    <small><span>{{registro.cantsoli- registro.cantdespachada}}</span></small>
+                                </td>
+                                <td>
+                                    <small><span>{{registro.cantrecepcionado}} </span></small>
+                                </td>
+                                <td>
+                                    <small><select name="lote" class='form-control form-control-sm'
+                                            (change)="setLote($event.target.value, id)" disabled>
+                                            <option *ngFor="let detalleprod of registro.detallelote"
+                                                [ngValue]='detalleprod'
+                                                value="{{ detalleprod.fechavto }}/{{ detalleprod.lote }}">
+                                                {{ detalleprod.glscombo }}
+                                            </option>
+                                        </select></small>
+                                </td>
+                                <td>
+                                    <small><input type="text" class="form-control form-control-sm text-right"
+                                            value="{{ registro.fechavto | date:'dd/MM/yyyy' }}" disabled></small>
+                                </td>
+
+                                <td>
+                                    <small><span>{{registro.cantdevolucion}} </span></small>
+                                </td>
+                                <!-- <td>
+                                <small><span>{{registro.nomplantilla}} </span> </small>
+                            </td> -->
+                                <td>
+                                    <small>
+                                        <input class="mr-2  " type="checkbox" [disabled]="!registro.marcacheckgrilla"
+                                            (click)="ConfirmaDevolucionGrilla(registro,id,$event,registro.marcacheckgrilla)">
+                                    </small>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="row m-1" *ngIf="arregloDetalleProductoSolicitud.length>20">
+                        <pagination [boundaryLinks]="true" [directionLinks]="true" [maxSize]="8"
+                            [totalItems]="arregloDetalleProductoSolicitud.length" [itemsPerPage]=20
+                            [previousText]="'key.pagination.anterior' | translate" [nextText]="'key.pagination.siguiente' | translate" [firstText]="'&laquo;'"
+                            [lastText]="'&raquo;'" (pageChanged)="pageChanged($event)">
+                        </pagination>
+                    </div>
+                </div>
+            </div>
+
+            <!--  Botones de página -->
+            <div class="row float-right mr-1 mt-2">
+                <!--Al agregarle col-md-3 queda el espacio entre botones cuando aparece generar solicitud-->
+                <div class="form-group  align-self-end" *ngIf="modelopermisos.btngrabadevolautopedido">
+                    <!---->
+                    <button type="button" id="btnguardar"
+                        class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+                        [disabled]="!activabtngenerautoped" (click)="ConfirmarEnviarDevolucionGrilla()">
+                        {{ 'key.generar.devolucion' | translate | uppercase }}
+                        <i class="fas fa-save"></i>
+                        <!--[disabled]="!activabtncreasolic"-->
+                    </button>
+                </div>
+                <div class="form-group  align-self-end" *ngIf="modelopermisos.btnimprdevolautopedido">
+                    <!-- -->
+                    <button type="button" id="btnguardar" [disabled]="!existesolicitud"
+                        class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+                        (click)="ConfirmarEnviarDevolucion()">{{ 'key.button.anular.autopedido' | translate}} <i class="fas fa-save ml-1"></i>
+                    </button>
+                </div>
+                <div class="form-group  align-self-end">
+                    <button type="button" id="btnlimpiar"
+                        class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02" 
+                        (click)="limpiar()">{{ 'key.button.limpiar' | translate}} <i class="fas fa-eraser ml-1"></i>
+                    </button>
+                </div>
+                <div class="form-group  align-self-end">
+                    <button type="button" id="btnsalir" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+                        routerLink='../home'>{{ 'key.button.salir' | translate}} <i class="fas fa-window-close ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+        <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+        <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+    </div>
+</app-main-nav>

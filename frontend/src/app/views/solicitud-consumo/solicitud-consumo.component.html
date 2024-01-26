@@ -1,0 +1,226 @@
+<!-- <app-navbar ></app-navbar>
+<app-sidebar></app-sidebar>
+<div class="content-wrapper pl-4"> -->
+<app-main-nav>
+  <div style="padding: 10px;">
+    <div style="margin: 10px;">
+      <form [formGroup]="FormCreaSolicitud">
+        <!-- Contenedor feneral de la página -->
+        <div class="my-2 ml-2 titulo text-center">
+          <!--menu -->
+          <h3>
+            {{ 'key.title.generar.solicitudes.consumo' | translate}}
+          </h3>
+        </div>
+        <!-- lineas de edición y bpusqueda -->
+        <div class="card border-primary" style="padding: 10px;">
+          <div class="form-row mt-2">
+            <div class="form-group col-md-2">
+              <label for="numsolicitud">{{ 'key.numero.solicitud' | translate}} *</label>
+              <input type="number" class="form-control form-control-sm" formControlName="numsolicitud">
+            </div>
+            <div class="form-group col-md-2"  >
+              <label for="esticod">{{ 'key.estado.solicitud' | translate}} *</label>
+              <select name="esticod" class='form-control form-control-sm' formControlName='esticod'  >
+                <option *ngFor='let listaEstado of estadossolbods' [ngValue]='listaEstado.codestado' >
+                  {{ listaEstado.desestado }}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-md-2">
+              <label for="prioridad">{{ 'key.prioridad' | translate}} *</label>
+              <select name="prioridad" class='form-control form-control-sm' formControlName='prioridad'>
+                <option *ngFor="let prioridad of prioridades" [ngValue]="prioridad.codprioridad">
+                  {{ prioridad.desprioridad }}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-md-2">
+              <label for="fecha">{{ 'key.fecha' | translate}} *</label>
+              <input appSelecttext type="text" placeholder="DD/MM/YYYY" id="fecha" class='form-control form-control-sm'
+                [bsConfig]="bsConfig" bsDatepicker formControlName="fecha">
+            </div>
+            <div class="card-body">
+              <div>
+                  <button type="button" class="btn btn-primary" data-toggle="button" aria-pressed="false" [disabled]="!activaBotonRefrescar()"
+                      autocomplete="off" (click)="RefrescarPantalla()">  <i class="fa fa-refresh" aria-hidden="true"></i> {{ 'key.refrescar' | translate}}
+                  </button>
+              </div>
+            </div>
+            <div class="form-group col-md-2  align-self-end text-right">
+              <button type="button" id="btnbusca" class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                (click)="BuscarSolicitudesConsumo()">{{ 'key.button.buscar.solicitud' | translate}} <i class="fas fa-search ml-1"
+                  aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+          <div class="form-row mt-2">
+            <div class="form-group col-md-2">
+              <label for="centrocosto">{{ 'key.centro.costo' | translate}} *</label>
+              <select name="centrocosto" class='form-control form-control-sm'
+                (change)="ActivaGlosa()"  formControlName='centrocosto'>
+                <option *ngFor='let listaCentoCostoSolictante of ccostosolicitante'
+                  [ngValue]='listaCentoCostoSolictante.correlativo'>
+                  {{ listaCentoCostoSolictante.descripcion }}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-md-1">
+              <label for="referenciaerp">{{ 'key.referencia.erp' | translate}} *</label>
+              <input type="number" class="form-control form-control-sm" formControlName="referenciaerp">
+            </div>
+            <div class="form-group col-md-5">
+              <label for="glosa">{{ 'key.observaciones' | translate}} *</label>
+              <input type="text" class="form-control form-control-sm" formControlName="glosa"
+                (input)="ActivaBotonAgregar()"   >
+            </div>
+
+            <div class="form-group col-md-4  align-self-end text-right">
+              <button type="button" id="btnbuscarp"
+                class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                (click)="BuscarPlantillaSolicitudes()">{{ 'key.button.buscar.plantillas' | translate}}
+                <i class="fas fa-search ml-1" aria-hidden="true"></i>
+              </button>
+            </div>
+
+
+          </div>
+        </div>
+      </form>
+      <div class="card border-primary" style="padding: 10px;margin-top: 10px">
+        <div id="table" class="table-editable">
+          <form [formGroup]="FormDatosProducto" autocomplete="off" spellcheck="false">
+            <div class="row form-group align-self-end ml-1">
+              <div class="form-group col-md-1">
+                <label for="codigo">{{ 'key.codigo' | translate}} *</label>
+                <input type="text" class="form-control form-control-sm" formControlName="codigo">
+              </div>
+              <div class="form-group col-md-2">
+                <label for="codigo">{{ 'key.descripcion' | translate}} *</label>
+                <input type="text" class="form-control form-control-sm" formControlName="descripcion">
+              </div>
+              <div class="row form-group align-self-end ml-1">
+                <a class="btn-floating btn-lg purple-gradient"></a>
+                <button type="button" class="btn btn-info btn-rounded btn-sm ml-2"
+                  (click)="getProducto()"  [disabled]="!activabtnagregaryplantilla">{{ 'key.agregar' | translate}}
+                  <i class="fas fa-plus ml-2" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn btn-info btn-sm ml-2" [disabled]="!ActivaBotonBuscaGrilla"
+                  (click)="findArticuloGrilla()">{{ 'key.button.buscar' | translate}}<i class="fas fa-search ml-1"></i>
+                </button>
+                <button type="button" [disabled]="!ActivaBotonLimpiaBusca" class="btn btn-danger btn-sm ml-2"
+                  (click)="limpiarCodigo()">{{ 'key.button.limpiar.busqueda' | translate}}<i class="fas fa-brush ml-1"></i>
+                </button>
+              </div>
+            </div>
+          </form>
+          <div id="table" class="table-editable table-responsive mt-2" style="max-height: auto;min-height: 100px;">
+            <table class="table table-sm table-condensed table-bordered table-responsive-md table-striped text-center">
+              <tr class="table table-sm  table-primary table-bordered ">
+                <th class="text-center">{{ 'key.codigo' | translate}}</th>
+                <th class="text-center">{{ 'key.descripcion' | translate}}</th>
+                <th class="text-center">{{ 'key.unidad' | translate}}</th>
+                <th class="text-center">{{ 'key.solicitado' | translate}}*</th>
+                <th class="text-center">
+                  <button type="button" id="btnElinaRegistro" class="btn btn-info btn-danger btn-sm ml-2 text-right"
+                    (click)="ConfirmaEliminaProductoDeLaGrilla2()" [disabled]="!listaDetalleEliminado.length">
+                    {{ 'key.button.eliminar' | translate}} <i class="fas fa-trash-restore-alt  ml-1"></i>
+                  </button>
+                </th>
+              </tr>
+              <tr class="table-secondary"
+                *ngFor="let registro of arregloDetalleProductoSolicitudPaginacion
+                |  paginate: {itemsPerPage: 15, currentPage: page, id:'prod'}; let id = index">
+                <td>
+                  <small><span>{{registro.codigoproducto}}</span></small>
+                </td>
+                <td class="text-nowrap help   " tooltip="{{registro.glosaproducto }}">
+                  <small><span> {{registro.glosaproducto| slice:0:20 }}</span></small>
+                </td>
+                <td class="text-nowrap help   " tooltip="{{registro.glosaunidadconsumo }}">
+                  <small><span> {{registro.glosaunidadconsumo| slice:0:10 }}</span></small>
+                </td>
+                <td>
+                  <small>
+                    <input type="number" class="form-control form-control-sm text-right" min="1" max="1000"
+                    [disabled]="!registro.bloqcampogrilla"
+                    [(ngModel)]="registro.cantidadsolicitada"
+                      (input)="cambio_cantidad(id, 'cantidadsolicitada',registro)"
+                      (blur)="cambio_cantidad(id, 'cantidadsolicitada', $event)"
+                      (blur)="validacantidadgrilla(registro)">
+                  </small>
+                </td>
+                <td>
+                  <small>
+                    <input class="mr-2  " type="checkbox"  [disabled]="!registro.bloqcampogrilla"
+                      (click)="CambioCheck(registro,id,$event,registro.marcacheckgrilla)">
+                  </small>
+                  <!-- <small><span><button type="button" id="btnElinaRegistro" class="btn btn-info btn-rounded btn-sm ml-2"
+                    [disabled]= "!activabtneliminar"
+                        (click)="ConfirmaEliminaProductoDeLaGrilla(registro,id)">Eliminar
+                      </button></span>
+                  </small> -->
+                </td>
+              </tr>
+            </table>
+            <div class="row  align-self-center">
+              <pagination-controls
+                id="prod"
+                (pageChange)="page = $event"
+                previousLabel="{{'key.pagination.anterior' | translate}}"
+                nextLabel="{{'key.pagination.siguiente' | translate}}"
+                autoHide="true">
+              </pagination-controls>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--  Botones de página -->
+      <div class="row float-right mr-1 mt-2">
+        <!--Al agregarle col-md-3 queda el espacio entre botones cuando aparece generar solicitud-->
+        <!--!ActivarBotonGuardar()-->
+        <div *ngIf="BtnSolConsumoGenerSolictud_activado" class="form-group  align-self-end" >
+          <button  *ngIf="modelopermisos.btngrabasolicons"  type="button" id="BtnSolConsumoGenerSolictud"
+            [disabled]="!verificanull " class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+            (click)="ConfirmaGenerarSolicitud()">{{ 'key.button.generar.solicitud' | translate}}
+            <i class="fas fa-save"></i>
+          </button>
+        </div>
+              <!--!ActivarBotonModificar()-->
+        <div class="form-group  align-self-end" *ngIf="modelopermisos.btnmodifsoliccons">
+          <button type="button" id="btnmodificar" [disabled]="(FormCreaSolicitud.value.numsolicitud != null || !verificanullmodif)?true:false"
+            class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+            (click)="ConfirmaModificarSolicitud()">{{ 'key.modificar.solicitud' | translate}}
+            <i class="fas fa-save"></i>
+          </button>
+        </div>
+        <div class="form-group  align-self-end" *ngIf="modelopermisos.btneliminasolicons">
+          <button type="button" id="btneliminar"  [disabled]="!ActivarBotonModificar()"
+            class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+            (click)="ConfirmaEliminarSolicitud()">{{ 'key.eliminar.solicitud' | translate}} <i class="fas fa-trash-alt"></i>
+          </button>
+        </div>
+        <div class="form-group align-self-end" *ngIf="modelopermisos.btnimprimesolicons">
+          <button type="button" id="btnguardar" [disabled]="!ActivaBotonImprimir()"
+              class="btn mr-1 btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+              (click)="onImprimir()">{{ 'key.button.imprimir.solicitud' | translate}} <i class="fas fa-file-pdf ml-1"></i>
+          </button>
+        </div>
+        <div class="form-group  align-self-end">
+          <button type="button" id="btnlimpiar" class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+            (click)="limpiar()">{{ 'key.button.limpiar' | translate}} <i class="fas fa-eraser ml-1"></i>
+          </button>
+        </div>
+        <div class="form-group  align-self-end">
+          <button type="button" id="btnsalir" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+            routerLink='../home'>{{ 'key.button.salir' | translate}} <i class="fas fa-window-close ml-1"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+    <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+    <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+  </div>
+</app-main-nav>

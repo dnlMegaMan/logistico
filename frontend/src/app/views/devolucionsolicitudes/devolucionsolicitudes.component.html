@@ -1,0 +1,320 @@
+<!-- <app-navbar ></app-navbar>
+<app-sidebar></app-sidebar>
+<div class="content-wrapper pl-4"> -->
+<app-main-nav>
+  <div style="padding: 10px;">
+    <form [formGroup]="FormDevolucionSolicitud">
+        <!-- Contenedor feneral de la página -->
+        <div class="my-2 ml-2 titulo text-center">
+            <!--menu -->
+            <h3>
+                {{ 'key.devolucion.solicitudes' | translate}}
+            </h3>
+        </div>
+        <!-- lineas de edición y bpusqueda -->
+        <div class="card border-primary" style="padding: 10px;">
+            <div class="form-row mt-2">
+                <div class="form-group col-md-2">
+                    <label for="numsolicitud">{{ 'key.numero.solicitud' | translate}} *</label>
+                    <input type="number" class="form-control form-control-sm" formControlName="numsolicitud">
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="esticod">{{ 'key.estado' | translate}} {{ 'key.solicitud' | translate}} *</label>
+                    <input type="text" class="form-control form-control-sm" formControlName="esticod">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="prioridad">{{ 'key.prioridad' | translate}} *</label>
+                    <input type="text" class="form-control form-control-sm" formControlName="prioridad">
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="fechamostrar">{{ 'key.fecha' | translate}} *</label>
+                    <input type="text" appSelecttext placeholder="DD/MM/YYYY" [bsConfig]="bsConfig" bsDatepicker
+                        id="fecha" class='form-control form-control-sm' formControlName="fechamostrar">
+                </div>
+                <div class="form-group col-md-3 align-self-end text-right">
+                    <button type="button" id="btnbuscar" class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                        (click)="BuscarSolicitudes()">{{ 'key.button.buscar.solicitud' | translate}} <i class="fas fa-search ml-1 "></i>
+                    </button>
+                </div>
+            </div>
+            <div class="form-row mt-2">
+                <div class="form-group col-md-4">
+                    <label for="bodorigen">{{ 'key.button.buscar.solicitud' | translate}} *</label>
+                    <input type="text" class="form-control form-control-sm" formControlName="bodorigen">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="boddestino">{{ 'key.bodega.solicitante' | translate}} *</label>
+                    <input type="text" class="form-control form-control-sm" formControlName="boddestino">
+                </div>
+                <div class="form-group col-md-4 align-self-end text-right">
+                    <button type="button" id="btnevento" class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                        [disabled]="!numsolic" (click)="eventosSolicitud()">{{ 'key.button.eventos' | translate}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="card m-2 border-primary" style="padding: 10px">
+        <tabset>
+            <tab heading="{{'key.tab.detalle.solicitud' | translate}}" id="tab1" > <!--style="height: 450px;"-->
+                <form [formGroup]="FormDatosProducto" autocomplete="off" spellcheck="false">
+                    <div class="row form-group align-self-end ml-1">
+                        <!-- <a class="btn-floating btn-lg purple-gradient"></a> -->
+                        <div class="form-group col-md-2">
+                            <label for="codigo">{{ 'key.codigo' | translate}} *</label>
+                            <input type="text" class="form-control form-control-sm" formControlName ="codigo" 
+                            (keydown.tab)="findArticuloGrilla()" 
+                            (keyup.enter)="findArticuloGrilla()"
+                            placeholder="Ingrese código"
+                            #codigo>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="descripcion">{{ 'key.descripcion' | translate}} *</label>
+                            <input type="text" class="form-control form-control-sm" 
+                                formControlName="descripcion">
+                        </div>
+                        <div class="row form-group align-self-end ml-1">
+                            <button type="button" class="btn btn-info btn-sm ml-2"
+                                [disabled]="!ActivaBotonBuscaGrilla" 
+                                (click)="findArticuloGrilla()">{{ 'key.button.buscar' | translate}}<i
+                                class="fas fa-search ml-1"></i>
+                            </button>
+                            <button type="button" [disabled]="!ActivaBotonLimpiaBusca"
+                                class="btn btn-danger btn-sm ml-2" 
+                                (click)="limpiarCodigo()">{{ 'key.button.limpiar.busqueda' | translate}}<i
+                                class="fas fa-brush ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <div id="table" class="table-editable mt-1">
+                    <div id="table" class="table-editable" style="max-height: auto;min-height: 100px;">
+                        <table class="table table-bordered table-sm table-responsive-md table-striped text-center">
+                            <tr class="table-primary  table-sm">
+                                <th class="text-center">{{ 'key.codigo' | translate}}</th>
+                                <th class="text-center">{{ 'key.descripcion.articulo' | translate}}</th>
+                                <th class="text-center">{{ 'key.stock.bodega.despacho' | translate}}</th>
+                                <th class="text-center">{{ 'key.solicitada' | translate}}</th>
+                                <th class="text-center">{{ 'key.dispensada' | translate}}</th>
+                                <th class="text-center">{{ 'key.pendiente.despachar' | translate}}</th>
+                                <th class="text-center">{{ 'key.recepcionada' | translate}}</th>
+                                <th class="text-center">{{ 'key.devuelta' | translate}}</th>
+                                <th class="text-center">{{ 'key.button.eventos' | translate}}</th>
+                            </tr>
+                            <tr class="table-secondary"
+                                *ngFor="let registro of arreegloDetalleSolicitudpaginacion; let id = index"
+                                (dblclick)="BuscaproductoaDevolver(registro.codmei)" style="cursor: pointer;">
+                                <td>
+                                    <small><span>{{registro.codmei}}</span></small>
+                                </td>
+                                <td>
+                                    <small><span> {{registro.meindescri}}</span></small>
+                                </td>
+                                <td>
+                                    <small><span> {{registro.stockorigen}}</span></small>
+                                </td>
+                                <td>
+                                    <small><span>{{registro.cantsoli}} </span></small>
+                                </td>
+                                <td>
+                                    <small><span>{{registro.cantdespachada}} </span></small>
+                                </td>
+                                <td>
+                                    <small><span> {{registro.cantsoli  - registro.cantdespachada}} </span></small>
+                                </td>
+                                <td>
+                                    <small><span>{{registro.cantrecepcionado}} </span></small>
+                                </td>
+                                <td>
+                                    <small><span>{{registro.cantdevolucion}} </span></small>
+                                </td>
+                                <td>
+                                    <small><span><button type="button" id="btnVerEventosDet"
+                                            class="btn btn-info btn-rounded btn-sm ml-2"
+                                            (click)="eventosDetalleSolicitud(registro)">{{ 'key.button.eventos' | translate}}
+                                        </button>
+                                    </span></small>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="row m-1" *ngIf="arreegloDetalleSolicitud.length>20">
+                        <pagination [boundaryLinks]="true" [directionLinks]="true" [maxSize]="9"
+                            [totalItems]="arreegloDetalleSolicitud.length" [itemsPerPage]=20 [previousText]="'key.pagination.anterior' | translate"
+                            [nextText]="'key.pagination.siguiente' | translate" [firstText]="'&laquo;'" [lastText]="'&raquo;'"
+                            (pageChanged)="pageChanged($event)">
+                        </pagination>
+                    </div>
+                </div>
+            </tab>
+            <tab heading="{{'key.tab.devolucion.solicitud' | translate}}" id="tab2"> <!----style="height: 450px;">-->
+                <div class="mt-0" >
+                    <form novalidate [formGroup]='FormDevolucionDetalle' autocomplete="off" spellcheck="false">
+                        <div class="form-row mt-2">
+                            <div class="form-group col-md-2">
+                                <label for="codigo">{{ 'key.codigo' | translate}} *</label>
+                                <input type="text" class="form-control form-control-sm" formControlName="codigo">
+                            </div>
+                            <!--(blur)="codigo_ingresado(FormDevolucionDetalle.value)" -->
+                            <div class="form-group col-md-3 align-self-end">
+                                <button type="button" class="btn btn-info btn-rounded btn-sm ml-2"
+                                    [disabled]="bloqbtnagregar" (click)="BuscaproductoaDevolver(FormDevolucionDetalle.value.codigo)">
+                                    {{ 'key.agregar' | translate}}<i class="fas fa-plus ml-2" aria-hidden="true"></i>
+                                    <!--(click)="addArticuloGrillaDispensacion(FormDevolucionDetalle.value)"-->
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="table-responsive mt-1" style="max-height: auto;min-height: 100px;">
+                    <table id="tbldatosordendevolucion" class="table  table-condensed table-sm table-bordered ">
+                        <thead class="table-primary  table-sm">
+                            <!-- da color de fondo a la columna-->
+                            <tr class="text-center table-sm">
+                                <th>{{ 'key.codigo' | translate}}</th>
+                                <th>{{ 'key.descripcion' | translate}}</th>
+                                <th>{{ 'key.solicitada' | translate}}</th>
+                                <th>{{ 'key.dispensada' | translate}}</th>
+                                <th>{{ 'key.recepcionado' | translate}}</th>
+                                <th>{{ 'key.devuelta' | translate}}</th>
+                                <th>{{ 'key.lote' | translate}}</th>
+                                <th>{{ 'key.fecha' | translate}}</th>
+                                <th>{{ 'key.devolver' | translate}}*</th>
+                                <th><button type="button" id="btnElinaRegistro" class="btn btn-info btn-danger btn-sm ml-2 "
+                                    (click)="ConfirmaEliminaProductoDeLaGrilla2()" [disabled]= "!desactivabtnelim">
+                                    {{ 'key.button.eliminar' | translate}} <i class="fas fa-trash-restore-alt  ml-1"></i>
+                                    </button>
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="table-secondary"
+                                *ngFor="let detallesolicitud of detallessolicitudespaginacion ; let id = index">
+                                <td><small>{{detallesolicitud.codmei}}</small></td>
+                                <td class="text-nowrap help   " tooltip="{{detallesolicitud.meindescri }}">
+                                    <small>{{detallesolicitud.meindescri | slice:0:30}}</small></td>
+                                <td><small>{{detallesolicitud.cantsoli}}</small></td>
+                                <td><small>{{detallesolicitud.cantdespachada}} </small></td>
+                                <td><small>{{detallesolicitud.cantrecepcionado}} </small></td>
+                                <td><small>{{detallesolicitud.cantdevolucion}} </small></td>
+                                <td><small>{{detallesolicitud.lote}}</small></td>
+                                <td><small>{{detallesolicitud.fechavto | date: 'dd/MM/yyyy'}}</small></td>
+                                <td>
+                                    <small>
+                                        <input type="number" class="form-control form-control-sm text-right" min="1" max="100"
+                                        [(ngModel)]="detallesolicitud.cantidadadevolver"
+                                        (input)="cambio_cantidad(id, 'cantidadadevolver',detallesolicitud)"
+                                        (blur)="validacantidadgrilla(id,detallesolicitud)">
+                                    </small>
+                                    <!-- <span contenteditable="true"
+                                        (keyup)="cambio_cantidad(id, 'cantidadadevolver', $event)"
+                                        (blur)="updateList(id, 'cantidadadevolver', $event)">
+                                        {{detallesolicitud.cantidadadevolver}}
+                                    </span>-->
+                                </td>
+                                <td>
+                                    <small>
+                                        <input class="mr-2  " type="checkbox"  [disabled]="!detallesolicitud.bloqcampogrilla"
+                                          (click)="CambioCheck(detallesolicitud,id,$event,detallesolicitud.marcacheckgrilla)">
+                                    </small>
+                                    <!-- <small><span><button type="button" id="btnElinaRegistro" class="btn btn-info btn-danger btn-sm ml-2"
+                                       (click)="ConfirmaEliminaProductoDeLaGrilla(detallesolicitud,id)">Eliminar
+                                      </button></span>
+                                    </small> -->
+                                  </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="row m-1" *ngIf="detallessolicitudes.length>20">
+                        <pagination [boundaryLinks]="true" [directionLinks]="true" [maxSize]="8"
+                            [totalItems]="detallessolicitudes.length" [itemsPerPage]=20 [previousText]="'key.pagination.anterior' | translate"
+                            [nextText]="'key.pagination.siguiente' | translate" [firstText]="'&laquo;'" [lastText]="'&raquo;'"
+                            (pageChanged)="pageChangedDespacho($event)">
+                        </pagination>
+                    </div>
+                </div>
+            </tab>
+        </tabset>
+    </div>
+    <!--  Botones de página -->
+    <div class="form-row float-right mr-1 mt-4">
+        <div class="form-group mr-1 align-self-end" *ngIf="modelopermisos.btngrabareceptotalsolic">
+            <button type="button" id="btnguardar" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+                [disabled]="!activabtndevoltotal"
+                (click)="ConfirmarDevolucionCompleta()"> {{ 'key.button.devolucion.total' | translate}}
+                <i class="fas fa-save ml-1"></i>
+            </button>
+        </div>
+        <div class="form-group align-self-end" *ngIf="modelopermisos.btngrabadevolsolic">
+            <button type="button" id="btnguardar" class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+                [disabled]="!verificanull" (click)="ConfirmarEnviarDevolucion(FormDevolucionDetalle.value)">
+                {{ 'key.button.devolver' | translate}} <i class="fas fa-save ml-1"></i>
+            </button>
+        </div>
+        <div class="form-group align-self-end" *ngIf="modelopermisos.btnimpdevolsolicbod">
+            <button type="button" id="btnguardar" [disabled]="!ActivaBotonImprimir()"
+                class="btn mr-1 btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+                (click)="onImprimir()">{{ 'key.button.imprimir.devolucion' | translate}} <i class="fas fa-file-pdf ml-1"></i>
+            </button>
+        </div>
+        <div class="form-group align-self-end">
+            <button type="button" id="btnlimpiar" class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+                (click)="Limpiar()">{{ 'key.button.limpiar' | translate}} <i class="fas fa-eraser ml-1"></i>
+            </button>
+        </div>
+        <div class="form-group align-self-end">
+            <button type="button" id="btnsalir" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+                (click)=salir()>{{ 'key.button.salir' | translate}} <i class="fas fa-window-close ml-1"></i>
+            </button>
+        </div>
+    </div>
+    <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+    <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+    <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+    <swal #alertSwalGrilla title="" text="" [showCancelButton]="true" (confirm)="onConfirm()" grow="row"
+        (cancel)="onCancel()" showCloseButton="true">
+        <div *swalPartial>
+            <p *ngIf="productosrecepcionados.length > 0">
+                {{ productosrecepcionados[0].codmei }} - {{ productosrecepcionados[0].meindescri }}
+             </p>
+            <table class="table table-hover mt-4" >
+                <thead class="table-header-text">
+                    <tr>
+                        <th>{{ 'key.seleccion' | translate}}</th>
+                        <th>{{ 'key.solicitud' | translate}}</th>
+                        <th>{{ 'key.movimiento' | translate}}</th>
+                        <th>{{ 'key.f.recepcion' | translate}}</th>
+                        <th>{{ 'key.lote' | translate}}</th>
+                        <th>{{ 'key.f.vencimiento' | translate}}</th>
+                        <th>{{ 'key.cantidad.recepcionada' | translate}} </th>
+                        <th>{{ 'key.cantidad.devuelta' | translate}}</th>
+                        <th>{{ 'key.cantidad.pendiente.devolver' | translate}}</th>
+                    </tr>
+                </thead>
+                <tbody class="table-body-text text-nowrap">
+                    <tr class="text-nowrap" *ngFor="let productorecepcionado of productosrecepcionadospaginacion">
+                        <td>
+                            <input type="checkbox" [disabled]="productorecepcionado.checkgrilla" (click)="onCheck($event, productorecepcionado)" >
+                        </td>
+                        <td>{{ productorecepcionado.soliid }}</td>
+                        <td>{{ productorecepcionado.mfdeid }}</td>
+                        <td>{{ productorecepcionado.fecharecepcion | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+                        <td>{{ productorecepcionado.lote }}</td>
+                        <td>{{ productorecepcionado.fechavto | date: 'dd/MM/yyyy'}}</td>
+                        <td>{{ productorecepcionado.cantrecepcionada }}</td>
+                        <td>{{ productorecepcionado.cantdevuelta }}</td>
+                        <td>{{ productorecepcionado.cantpendientedevolver}} </td>
+                    </tr>
+                </tbody>
+                <pagination [boundaryLinks]="true" [directionLinks]="true" [maxSize]="8"
+                    [totalItems]="productosrecepcionados.length" [itemsPerPage]=8 [previousText]="'key.pagination.anterior' | translate"
+                    [nextText]="'key.pagination.siguiente' | translate" [firstText]="'&laquo;'" [lastText]="'&raquo;'"
+                    (pageChanged)="pageChanged($event)">
+                </pagination>
+            </table>
+        </div>
+    </swal>
+  </div>
+</app-main-nav>

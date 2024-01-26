@@ -1,0 +1,489 @@
+<!-- <app-navbar></app-navbar>
+<app-sidebar></app-sidebar>
+<div class="content-wrapper pl-5"> -->
+<app-main-nav>
+  <div style="padding: 10px;">
+    <div class="my-2 ml-2 titulo text-center">
+      <!--menu - productos -mantencion de articulos-->
+      <h3>
+          {{ 'titulo.monitor.ejecutivo' | translate}}
+      </h3>
+  </div>
+    <form [formGroup]="lForm">
+      <div class="card border-primary" style="padding: 2px;">
+        <div class="row mr-2">
+            <div class="form-group col-sm-1">
+                <label for="fechadesde">{{ 'key.fechadesde' | translate}}*</label>
+                <input appSelecttext type="text" placeholder="DD/MM/YYYY" class="form-control form-control-sm"
+                        [bsConfig]="bsConfig" bsDatepicker formControlName="fechadesde" placement="right"
+                        (ngModelChange)="refrescar()" (ngModelChange)="guardarFecha()"/>
+            </div>
+            <div class="form-group  col-sm-1">
+                <label for="fechahasta">{{ 'key.fechahasta' | translate}}*</label>
+                <input appSelecttext type="text" placeholder="DD/MM/YYYY" class="form-control form-control-sm"
+                        [bsConfig]="bsConfig" bsDatepicker formControlName="fechahasta" placement="right"
+                        (focusout)="refrescar()" (ngModelChange)="guardarFecha()"/>
+            </div>
+            <div class="row float-right mr-1 mt-2 ml-1">
+                <div class="form-group  align-self-end">
+                    <button type="button" id="btnmodificar"
+                        class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+                        (click)="refrescar()"><i class="fa fa-refresh" aria-hidden="true"></i>{{ 'key.refrescar' | translate | uppercase}}
+                    </button>
+                </div>
+            </div>
+        </div>
+      </div>
+    </form>
+    <div class="card border-primary" style="padding: 20px;">
+        <div class="row mr-2">
+            <div *ngIf="opcion_hospitalizado" class="card text-white bg-primary mb-2" style="max-width: 12rem;">
+
+                <div class="card-header">
+                    {{ 'key.recetas' | translate}}
+                    <p>{{ 'key.hospitalizados' | translate}}</p>
+                </div>
+                <div class="card-body">
+                    <p>{{ this.canidad_recetas_hospitalizados}}</p>
+                </div>
+            </div>
+
+            <div *ngIf="!opcion_hospitalizado" class="card bg-light mb-2" style="max-width: 12rem;">
+                <div class="card-header">
+                    {{ 'key.recetas' | translate}}
+                    <p>{{ 'key.hospitalizados' | translate}}</p>
+                </div>
+                <div class="card-body">
+                    <div>
+                        <button type="button" class="btn btn-primary" data-toggle="button" aria-pressed="false"
+                            autocomplete="off" (click)="seleccionopcion('HOSPITALIZADOS' )"> {{ this.canidad_recetas_hospitalizados}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="opcion_ambulatorio" class="card text-white bg-primary mb-2" style="max-width: 12rem;">
+                <div class="card-header">
+                    {{ 'key.recetas' | translate}}
+                    <p>{{ 'key.ambulatorios' | translate}}</p>
+                </div>
+                <div class="card-body">
+                    <p>{{this.canidad_recetas_ambulatorio}}</p>
+                </div>
+            </div>
+
+            <div *ngIf="!opcion_ambulatorio" class="card bg-light mb-2" style="max-width: 12rem;">
+                <div class="card-header">
+                    {{ 'key.recetas' | translate}}
+                    <p>{{ 'key.ambulatorios' | translate}}</p>
+                </div>
+                <div class="card-body">
+                    <div>
+                        <button type="button" class="btn btn-primary" data-toggle="button" aria-pressed="false"
+                            autocomplete="off" (click)="seleccionopcion('AMBULATORIOS' )">
+                            {{this.canidad_recetas_ambulatorio}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+            <div *ngIf="opcion_urgencia" class="card text-white bg-primary mb-2" style="max-width: 12rem;">
+                <div class="card-header">
+                    {{ 'key.recetas' | translate}}
+                    <p>{{ 'key.urgencias' | translate}}</p>
+                </div>
+                <div class="card-body">
+                    <p>{{this.canidad_recetas_urgencia}}</p>
+                </div>
+            </div>
+
+            <div *ngIf="!opcion_urgencia" class="card bg-light mb-2" style="max-width: 12rem;">
+                <div class="card-header">
+                    {{ 'key.recetas' | translate}}
+                    <p>{{ 'key.urgencias' | translate}}</p>
+                </div>
+                <div class="card-body">
+                    <div>
+                        <button type="button" class="btn btn-primary" data-toggle="button" aria-pressed="false"
+                            autocomplete="off" (click)="seleccionopcion('URGENCIAS' )">
+                            {{this.canidad_recetas_urgencia}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div *ngIf="opcion_solicituddespacho" class="card text-white bg-primary mb-2" style="max-width: 12rem;">
+                <div class="card-header">
+                    {{ 'key.solicitudes' | translate}}
+                    <p>{{ 'key.despachos' | translate}}</p>
+                </div>
+                <div class="card-body">
+                    <p>{{this.canidad_despachos}}</p>
+                </div>
+            </div>
+
+            <div *ngIf="!opcion_solicituddespacho" class="card bg-light mb-2" style="max-width: 12rem;">
+                <div class="card-header">
+                    {{ 'key.solicitudes' | translate}}
+                    <p>{{ 'key.despacho' | translate}}</p>
+                </div>
+                <div class="card-body">
+                    <div>
+                        <button type="button" class="btn btn-primary" data-toggle="button" aria-pressed="false"
+                            autocomplete="off" (click)="seleccionopcion('SOLICITUDDESPACHO' )">
+                            {{this.canidad_despachos}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="opcion_solicitudurgente" class="card text-white bg-primary mb-2" style="max-width: 12rem;">
+                <div class="card-header">
+                    {{ 'key.solicitudes' | translate}}
+                    <p>{{ 'key.urgencias' | translate}}</p>
+                </div>
+                <div class="card-body">
+                    <p>{{this.canidad_despacho_urgente}}</p>
+                </div>
+            </div>
+            <div *ngIf="!opcion_solicitudurgente" class="card bg-light mb-2" style="max-width: 12rem;">
+                <div class="card-header">
+                    {{ 'key.solicitudes' | translate}}
+                    <p>{{ 'key.urgencias' | translate}}</p>
+                </div>
+                <div class="card-body">
+                    <div>
+                        <button type="button" class="btn btn-danger" data-toggle="button" aria-pressed="false"
+                            autocomplete="off" (click)="seleccionopcion('SOLICITUDURGENTE' )">
+                            {{this.canidad_despacho_urgente}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="opcion_solictudrecepcion" class="card text-white bg-primary mb-2" style="max-width: 12rem;">
+                <div class="card-header">
+                    {{ 'key.solicitudes' | translate}}
+                    <p>{{ 'key.recepcion' | translate}}</p>
+                </div>
+                <div class="card-body">
+                    <p>{{this.canidad_recepcion}}</p>
+                </div>
+            </div>
+
+            <div *ngIf="!opcion_solictudrecepcion" class="card bg-light mb-2" style="max-width: 12rem;">
+                <div class="card-header">
+                    {{ 'key.solicitudes' | translate}}
+                    <p>{{ 'key.recepcion' | translate}}</p>
+                </div>
+                <div class="card-body">
+                    <div>
+                        <button type="button" class="btn btn-primary" data-toggle="button" aria-pressed="false"
+                            autocomplete="off" (click)="seleccionopcion('SOLICITUDRECEPCION' )">
+                            {{this.canidad_recepcion}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div *ngIf="opcion_hospitalizado">
+            <div class="card border-primary mt-1" style="padding: 5px;height: 1200px;">
+                <div class="table-responsive mt-1" style="height: 1200px;">
+                    <table class="table table-sm  table-primary table-bordered">
+                        <tr>
+                            <th scope="col">#{{ 'key.id' | translate}}</th>
+                            <th scope="col">#{{ 'key.receta' | translate}}</th>
+                            <th scope="col">{{ 'key.fecha' | translate}}</th>
+                            <th scope="col">{{ 'key.unidad' | translate}}</th>
+                            <th scope="col">{{ 'key.servicio' | translate}}</th>
+                            <th scope="col">{{ 'key.numero.identificacion' | translate}}</th>
+                            <th scope="col">{{ 'key.paciente' | translate}}</th>
+                            <th scope="col">{{ 'key.cama' | translate}}</th>
+                            <th scope="col">{{ 'key.medico' | translate}}</th>
+                            <th scope="col">{{ 'key.tipo' | translate}}</th>
+                        </tr>
+                        <tr class="table-secondary" *ngFor="let receta_hospitalizado of listarecetashospitalizadosPaginacion
+                        |  paginate: {itemsPerPage: 15, currentPage: page, id:'recHosp'}"
+                        (click)="EditarDespacho(0,receta_hospitalizado.recenumero ,receta_hospitalizado.cliid,receta_hospitalizado)"
+                        style="cursor: pointer;">
+                            <td><small>{{receta_hospitalizado.receid}}</small></td>
+                            <td><small>{{receta_hospitalizado.recenumero}}</small></td>
+                            <td><small>{{receta_hospitalizado.recefechaentrega}}</small></td>
+                            <td><small>{{receta_hospitalizado.receglosaunidad}}</small></td>
+                            <td><small>{{receta_hospitalizado.receglosaservicio}}</small></td>
+                            <td><small>{{receta_hospitalizado.recedocumpac}}</small></td>
+                            <td><small>{{receta_hospitalizado.recenombrepaciente}}</small></td>
+                            <td><small>{{receta_hospitalizado.receglosacama}} </small></td>
+                            <td><small>{{receta_hospitalizado.recenombremedico}}</small></td>
+                            <td><small>{{receta_hospitalizado.recetipo}} </small></td>
+                        </tr>
+
+                    </table>
+                    <div class="row m-1 mt-3">
+                      <pagination-controls
+                        id="recHosp"
+                        (pageChange)="page = $event"
+                        previousLabel="{{'key.pagination.anterior' | translate}}"
+                        nextLabel="{{'key.pagination.siguiente' | translate}}"
+                        autoHide="true">
+                      </pagination-controls>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div *ngIf="opcion_ambulatorio">
+            <div class="card border-primary mt-1" style="padding: 5px;height: 1200px;">
+                <div class="table-responsive mt-1" style="height: 1200px;">
+                    <table class="table table-sm  table-primary table-bordered">
+                        <tr>
+                            <th scope="col">#{{ 'key.id' | translate}}</th>
+                            <th scope="col">#{{ 'key.receta' | translate}}</th>
+                            <th scope="col">{{ 'key.comprobante' | translate}}</th>
+                            <th scope="col">{{ 'key.fecha' | translate}}</th>
+                            <th scope="col">{{ 'key.unidad' | translate}}</th>
+                            <th scope="col">{{ 'key.servicio' | translate}}</th>
+                            <th scope="col">{{ 'key.numero.identificacion' | translate}}</th>
+                            <th scope="col">{{ 'key.paciente' | translate}}</th>
+                            <th scope="col">{{ 'key.cama' | translate}}</th>
+                            <th scope="col">{{ 'key.medico' | translate}}</th>
+                            <th scope="col">{{ 'key.tipo' | translate}}</th>
+                        </tr>
+                        <tr class="table-secondary" *ngFor="let receta_ambulatorio of listarecetasambulatoriasPaginacion
+                        |  paginate: {itemsPerPage: 15, currentPage: page, id:'recAmb'}"
+                        (click)="EditarDespacho(receta_ambulatorio.recesolid,receta_ambulatorio.recenumero ,receta_ambulatorio.cliid,receta_ambulatorio)"
+                        style="cursor: pointer;" >
+                            <td><small>{{receta_ambulatorio.receid}}</small></td>
+                            <td><small>{{receta_ambulatorio.recenumero}}</small></td>
+                            <td>
+                                <div *ngIf="receta_ambulatorio.cajanumerocomprobante > 0 && receta_ambulatorio.recesolid > 0">
+                                    <small>{{receta_ambulatorio.recesolid}} / {{receta_ambulatorio.cajanumerocomprobante}}</small>
+                                </div>
+                                <div *ngIf="receta_ambulatorio.cajanumerocomprobante > 0 && receta_ambulatorio.recesolid === 0">
+                                    <small>{{receta_ambulatorio.cajanumerocomprobante}}</small>
+                                </div>
+                                <div *ngIf="receta_ambulatorio.cajanumerocomprobante === 0">
+                                    <small>Sin Pago</small>
+                                </div>
+                            </td>
+                            <td><small>{{receta_ambulatorio.recefechaentrega}}</small></td>
+                            <td><small>{{receta_ambulatorio.receglosaunidad}}</small></td>
+                            <td><small>{{receta_ambulatorio.receglosaservicio}}</small></td>
+                            <td><small>{{receta_ambulatorio.recedocumpac}}</small></td>
+                            <td><small>{{receta_ambulatorio.recenombrepaciente}}</small></td>
+                            <td><small>{{receta_ambulatorio.receglosacama}} </small></td>
+                            <td><small>{{receta_ambulatorio.recenombremedico}}</small></td>
+                            <td><small>{{receta_ambulatorio.recetipo}} </small></td>
+                        </tr>
+
+                    </table>
+                    <div class="row m-1 mt-3">
+                      <pagination-controls
+                        id="recAmb"
+                        (pageChange)="page = $event"
+                        previousLabel="{{'key.pagination.anterior' | translate}}"
+                        nextLabel="{{'key.pagination.siguiente' | translate}}"
+                        autoHide="true">
+                      </pagination-controls>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div *ngIf="opcion_urgencia">
+            <div class="card border-primary mt-1" style="padding: 5px;height: 1200px;">
+                <div class="table-responsive mt-1" style="height: 1200px;">
+                    <table class="table table-sm  table-primary table-bordered">
+                        <tr>
+                            <th scope="col">{{ 'key.id' | translate}}</th>
+                            <th scope="col">#{{ 'key.receta' | translate}}</th>
+                            <th scope="col">{{ 'key.fecha' | translate}}</th>
+                            <th scope="col">{{ 'key.unidad' | translate}}</th>
+                            <th scope="col">{{ 'key.servicio' | translate}}</th>
+                            <th scope="col">{{ 'key.numero.identificacion' | translate}}</th>
+                            <th scope="col">{{ 'key.paciente' | translate}}</th>
+                            <th scope="col">{{ 'key.cama' | translate}}</th>
+                            <th scope="col">{{ 'key.medico' | translate}}</th>
+                            <th scope="col">{{ 'key.tipo' | translate}}</th>
+                        </tr>
+                        <tr class="table-secondary" *ngFor="let receta_urgencia of listarecetasurgenciaPaginacion
+                        |  paginate: {itemsPerPage: 15, currentPage: page, id:'recUrg'}"
+                        (click)="EditarDespacho(0,receta_urgencia.recenumero ,receta_urgencia.cliid,receta_urgencia )"
+                        style="cursor: pointer;">
+                            <td><small>{{receta_urgencia.receid}}</small></td>
+                            <td><small>{{receta_urgencia.recenumero}}</small></td>
+                            <td><small>{{receta_urgencia.recefechaentrega}}</small></td>
+                            <td><small>{{receta_urgencia.receglosaunidad}}</small></td>
+                            <td><small>{{receta_urgencia.receglosaservicio}}</small></td>
+                            <td><small>{{receta_urgencia.recedocumpac}}</small></td>
+                            <td><small>{{receta_urgencia.recenombrepaciente}}</small></td>
+                            <td><small> </small></td>
+                            <td><small>{{receta_urgencia.recenombremedico}}</small></td>
+                            <td><small>{{receta_urgencia.recetipo}} </small></td>
+                        </tr>
+
+                    </table>
+                    <div class="row m-1 mt-3">
+                      <pagination-controls
+                        id="recUrg"
+                        (pageChange)="page = $event"
+                        previousLabel="{{'key.pagination.anterior' | translate}}"
+                        nextLabel="{{'key.pagination.siguiente' | translate}}"
+                        autoHide="true">
+                      </pagination-controls>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div *ngIf="opcion_solicituddespacho">
+            <div class="card border-primary mt-1" style="padding: 5px;height: 1200px;">
+                <div class="table-responsive mt-1" style="height: 1200px;">
+                    <table class="table table-sm  table-primary table-bordered">
+                        <tr>
+                            <th scope="col">#{{ 'key.solicitud' | translate}}</th>
+                            <th scope="col">{{ 'key.fecha' | translate}}</th>
+                            <th scope="col">{{ 'key.servicio' | translate}}</th>
+                            <th scope="col">{{ 'key.numero.identificacion' | translate}}</th>
+                            <th scope="col">{{ 'key.paciente' | translate}}</th>
+                            <th scope="col">{{ 'key.cama' | translate}}</th>
+                            <th scope="col">{{ 'key.medico' | translate}}</th>
+                            <th scope="col">{{ 'key.bodega.solicitante' | translate}}</th>
+                            <th scope="col">{{ 'key.bodega.suministro' | translate}}</th>
+                        </tr>
+                        <tr class="table-secondary" *ngFor="let solicitud_despacho of listasolicitudespordespacharPaginacion
+                        |  paginate: {itemsPerPage: 15, currentPage: page, id:'solDesp'}"
+                        (click)="EditarDespacho(solicitud_despacho.soliid,0 ,solicitud_despacho.cliid,solicitud_despacho)"
+                        style="cursor: pointer;">
+                            <td><small>{{solicitud_despacho.soliid}}</small></td>
+                            <td><small>{{solicitud_despacho.fechacreacion | date:'dd/MM/yyyy HH:MM' }}</small></td>
+                            <td><small>{{solicitud_despacho.undglosa}}</small></td>
+                            <td><small>{{solicitud_despacho.numdocpac}}</small></td>
+                            <td><small>{{solicitud_despacho.nombrecompletopaciente}}</small></td>
+                            <td><small>{{solicitud_despacho.camglosa}}</small></td>
+                            <td><small>{{solicitud_despacho.nombremedico}}</small></td>
+                            <td><small>{{solicitud_despacho.bodorigendesc}} </small></td>
+                            <td><small>{{solicitud_despacho.boddestinodesc}} </small></td>
+                        </tr>
+
+                    </table>
+                    <div class="row m-1 mt-3">
+                      <pagination-controls
+                        id="solDesp"
+                        (pageChange)="page = $event"
+                        previousLabel="{{'key.pagination.anterior' | translate}}"
+                        nextLabel="{{'key.pagination.siguiente' | translate}}"
+                        autoHide="true">
+                      </pagination-controls>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div *ngIf="opcion_solicitudurgente">
+            <div class="card border-primary mt-1" style="padding: 5px;height: 1200px;">
+                <div class="table-responsive mt-1" style="height: 1200px;">
+                    <table class="table table-sm  table-primary table-bordered">
+                        <tr>
+                            <th scope="col">#{{ 'key.solicitud' | translate}}</th>
+                            <th scope="col">{{ 'key.fecha' | translate}}</th>
+                            <th scope="col">{{ 'key.unidad' | translate}}</th>
+                            <th scope="col">{{ 'key.servicio' | translate}}</th>
+                            <th scope="col">{{ 'key.numero.identificacion' | translate}}</th>
+                            <th scope="col">{{ 'key.paciente' | translate}}</th>
+                            <th scope="col">{{ 'key.cama' | translate}}</th>
+                            <th scope="col">{{ 'key.medico' | translate}}</th>
+                            <th scope="col">{{ 'key.bodega.solicitante' | translate}}</th>
+                            <th scope="col">{{ 'key.bodega.suministro' | translate}}</th>
+                        </tr>
+                        <tr class="table-secondary" *ngFor="let solicitud_urgente of listasolicitudesurgenciapaginacion
+                        |  paginate: {itemsPerPage: 15, currentPage: page, id:'solUrg'}"
+                        (click)="EditarDespacho(solicitud_urgente.soliid,0,0,solicitud_urgente )"
+                        style="cursor: pointer;">
+                            <td><small>{{solicitud_urgente.soliid}}</small></td>
+                            <td><small>{{solicitud_urgente.fechacreacion | date:'dd/MM/yyyy HH:MM' }}</small></td>
+                            <td><small>{{solicitud_urgente.undglosa}}</small></td>
+                            <td><small>{{solicitud_urgente.receglosaservicio}}</small></td>
+                            <td><small>{{solicitud_urgente.numdocpac}}</small></td>
+                            <td><small>{{solicitud_urgente.nombrecompletopaciente}}</small></td>
+                            <td><small>{{solicitud_urgente.camglosa}}</small></td>
+                            <td><small>{{solicitud_urgente.nombremedico}}</small></td>
+                            <td><small>{{solicitud_urgente.bodorigendesc}} </small></td>
+                            <td><small>{{solicitud_urgente.boddestinodesc}} </small></td>
+                        </tr>
+
+                    </table>
+                    <div class="row m-1 mt-3">
+                      <pagination-controls
+                        id="solUrg"
+                        (pageChange)="page = $event"
+                        previousLabel="{{'key.pagination.anterior' | translate}}"
+                        nextLabel="{{'key.pagination.siguiente' | translate}}"
+                        autoHide="true">
+                      </pagination-controls>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div *ngIf="opcion_solictudrecepcion">
+            <div class="card border-primary mt-1" style="padding: 5px;height: 1200px;">
+                <div class="table-responsive mt-1" style="height: 1200px;">
+                    <table class="table table-sm  table-primary table-bordered">
+                        <tr>
+                            <th scope="col">#{{ 'key.solicitud' | translate}}</th>
+                            <th scope="col">{{ 'key.fecha' | translate}}</th>
+                            <th scope="col">{{ 'key.unidad' | translate}}</th>
+                            <th scope="col">{{ 'key.servicio' | translate}}</th>
+                            <th scope="col">{{ 'key.numero.identificacion' | translate}}</th>
+                            <th scope="col">{{ 'key.paciente' | translate}}</th>
+                            <th scope="col">{{ 'key.cama' | translate}}</th>
+                            <th scope="col">{{ 'key.medico' | translate}}</th>
+                            <th scope="col">{{ 'key.bodega.solicitante' | translate}}</th>
+                            <th scope="col">{{ 'key.bodega.suministro' | translate}}</th>
+                        </tr>
+                        <tr class="table-secondary" *ngFor="let solicitud_despacho of listasolicitudesporrecepcionarPaginacion
+                          |  paginate: {itemsPerPage: 15, currentPage: page, id:'solDesp'}"
+                        (click)="EditarRecepcion(solicitud_despacho.soliid )"
+                        style="cursor: pointer;">
+                            <td><small>{{solicitud_despacho.soliid}}</small></td>
+                            <td><small>{{solicitud_despacho.fechacreacion | date:'dd/MM/yyyy HH:MM' }}</small></td>
+                            <td><small>{{solicitud_despacho.undglosa}}</small></td>
+                            <td><small>{{solicitud_despacho.receglosaservicio}}</small></td>
+                            <td><small>{{solicitud_despacho.numdocpac}}</small></td>
+                            <td><small>{{solicitud_despacho.nombrecompletopaciente}}</small></td>
+                            <td><small>{{solicitud_despacho.camglosa}}</small></td>
+                            <td><small>{{solicitud_despacho.nombremedico}}</small></td>
+                            <td><small>{{solicitud_despacho.bodorigendesc}} </small></td>
+                            <td><small>{{solicitud_despacho.boddestinodesc}} </small></td>
+                        </tr>
+
+                    </table>
+                    <div class="row m-1 mt-3">
+                      <pagination-controls
+                        id="solDesp"
+                        (pageChange)="page = $event"
+                        previousLabel="{{'key.pagination.anterior' | translate}}"
+                        nextLabel="{{'key.pagination.siguiente' | translate}}"
+                        autoHide="true">
+                      </pagination-controls>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+    <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+    <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+    <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+  </div>
+</app-main-nav>

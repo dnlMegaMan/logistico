@@ -1,0 +1,280 @@
+<app-main-nav>
+  <div style="padding: 10px;">
+    <div style="margin: 10px;">
+      <form [formGroup]="FormCreaSolicitud">
+        <!-- Contenedor feneral de la página -->
+        <div class="my-2 ml-2 titulo text-center">
+          <!--menu -->
+          <h3>
+            {{ 'key.title.generar.solicitudes' | translate}}
+          </h3>
+        </div>
+        <!-- lineas de edición y bpusqueda -->
+        <div class="card border-primary" style="padding: 5px;margin-top: 10px;height: 200px;">
+          <div class="form-row mt-2">
+            <div class="form-group col-md-2">
+              <label for="numsolicitud"># {{ 'key.solicitud' | translate}}</label>
+              <input type="number" class="form-control form-control-sm" formControlName="numsolicitud">
+            </div>
+            <div class="form-group col-md-3">
+              <label for="esticod">{{ 'key.estado' | translate}} {{ 'key.solicitud' | translate}}</label>
+              <select name="esticod" class='form-control form-control-sm' formControlName='esticod'>
+                <option *ngFor='let listaEstado of estadossolbods' [ngValue]='listaEstado.codestado'>
+                  {{ listaEstado.desestado }}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-md-3">
+              <label for="prioridad">{{ 'key.prioridad' | translate}}</label>
+              <select name="prioridad" class='form-control form-control-sm' formControlName='prioridad'>
+                <option *ngFor="let prioridad of prioridades" [ngValue]="prioridad.codprioridad">
+                  {{ prioridad.desprioridad }}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-md-2">
+              <label for="fecha">{{ 'key.fecha' | translate}}</label>
+              <input appSelecttext type="text" placeholder="DD/MM/YYYY" id="fecha" class='form-control form-control-sm'
+                [bsConfig]="bsConfig" bsDatepicker formControlName="fecha">
+            </div>
+            <div class="form-group col-md-2 align-self-end text-right">
+              <button type="button" id="btnbuscar" class="btn btn-primary btn-sm button-my-styles-busqueda_01 "
+                (click)="BuscarSolicitudes()">{{ 'key.button.buscar.solicitud' | translate}} <i class="fas fa-search ml-1" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+          <div class="form-row mt-2">
+            <div class="form-group col-md-2">
+              <label for="bodcodigo">{{ 'key.bodega.solicitante' | translate}}</label>
+              <select name="bodcodigo" class='form-control form-control-sm'
+                formControlName='bodcodigo'
+                (change)="verificaSolicitante(FormCreaSolicitud.value.bodcodigo)"
+                (click)="this.valoranterior=$event.target.value">
+                <option *ngFor='let listaBodegasSolictante of bodegasSolicitantes'
+                  [ngValue]='listaBodegasSolictante.bodcodigo'>
+                  {{ listaBodegasSolictante.boddescripcion }}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-md-3">
+              <label for="codbodegasuministro">{{ 'key.bodega.suministro' | translate}}</label>
+              <select name="codbodegasuministro" class='form-control form-control-sm'
+                formControlName='codbodegasuministro' ng-model-options="{updateOn:'confirmed'}"
+                (change)="verificaSuministros(FormCreaSolicitud.value.codbodegasuministro)"
+                (click)="this.valoranterior=$event.target.value">
+                <option *ngFor='let listaBodegassuministro of bodegassuministro'
+                  [ngValue]='listaBodegassuministro.bodcodigo' >
+                  {{ listaBodegassuministro.boddescripcion }}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-md-3">
+              <div *ngIf="xnumeropedido">
+                <label for="numpedido">{{ 'key.num.pedido.fin700' | translate}}</label>
+                <input type="number" class="form-control form-control-sm" formControlName="numpedido">
+              </div>
+            </div>
+            <div class="form-group col-md-4  align-self-end text-right">
+              <button type="button" id="btnevento" class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                [disabled]="!btnevento" (click)="eventosSolicitud()">{{ 'key.button.eventos' | translate}}
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div class="card border-primary" style="padding: 5px;margin-top: 10px">
+        <div id="table" class="table-editable">
+          <form [formGroup]="FormDatosProducto" autocomplete="off" spellcheck="false">
+            <div class="row form-group align-self-end ml-1">
+              <div class="form-group col-md-2">
+                <label for="codigo">{{ 'key.codigo' | translate}} *</label>
+                    <input class="form-control form-control-sm"
+                      (keyup.enter)="getProducto($event.target.value)"
+                      (keydown.tab)="getProducto($event.target.value)"
+                      matInput
+                      placeholder="{{'key.placeholder.ingrese.codigo' | translate}}"
+                      type="text"
+                      formControlName="codigo"
+                      #codigo
+                    >
+              </div>
+              <div class="form-group col-md-2">
+                <label for="descripcion">{{ 'key.descripcion' | translate}} *</label>
+                   <input class="form-control form-control-sm"
+                   (keyup.enter)="getProductoDescrip()"
+                   (keydown.tab)="getProductoDescrip()"
+                   matInput
+                   placeholder="{{'key.placeholder.ingrese.descripcion' | translate}}"
+                   type="text"
+                   formControlName="descripcion"
+                   #codigo
+                 >
+              </div>
+              <div class="row form-group align-self-end ml-1">
+                <button type="button" class="btn btn-info btn-rounded btn-sm ml-2"
+                  (click)="BuscaProducto(this.FormDatosProducto.controls.codigo.value,
+                  FormDatosProducto.controls.descripcion.value)" [disabled]="!activaagregar">{{ 'key.agregar' | translate}}
+                  <i class="fas fa-plus ml-2" aria-hidden="true"></i>
+                </button>
+                <button type="button" id="btnbuscar" class="btn btn-info btn-sm ml-2"
+                  (click)="BuscarPlantillas()" [disabled]=!activaagregar>{{ 'key.agregar.plantillas' | translate}} <i
+                  class="fas fa-search ml-1"></i>
+                </button>
+                <button type="button" class="btn btn-info btn-sm ml-2" [disabled]="!ActivaBotonBuscaGrilla"
+                  (click)="findArticuloGrilla()">{{ 'key.button.buscar' | translate}}<i  class="fas fa-search ml-1"></i>
+                </button>
+                <button type="button" [disabled]="!ActivaBotonLimpiaBusca" class="btn btn-danger btn-sm ml-2"
+                  (click)="limpiarCodigo()">{{ 'key.button.limpiar.busqueda' | translate}}<i class="fas fa-brush ml-1"></i>
+                </button>
+
+                <button type="button" id="btnLimpiargrillamed" class="btn btn-danger text-right btn-sm ml-4 float-right"
+                  [disabled]="(!arregloDetalleProductoSolicitud.length || !btnlimpiargrilla)?true:false"
+                  style="position: absolute; right: 0;" (click)="limpiarGrilla()">{{ 'key.button.limpiar.grilla' | translate}}<i
+                    class="fas fa-brush ml-1"></i>
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <div class="table-responsive mt-2" style="max-height: 500px;min-height: 100px;">
+            <table class="table table-sm table-condensed table-bordered  table-striped text-center">
+              <tr class="table table-sm  table-primary table-bordered ">
+                <th class="text-center">{{ 'key.codigo' | translate}}</th>
+                <th class="text-center">{{ 'key.descripcion' | translate}}</th>
+                <th class="text-center">{{ 'key.unidad' | translate}}</th>
+                <th class="text-center">{{ 'key.stock.solicitante' | translate}}</th>
+                <th class="text-center">{{ 'key.stock.suministro' | translate}}</th>
+                <th class="text-center">{{ 'key.solicitado' | translate}}*</th>
+                <th class="text-center">{{ 'key.despachado' | translate}}</th>
+                <th class="text-center">{{ 'key.pend.despachar' | translate}}</th>
+                <th class="text-center">{{ 'key.recepcionado' | translate}}</th>
+                <th class="text-center">{{ 'key.devolucion' | translate}}</th>
+                <th class="text-center">{{ 'key.nom.plantilla' | translate}}</th>
+                <th class="text-center"><button type="button" id="btnElinaRegistro"
+                    class="btn btn-info btn-danger btn-sm ml-2 " (click)="ConfirmaEliminaProductoDeLaGrilla2()"
+                    [disabled]="!listaDetalleEliminado.length">
+                    {{ 'key.button.eliminar' | translate}} <i class="fas fa-trash-restore-alt  ml-1"></i>
+                  </button>
+                </th>
+                <th class="text-center">{{ 'key.button.eventos' | translate}}</th>
+              </tr>
+              <tr class="table-secondary"
+                *ngFor="let registro of arregloDetalleProductoSolicitudPaginacion; let id = index">
+                <td>
+                  <small><span>{{registro.codmei}}</span></small>
+                </td>
+                <td class="text-nowrap help   " tooltip="{{registro.meindescri }}">
+                  <small><span> {{registro.meindescri| slice:0:20 }}</span></small>
+                </td>
+                <td class="text-nowrap help   " tooltip="{{registro.descunidadmedida }}">
+                  <small><span> {{registro.descunidadmedida| slice:0:10 }}</span></small>
+                </td>
+                <td >
+                  <small><span> {{registro.stockorigen}}</span></small>
+                </td>
+                <td >
+                  <small><span>{{registro.stockdestino}} </span></small>
+                </td>
+
+                <td >
+                  <small>
+                    <input type="number" class="form-control form-control-sm text-right" min="1" max="100"
+                      [disabled]="bloqcantsoli" [(ngModel)]="registro.cantsoli"
+                      (keyup.enter)="cambio_cantidad(id, 'cantsoli',registro)"
+                      (focusout)="cambio_cantidad(id, 'cantsoli',registro)">
+                  </small>
+                </td>
+                <td>
+                  <small><span>{{registro.cantdespachada}} </span></small>
+                </td>
+                <td>
+                  <small><span>{{registro.cantsoli- registro.cantdespachada}}</span></small>
+                </td>
+                <td>
+                  <small><span>{{registro.cantrecepcionado}} </span></small>
+                </td>
+                <td>
+                  <small><span>{{registro.cantdevolucion}} </span></small>
+                </td>
+                <td>
+                  <small><span>{{registro.nomplantilla}} </span> </small>
+                </td>
+                <td>
+                  <small>
+                    <input class="mr-2  " type="checkbox" [disabled]="!registro.bloqcampogrilla"
+                      (click)="CambioCheck(registro,id,$event,registro.marcacheckgrilla)">
+                  </small>
+
+                </td>
+                <td>
+                  <small><span><button type="button" id="btnVerEventos" class="btn btn-info btn-rounded btn-sm ml-2"
+                        (click)="eventosDetalleSolicitud(registro)" [disabled]="!btnevento">{{ 'key.button.eventos' | translate}}
+                      </button></span>
+                  </small>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <!-- <div class="row m-1" *ngIf="arregloDetalleProductoSolicitud.length>20">
+            <pagination [boundaryLinks]="true" [directionLinks]="true" [maxSize]="8"
+              [totalItems]="arregloDetalleProductoSolicitud.length" [itemsPerPage]=20 [previousText]="'Anterior'"
+              [nextText]="'Siguiente'" [firstText]="'&laquo;'" [lastText]="'&raquo;'"
+              (pageChanged)="pageChanged($event)">
+            </pagination>
+          </div> -->
+        </div>
+      </div>
+
+      <!--  Botones de página -->
+      <div class="row float-right mr-1 mt-2">
+        <!--Al agregarle col-md-3 queda el espacio entre botones cuando aparece generar solicitud-->
+        <div class="form-group  align-self-end" *ngIf="modelopermisos.btngrabasolicbod">
+
+          <button type="button" id="btnguardar"
+            [disabled]="(FormCreaSolicitud.controls.numsolicitud.value!=null || !activabtncreasolic)?true:false"
+            class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+            (click)="ConfirmaGenerarSolicitud()">{{ 'key.button.generar.solicitud' | translate}}
+            <i class="fas fa-save"></i>
+          </button>
+        </div>
+        <div class="form-group  align-self-end" *ngIf="modelopermisos.btnmodificasolicbod">
+
+          <button type="button" id="btnmodificar"
+            [disabled]="(FormCreaSolicitud.controls.numsolicitud.value === null || !existesolicitud || !solicitudCentral)?true:false"
+            class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+            (click)="ConfirmaModificarSolicitud()">{{ 'key.modificar.solicitud' | translate}}
+            <i class="fas fa-save"></i>
+          </button>
+        </div>
+        <div class="form-group  align-self-end" *ngIf="modelopermisos.btnimprsolicbod">
+          <button type="button" id="btnguardar" [disabled]="!btnimprsolicitud"
+            class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02" (click)="onImprimir()">{{ 'key.button.imprimir.solicitud' | translate}}
+            <i class="fas fa-file-pdf ml-1"></i>
+          </button>
+        </div>
+        <div class="form-group  align-self-end" *ngIf="modelopermisos.btneliminasolicbod">
+
+          <button type="button" id="btneliminar"
+            [disabled]="(FormCreaSolicitud.controls.numsolicitud.value === null || !activabtneliminarsolic)?true:false"
+            class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+            (click)="ConfirmaEliminarSolicitud()">{{ 'key.eliminar.solicitud' | translate}} <i class="fas fa-trash-alt"></i>
+          </button>
+        </div>
+        <div class="form-group  align-self-end">
+          <button type="button" id="btnlimpiar" class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+            (click)="limpiar()">{{ 'key.button.limpiar' | translate}} <i class="fas fa-eraser ml-1"></i>
+          </button>
+        </div>
+        <div class="form-group  align-self-end">
+          <button type="button" id="btnsalir" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+          (click)="salir()">{{ 'key.button.salir' | translate}} <i class="fas fa-window-close ml-1"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+    <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="true"> </swal>
+    <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+    <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+  </div>
+</app-main-nav>

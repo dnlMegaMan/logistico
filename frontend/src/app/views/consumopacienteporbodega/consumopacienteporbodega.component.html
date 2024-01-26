@@ -1,0 +1,249 @@
+<app-main-nav>
+    <div >
+        <div class="my-2 ml-2 titulo text-center">
+            <h3>
+                {{ 'key.title.consumo.pacientes.bodega' | translate}}
+            </h3>
+        </div>
+        <!-- Mensaje de alerta en caso de errores -->
+        <div *ngFor="let alert of alerts">
+            <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)">
+                {{ alert.msg }}
+            </alert>
+        </div>
+        <!-- lineas de edición y bpusqueda -->
+
+        <div class="card border-primary m-1" style="padding: 10px; margin: 10px; height: auto;">
+            <form [formGroup]="FormConsumoPacienteBodega" autocomplete="off" spellcheck="false">
+                <div class="form-row mt-2">
+                    <div class="form-group col-sm-1">
+                        <label for="tipoDocumento">{{ 'key.tipo.documento' | translate}} *</label>
+                        <select class="form-control form-control-sm" formControlName="tipodocumento"
+                            (change)="SeleccionTipoDoc()">
+                            <option *ngFor="let tipodoc of docsidentis" [ngValue]='tipodoc.docidentcodigo'>
+                                {{ tipodoc.docidentdescripcion }}
+                            </option>
+                        </select>
+                        <!-- <input type="text" class="form-control form-control-sm"
+                    formControlName="tipodocumento"> -->
+                    </div>
+                    <div class="form-group col-sm-1">
+                        <label for="numidentificacion">{{ 'key.numero.documento' | translate}} *</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="numidentificacion"
+                            (keyup.enter)="getPacienteTipoDoc()" (keydown.tab)="getPacienteTipoDoc()">
+                    </div>
+                    <div class="form-group col-sm-2">
+                        <label for="apepaterno">{{ 'key.apellido.paterno' | translate}} *</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="apepaterno"
+                            (keyup.enter)="getPacienteTipoDoc()" (keydown.tab)="getPacienteTipoDoc()">
+                    </div>
+                    <div class="form-group col-sm-2">
+                        <label for="apematerno">{{ 'key.apellido.materno' | translate}} *</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="apematerno"
+                            (keyup.enter)="getPacienteTipoDoc()" (keydown.tab)="getPacienteTipoDoc()">
+                    </div>
+                    <div class="form-group col-sm-2">
+                        <label for="nombres">{{ 'key.nombres' | translate}} *</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="nombres"
+                            (keyup.enter)="getPacienteTipoDoc()" (keydown.tab)="getPacienteTipoDoc()">
+                    </div>
+
+
+
+                    <div class="form-group col-md-2 align-self-end text-right">
+                        <button type="button" id="btnbuscar"
+                            class="btn btn-primary btn-sm button-my-styles-busqueda_01 " [disabled]="!activabtnbuscar"
+                            (click)="BuscarConsumo()">{{ 'key.button.buscar' | translate}} <i class="fas fa-search ml-1" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-row mt-2">
+                    <div class="form-group col-sm-2">
+                        <label for="fechadesde">{{ 'key.fechadesde' | translate}}</label>
+                        <input appSelecttext type="text" placeholder="DD/MM/YYYY" id="fecha"
+                            class='form-control form-control-sm' [bsConfig]="bsConfig" bsDatepicker placement="right"
+                            formControlName="fechadesde">
+                    </div>
+                    <div class="form-group col-sm-2">
+                        <label for="fechahasta">{{ 'key.fechahasta' | translate}}</label>
+                        <input appSelecttext type="text" placeholder="DD/MM/YYYY" id="fecha"
+                            class='form-control form-control-sm' [bsConfig]="bsConfig" bsDatepicker placement="right"
+                            formControlName="fechahasta">
+                    </div>
+                    <div class="form-group col-sm-2">
+                        <label for="fechahasta">{{ 'key.numero.cuenta' | translate}}</label>
+                        <input type="text" class='form-control form-control-sm' placement="right" formControlName="cuenta"  />
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label for="bodcodigo">{{ 'key.bodega.suministro' | translate}}</label>
+                        <select name="bodcodigo" class='form-control form-control-sm' formControlName='bodcodigo'
+                            (change)="ActivaBotonBuscar()">
+                            <option [ngValue]="0"></option>
+                            <option *ngFor='let listaBodegasSolictante of bodegasSolicitantes'
+                                [ngValue]='listaBodegasSolictante.bodcodigo'>
+                                {{ listaBodegasSolictante.boddescripcion }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="card border-primary" style="padding: 10px;margin-top: 10px ;">
+            <div id="table" class="table-editable">
+                <div class="table-responsive mt-2" style="max-height: auto;min-height: 100px; ">
+                    <table class="table table-sm table-condensed table-bordered  table-striped text-center">
+                        <tr class="table table-sm  table-primary table-bordered ">
+                            <th class="text-center">{{ 'key.fecha.solicitud' | translate}}
+                              <svg (click)="sortbySol('fechacrea')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
+                            </th>
+                            <th class="text-center">{{ 'key.solicitud.numero' | translate}}
+                              <svg (click)="sortbySol('soliid')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
+                            </th>
+                            <th class="text-center">{{ 'key.estado' | translate}}
+                              <svg (click)="sortbySol('estado')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
+                            </th>
+                            <th class="text-center">{{ 'key.numero.cuenta' | translate}}
+                                <svg (click)="sortbySol('cuenta')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                </svg>
+                            </th>
+                            <th class="text-center">{{ 'key.cargo.cuenta' | translate}}
+                              <svg (click)="sortbySol('cgoid')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
+                            </th>
+                            <th class="text-center">{{ 'key.codigo' | translate}}
+                              <svg (click)="sortbySol('codmei')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
+                            </th>
+                            <th class="text-center">{{ 'key.descripcion' | translate}}
+                              <svg (click)="sortbySol('desmei')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
+                            </th>
+                            <th class="text-center">{{ 'key.cantidad.solicitada' | translate}}
+                              <svg (click)="sortbySol('cantsoli')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
+                            </th>
+                            <th class="text-center">{{ 'key.cantidad.despachada' | translate}}
+                              <svg (click)="sortbySol('cantidad')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
+                            </th>
+                            <th class="text-center">{{ 'key.cantidad.devuelta' | translate}}
+                              <svg (click)="sortbySol('candevuelta')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
+                            </th>
+                            <th class="text-center">{{ 'key.servicio.origen' | translate}}
+                              <svg (click)="sortbySol('descserv')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
+                            </th>
+                            <th class="text-center">{{ 'key.usuario.genero' | translate}}
+                              <svg (click)="sortbySol('usuacreacion')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
+                            </th>
+                            <!-- <th class="text-center"></th> -->
+                        </tr>
+                        <tr class="table-secondary"
+                            *ngFor="let registro of detalleConsultaPacienteBodegasPaginacion
+                            |  paginate: {itemsPerPage: 15, currentPage: page, id:'solicitud'}"
+                             style="cursor:pointer;">
+                            <td>
+                                <small><span>{{registro.fechacrea }}</span></small>
+                            </td>
+                            <td>
+                                <small><span>{{registro.soliid }} </span></small>
+                            </td>
+                            <td>
+                                <small><span>{{registro.estado }} </span></small>
+                            </td>
+                            <td>
+                                <small><span>{{ registro.cuenta }} </span></small>
+                            </td>
+                            <td>
+                                <small><span>{{registro.cgoid }} </span></small>
+                            </td>
+                            <td>
+                                <small><span> {{registro.codmei}}</span></small>
+                            </td>
+                            <td>
+                                <small><span>{{registro.desmei }} </span></small>
+                            </td>
+                            <td>
+                                <small><span>{{registro.cantsoli}} </span></small>
+                            </td>
+                            <td>
+                                <small><span>{{registro.cantidad }} </span></small>
+                            </td>
+                            <td>
+                                <small><span>{{registro.candevuelta }}</span></small>
+                            </td>
+                            <td>
+                                <small><span>{{registro.descserv }} </span></small>
+                            </td>
+                            <td>
+                                <small><span>{{registro.usuacreacion }} </span></small>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="row  align-self-center">
+                      <pagination-controls
+                        id="solicitud"
+                        (pageChange)="page = $event"
+                        previousLabel="{{'key.pagination.anterior' | translate}}"
+                        nextLabel="{{'key.pagination.siguiente' | translate}}"
+                        autoHide="true">
+                      </pagination-controls>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!--  Botones de página -->
+        <div class="row float-right mr-1 mt-2">
+            <!-- <div class="form-group  align-self-end" *ngIf="modelopermisos.btndevolverpac">
+
+
+            </div> -->
+            <!-- *ngIf="modelopermisos.btnimprimedevolpac"Aún NO se desarrolla el reporte -->
+            <!-- <div class="form-group  align-self-end">
+                <button type="button" id="btnguardar" [disabled]="!imprime"
+                    class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+                    (click)="onImprimir()">IMPRIMIR CONSULTA <i class="fas fa-file-pdf ml-1"></i>
+                </button>
+            </div> -->
+            <div class="form-group  align-self-end">
+                <button type="button" id="btnlimpiar" (click)="limpiar()"
+                    class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02">{{ 'key.button.limpiar' | translate}} <i
+                        class="fas fa-eraser ml-1"></i>
+                </button>
+            </div>
+            <div class="form-group  align-self-end">
+                <button type="button" id="btnsalir" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+                    routerLink='../home'>{{ 'key.button.salir' | translate}} <i class="fas fa-window-close ml-1"></i>
+                </button>
+            </div>
+
+            <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+            <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+            <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+            <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+
+        </div>
+    </div>
+</app-main-nav>

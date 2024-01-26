@@ -1,0 +1,300 @@
+<app-main-nav>
+    <div>
+        <!-- Contenedor feneral de la página -->
+        <div class="my-2 ml-2 titulo text-center">
+            <!--menu -->
+            <h3>
+              {{ 'key.title.ingreso.orden.compra' | translate}}
+            </h3> 
+        </div>
+        <!-- Creacio nde filtros y datos ingresados por pantalla -->
+        <form [formGroup]='FormCrearOc'>
+          <div class="card border-primary" style="padding: 5px;">
+            <div class="form-row d-flex justify-content">
+              <div class="col-sm-1 text-left">
+                <label for="numorden">{{ 'key.numero.orden.compra' | translate}}</label>
+              </div>
+              <div class="form-group col-md-2">
+                <input [readonly]="bloquear_numoc" type="number"  onKeyPress="if(this.value.length==10) return false;"
+                class="form-control form-control-sm"  formControlName="numorden"
+                (keyup.enter)="buscarOc($event.target.value)"
+                (focusout)="buscarOc($event.target.value)">
+              </div>
+              <div class="form-group col-md-3 align-self-end">
+                <button type="button" id="btncrear" class="btn btn-primary btn-sm" [disabled]="bloquear_crearoc"
+                  (click)="crearOc()">{{ 'key.button.crear.orden.compra' | translate}} <i class="fas fa-plus ml-1"></i>
+                </button>
+              </div>
+              <div *ngIf ="estadoval > 0" class="col-sm-1 text-left">
+                <label for="estadodesc">{{ 'key.estado' | translate}}</label>
+              </div>
+              <div *ngIf ="estadoval > 0" class="form-group col-md-4">
+                <input type="text" class="form-control form-control-sm" formControlName="estadodesc"   [(ngModel)]="estadodesc" value="{{estadodesc}}">
+              </div>
+            </div> 
+            <div class="form-row d-flex justify-content">
+              <div class="col-sm-1 text-left">
+                <label for="rutprov">{{ 'key.identificacion.proveedor' | translate}}</label>
+              </div>
+              <div class="form-group col-md-2">
+                <input type="text" class="form-control form-control-sm" formControlName="rutprov" maxlength="12"
+                [readonly]="(listado_articulos.length || bloquear_rutprov)?true:false"
+                (keyup.enter)="cargarProveedor($event.target.value)"
+                (focusout)="cargarProveedor($event.target.value)">
+              </div>
+              <div class="form-group">
+                <button type="button" id="btnbuscar" class="btn btn-primary btn-sm" [disabled]="(listado_articulos.length || bloquear_rutprov)?true:false"
+                (click)="abrirModalBusuqedaProv()"><i class="fas fa-search ml-1"></i>
+                </button>
+                <input type="hidden" class="form-control form-control-sm" formControlName="provid" >
+                <input type="hidden" class="form-control form-control-sm" formControlName="rutprovori" >
+              </div>
+              <div class="col-sm-1 text-right">
+                <label for="descprov">{{ 'key.nombre.proveedor' | translate}}</label>  
+              </div>
+              <div class="form-group col-md-3">
+                <input type="text" class="form-control form-control-sm" formControlName="descprov"  value="{{proveedor_aux.descripcionprov}}">
+              </div>
+              <div class="form-group col-md-1">
+                <label for="montominfact">{{ 'key.monto.min.fact' | translate}}</label>
+              </div>
+              <div class="form-group col-md-1">
+                <input type="text" class="form-control form-control-sm" formControlName="montominfact">
+              </div>
+            </div>
+            <div class="form-row d-flex justify-content">
+              <div class="form-group col-md-1">
+                <label for="dirprov">{{ 'key.direccion' | translate}}</label>
+              </div>
+              <div class="form-group col-md-4">
+                <input type="text" class="form-control form-control-sm" formControlName="dirprov">
+              </div>
+              <div class="form-group col-md-1 text-right">
+                <label for="contactoprov">{{ 'key.contacto' | translate}}</label>
+              </div>
+              <div class="form-group col-md-3">
+                <input type="text" class="form-control form-control-sm" formControlName="contactoprov">
+              </div>
+            </div>
+            <div class="form-row d-flex justify-content">
+              <div class="form-group col-md-1">
+                <label for="mediopago">{{ 'key.forma.pago' | translate}}</label>
+              </div>
+              <div class="form-group col-md-1">
+                <select name="mediopago" class='form-control form-control-sm' formControlName='mediopago' (change)="compararListas()"
+                  ngDefaultControl>
+                  <option *ngFor="let mediopago of listamediopago" [value]="mediopago.codmediopago">
+                      {{mediopago.glsmediopago}}
+                  </option>
+                </select>
+              </div>
+              <div class="form-group col-md-1">
+                <label for="itemscant">{{ 'key.n.items.oc' | translate}}</label>
+              </div>
+              <div class="form-group col-md-1">
+                <input type="text" class="form-control form-control-sm" formControlName="itemscant" [readonly]="true">
+              </div>
+              <div class="form-group col-md-2 text-right">
+                <label for="dctoasoc">{{ 'key.documentos.asociados.oc' | translate}}</label>
+              </div>
+              <div class="form-group col-md-3">
+                <input type="text" class="form-control form-control-sm" formControlName="dctoasoc" [readonly]="true">
+              </div>
+            </div>
+            <div class="form-row d-flex justify-content">
+              <div class="form-group col-md-1 align-self-end">
+                <label for="anulada">{{ 'key.anulada' | translate}}</label>
+                <label for="anulada">&nbsp;&nbsp;&nbsp;</label>
+                <input style="transform: scale(2.5);" onclick="return false;" type="checkbox"  [(ngModel)]="ch_anulada"
+                formControlName="anulada" name="anulada" >
+              </div>
+              <div class="form-group col-md-2 text-right">
+                <label for="anulada">{{ 'key.fecha.anulacion' | translate}}</label>
+              </div>
+              <div class="form-group col-md-1">
+                <input type="text" class="form-control form-control-sm" formControlName="anuladafecha" [readonly]="true">
+              </div>
+              <div class="form-group col-md-2 text-right">
+                <label for="respanulada">{{ 'key.responsable.anulacion' | translate}}</label>
+              </div>
+              <div class="form-group col-md-2">
+                <input type="text" class="form-control form-control-sm" formControlName="anuladaresponsable" [readonly]="true">
+              </div>
+            </div>
+          </div>
+        </form>
+       
+        <!-- listado de articulos -->
+        <div class="card border-primary" style="padding: 5px;margin-top: 10px">
+            <div id="table" class="table-editable">
+              <form [formGroup]="FormDatosProducto" autocomplete="off" spellcheck="false">
+                <div class="row form-group align-self-end ml-1">
+                  <div class="form-group col-md-2">
+                    <label for="codigo">{{ 'key.codigo' | translate}} *</label>
+                        <input [readonly]="bloquear_btn_agregar" class="form-control form-control-sm"
+                          (keyup.enter)="BuscaProducto()"
+                          (keydown.tab)="BuscaProducto()"
+                          matInput
+                          placeholder="{{'key.placeholder.ingrese.codigo' | translate}}"
+                          type="text"
+                          formControlName="codigo"
+                          #codigo
+                          maxlength="10">                        
+                  </div>
+                  <div class="form-group col-md-2">
+                    <label for="descripcion">{{ 'key.descripcion' | translate}} *</label>
+                       <input [readonly]="bloquear_btn_agregar" class="form-control form-control-sm"
+                       (keyup.enter)="BuscaProducto()"
+                       (keydown.tab)="BuscaProducto()"
+                       matInput
+                       placeholder="{{'key.placeholder.ingrese.descripcion' | translate}}"
+                       type="text"
+                       formControlName="descripcion"
+                       #codigo
+                       maxlength="50"
+                     >
+                  </div>
+                  <div class="form-group align-self-end ml-8">
+                    <button type="button" class="btn btn-info btn-rounded btn-sm ml-2"
+                      (click)="BuscaProducto()" [disabled]="bloquear_btn_agregar">{{ 'key.agregar' | translate}}
+                      <i class="fas fa-plus ml-2" aria-hidden="true"></i>
+                    </button>
+                    <span class="form-group col-md-6"> &nbsp;</span>
+                    <button type="button" id="btnLimpiargrillamed" class="btn btn-danger text-right btn-sm ml-4 float-right"
+                      [disabled]="(!listado_articulos.length)?true:false"
+                      style="position: absolute; right: 1;" (click)="ConfirmaEliminarTodo()">{{ 'key.button.limpiar.grilla' | translate}}<i
+                        class="fas fa-brush ml-1"></i>
+                    </button> 
+                  </div>
+                  
+                </div>
+              </form>
+    
+              <div class="table-responsive mt-2" style="max-height: 500px;min-height: 100px;">
+                <table class="table table-sm table-condensed table-bordered  table-striped text">
+                  <tr class="table table-sm  table-primary table-bordered ">
+                    <th class="text-center">{{ 'key.codigo' | translate}}</th>
+                    <th class="text-center">{{ 'key.descripcion' | translate}}</th>
+                    <th class="text-center">{{ 'key.tipo' | translate}}</th>
+                    <!-- <th class="text-center">Estado</th> -->
+                    <th class="text-center">{{ 'key.solicitado' | translate}}</th>
+                    <th class="text-center">{{ 'key.devuelto' | translate}}</th>
+                    <th class="text-center">{{ 'key.recepcionado' | translate}}</th>
+                    <th class="text-center">{{ 'key.precio.unitario' | translate}}</th>
+                    <th class="text-center">{{ 'key.costo.total' | translate}}</th>
+                    <th class="text-center"><button type="button" id="btnElinaRegistro"
+                        class="btn btn-info btn-danger btn-sm ml-2 " (click)="ConfirmaEliminarSel()"
+                        [disabled]="(!lista_eliminados.length || bloquear_eleminargrilla)?true:false">
+                        {{ 'key.button.eliminar' | translate}} <i class="fas fa-trash-restore-alt  ml-1"></i>
+                      </button>
+                    </th>
+                  </tr>
+                  <tr class="table-secondary"
+                    *ngFor="let registro of listado_articulos; let id = index">
+                    <td>
+                      <small><span>{{registro.meincodigo}}</span></small>
+                    </td>
+                    <td class="text-nowrap help   " tooltip="{{registro.meindescri }}">
+                      <small><span> {{registro.meindesc| slice:0:35 }}</span></small>
+                    </td>
+                    <td class="text-nowrap help" tooltip="{{registro.descunidadmedida }}">
+                      <small><span> {{registro.meintipo| slice:0:15 }}</span></small>
+                    </td>
+                    <!-- <td>
+                        <small><span>{{registro.odetestado}} </span></small>
+                      </td>-->
+                    <td > 
+                      <small>
+                        <input type="number" class="form-control form-control-sm text-right" min="1" max="10"
+                          [disabled]="bloquear_cantidad" [(ngModel)]="registro.odetcantreal"
+                          (keyup.enter)="cambio_cantidad(id, 'odetcantreal',registro,$event.target.value)"
+                          (focusout)="cambio_cantidad(id, 'odetcantreal',registro,$event.target.value)"
+                          onKeyPress="if(this.value.length==5) return false;">
+                      </small>
+                    </td>
+                    <td>
+                      <small><span>{{registro.odetcantdevuelta}} </span></small>
+                    </td>
+                    <td>
+                      <small><span>{{registro.odetcantdespachada}}</span></small>
+                    </td>
+                    <td >
+                      <small>
+                        <input type="number" class="form-control form-control-sm text-right" min="1" max="10"
+                          [disabled]="bloquear_cantidad" [(ngModel)]="registro.odetvalorcosto"
+                          (keyup.enter)="cambio_cantidad(id, 'odetvalorcosto',registro,$event.target.value)"
+                          (focusout)="cambio_cantidad(id, 'odetvalorcosto',registro,$event.target.value)"
+                          onKeyPress="if(this.value.length==5) return false;">
+                      </small>
+                    </td>
+                    <td>
+                      <small><span style="float:right"><b>{{registro.odetcantreal*registro.odetvalorcosto}}</b></span></small>
+                    </td>
+                    <td>
+                      <small>
+                        <input class="mr-2  " type="checkbox" [disabled]="bloquear_eleminargrilla"
+                          (change)="cambioCheck($event,id)">
+                      </small>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        <!--  Botones de página -->
+        <div class="form-row float-right mt-2 mr-1">
+            <div *ngIf="creacion" class="form-group  align-self-end">
+                <button type="button" id="btnguardar" class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+                [disabled]="(!listado_articulos.length || bloquear_btn_crear || (this.FormCrearOc.value.mediopago == null || this.FormCrearOc.value.mediopago == undefined || this.FormCrearOc.value.mediopago == 0))?true:false"    
+                (click)="ConfirmaGenerarSolicitud()">{{ 'key.button.grabar.oc' | translate}}
+                    <i class="fas fa-save ml-1"></i>
+                </button>
+            </div>
+            <div *ngIf="revertir" class="form-group  align-self-end">
+              <button type="button" id="btnguardar" class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+              (click)="ConfirmaRevertirSolicitud()">{{ 'key.button.revertir.oc' | translate}}
+                  <i class="fas fa-save ml-1"></i>
+              </button>
+          </div>
+            <div *ngIf="modificacion" class="form-group  align-self-end">
+              <button type="button" id="btnguardar" class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+              [disabled]="(!listado_articulos.length || bloquear_btn_crear || (this.FormCrearOc.value.mediopago == null || this.FormCrearOc.value.mediopago == undefined) || (modificacion_detalle == 0 &&  modificacion_cabecera == 0))?true:false"    
+              (click)="ConfirmaModificarSolicitud()">{{ 'key.button.modificar.oc' | translate}}
+                  <i class="fas fa-save ml-1"></i>
+              </button>
+          </div>
+            <div class="form-group  align-self-end">
+              <button type="button" id="btnbuscar" class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+              [disabled]="!bloquear_limpiartodo" (click)="abrirModalBusuqedaOc()">{{ 'key.button.buscar.oc' | translate}}
+                  <i class="fas fa-search ml-1"></i>
+              </button>
+            </div>
+            <div class="form-group align-self-end" *ngIf="modelopermisos.btnimpdespsolicbod">
+                <button type="button" id="btnguardar" [disabled]="bloquear_emitir"
+                    class="btn mr-1 btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+                    (click)="ConfirmaEmitirSolicitud()">{{ 'key.button.emitir.oc' | translate}} <i class="fas fa-file-pdf ml-1"></i>
+                </button>
+            </div>
+
+            <div class="form-group  align-self-end">
+                <button type="button" id="btnlimpiar" class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_02" [disabled]="bloquear_limpiartodo"
+                    (click)="ConfirmaLimpiarTodo()">{{ 'key.button.limpiar' | translate}} <i class="fas fa-eraser ml-1"></i>
+                </button>
+            </div>
+            <div class="form-group  align-self-end">
+              <button type="button" id="btnlimpiar" class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_02" [disabled]="bloquear_anulada"
+                  (click)="ConfirmaAnularSolicitud()">{{ 'key.button.anular.oc' | translate}} <i class="fas fa-eraser ml-1"></i>
+              </button>
+            </div>
+            <div class="form-group align-self-end">
+                <button type="button" id="btnsalir" class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+                    (click)=salir()>{{ 'key.button.salir' | translate}} <i class="fas fa-window-close ml-1"></i>
+                </button>
+            </div>
+        </div>
+
+        <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+        <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+        <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+    </div>
+</app-main-nav>

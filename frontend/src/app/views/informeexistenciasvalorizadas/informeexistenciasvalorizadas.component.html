@@ -1,0 +1,76 @@
+<app-main-nav>
+  <div>
+    <div class="pl-4" style="margin: 10px;">
+      <form [formGroup]="FormListadoInventario">
+        <!-- Contenedor general de la página -->
+        <div class="my-2 ml-2 titulo text-center">
+          <!--menu -->
+          <h5>
+           {{ "key.title.informe.existencias.valorizadas" | translate }}
+          </h5>
+        </div>
+        <!-- lineas de edición y bpusqueda -->
+        <div class="card border-primary" style="padding: 10px;">
+          <div class="form-row mt-2">
+            <div class="form-group col-md-3">
+              <label for="codigobodega">{{ 'key.title.bodegas' | translate}} *</label>
+              <select name="boddescodigo" class='form-control form-control-sm' formControlName='boddestino'
+                (change)="BuscaPeriodoInventario(FormListadoInventario.value.boddestino)">
+                <option *ngFor='let listaBodegasSolictante of bodegasSolicitantes'
+                  [ngValue]='listaBodegasSolictante.id'>
+                  {{ listaBodegasSolictante.descripcion }}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-md-2">
+              <label for="periodo">{{ 'key.periodo' | translate}} *</label>
+              <select name="periodo" class="form-control form-control-sm " formControlName="periodo">
+                <option *ngFor="let periodo of periodos" [ngValue]="periodo.fechainventario">
+                  {{ periodo.fechainventario }}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-md-2">
+              <label for="tiporegistro">{{ 'key.tipo.producto' | translate}} *</label>
+              <select name="tiporegistro" class='form-control form-control-sm' formControlName='tiporegistro'>
+                <option *ngFor="let tipoderegistro of listaTipoProductos" [ngValue]="tipoderegistro.valor">
+                  {{ tipoderegistro.descripcion }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </form>
+      <!--  Botones de página -->
+      <div class="form-row mt-1 float-right">
+        <div class="form-group col-md-3 align-self-end">
+          <button type="button" id="btnguardar" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+            [disabled]="FormListadoInventario.invalid || loading" (click)="ConfirmaImprimirReporte('pdf')">{{ 'key.button.imprimir.pdf' | translate}} <i
+              class="nav-icon fas fa-file-pdf"></i>
+          </button>
+        </div>
+        <div class="form-group col-md-3 align-self-end">
+          <button type="button" id="btnguardar" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+            [disabled]="FormListadoInventario.invalid || loading" (click)="ConfirmaImprimirReporte('xls')">{{ 'key.button.imprimir.excel' | translate}} <i
+              class="nav-icon fas fa-file-excel"></i>
+          </button>
+        </div>
+        <div class="form-group col-md-3 align-self-end">
+          <button type="button" id="btnlimpiar" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+            (click)="LimpiaPantalla()">{{ 'key.button.limpiar' | translate}} <i class="fas fa-eraser ml-1"></i>
+          </button>
+        </div>
+        <div class="form-group col-md-3 align-self-end">
+          <button type="button" id="btnsalir" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+            routerLink='../home'>{{ 'key.button.salir' | translate}}  <i class="fas fa-window-close ml-1"></i>
+          </button>
+        </div>
+      </div>
+      <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px', fullScreenBackdrop: true }"> </ngx-loading>
+      <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+      <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+      <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+      <swal #alertSwalConfirmar title="" text="" type="question" [showCancelButton]="true"> </swal>
+    </div>
+  </div>
+</app-main-nav>

@@ -1,0 +1,99 @@
+<div class="card">
+  
+    <div class="card-header">
+        {{titulo}}
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onCerrarSalir()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="card m-2 border-primary" style="padding: 10px; background-color:azure;">
+        <form novalidate [formGroup]='FormBuscaProfesional' autocomplete="off" spellcheck="false">
+            <div class="form-row">
+                <div class="form-group col-md-2">
+                    <label for="tipoidentificacion">{{ 'key.tipo.identificacion' | translate}} *</label>
+                    <select name="tipoidentificacion" class='form-control form-control-sm'
+                        formControlName='tipoidentificacion'>
+                        <option *ngFor='let tipo  of docsidentis' [ngValue]='tipo.docidentcodigo'>
+                            {{tipo.docidentdescripcion}}
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="numeroidentificacion">{{ 'key.numero.identificacion' | translate}}</label>
+                    <input type="text" class="form-control form-control-sm" (input)="ActivaBotonBuscar()"
+                        formControlName="numeroidentificacion">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-sm-2">
+                    <label for="nombrespaciente">{{ 'key.nombres' | translate}} </label>
+                    <input type="text" class="form-control form-control-sm" 
+                    formControlName="nombresmedico"
+                        (input)="ActivaBotonBuscar()">
+                </div>
+                <div class="form-group col-sm-2">
+                    <label for="apellidopaterno">{{ 'key.apellido.paterno' | translate}} </label>
+                    <input type="text" class="form-control form-control-sm" formControlName="apellidopaterno"
+                        (input)="ActivaBotonBuscar()">
+                </div>
+                <div class="form-group col-sm-2">
+                    <label for="apellidomaterno">{{ 'key.apellido.materno' | translate}}</label>
+                    <input type="text" class="form-control form-control-sm" formControlName="apellidomaterno"
+                        (input)="ActivaBotonBuscar()">
+                </div>
+                <div class="form-group col-sm-2 align-self-end text-right">
+                    <button type="button" class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                        (click)="Limpiar()">{{ 'key.button.limpiar.L' | translate}} <i class="fas fa-eraser ml-1"></i>
+                    </button>
+                </div>
+                <div class="form-group col-sm-2 align-self-end text-right">
+                    <button [disabled]="!activabtnbuscar" type="button"
+                        class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                        (click)="BuscarProfesionalDesdeModal()">{{ 'key.button.buscar' | translate | uppercase}}<i class="fas fa-search ml-1"></i>
+                    </button>
+                </div>
+            </div>
+            <table class="table table-stripped table-condensed table-hovered">
+                <thead>
+                    <tr>
+                        <th>{{ 'key.numero.identificacion' | translate}}</th>
+                        <th>{{ 'key.nombres' | translate}}</th>
+                        <th>{{ 'key.apellido.paterno' | translate}}</th>
+                        <th>{{ 'key.apellido.materno' | translate}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let prof of datosprofesionalesPaginacion" (click)="onCerrar(prof)"
+                        style="cursor: pointer;">
+                        <td>{{ prof.clinumidentificacion}}</td>
+                        <td>{{ prof.nombreprof }} </td>
+                        <td>{{ prof.paternoprof }}</td>
+                        <td>{{ prof.maternoprof }}</td>
+
+                    </tr>
+                </tbody>
+            </table>
+            <div class="row m-1 col-md-6" *ngIf="datosprofesionales.length>20">
+                <pagination [boundaryLinks]="true" [directionLinks]="true" [maxSize]="8"
+                    [totalItems]="datosprofesionales.length" [itemsPerPage]=8 [previousText]="'key.pagination.anterior' | translate"
+                    [nextText]="'key.pagination.siguiente' | translate" [firstText]="'&laquo;'" [lastText]="'&raquo;'"
+                    (pageChanged)="pageChanged($event)">
+                </pagination>
+            </div>
+        </form>
+    </div>
+    <div class="card-footer">
+        <div class="row">
+            <div class="form-group col-sm-6 align-self-end text-right">
+                <button type="button" class="btn btn-primary btn-sm button-my-styles-busqueda_01 ml-1" tooltip="CERRAR"
+                    (click)="onCerrarSalir()">{{ 'key.button.cerrar' | translate}}<i class="fas fa-window-close ml-1"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <swal #alertSwal title="" text="" type="success" [showCancelButton]="false" (confirm)="onCerrarSalir()"> </swal>
+    <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+    <swal #alertSwalError title="" text="" type="warning" [showCancelButton]="false"> </swal>
+    <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+</div>

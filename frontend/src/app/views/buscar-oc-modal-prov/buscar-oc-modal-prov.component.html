@@ -1,0 +1,94 @@
+<div class="card">
+    <!--menu - Búsqueda de productos-->
+    <div class="card-header">
+      <h3>{{titulo}}
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onCerrarSalir()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </h3>
+    </div>
+  
+    <div *ngFor="let alert of alerts" class="text-center">
+      <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)">{{ alert.msg }}
+      </alert>
+    </div>
+  
+    <div class="card m-2 border-primary" style="padding: 10px; background-color:azure;">
+      <form novalidate [formGroup]='lForm' autocomplete="off" spellcheck="false">
+        <div class="form-row">
+          <div class="form-group col-md-3">
+            <label for="estado">Estado</label>
+            <select name="estado" class='form-control form-control-sm' formControlName='estado'>
+                <option [ngValue]="null" disabled selected hidden>Selecciona una opción</option>
+              <option *ngFor='let registro of listaestado'
+                [ngValue]='registro.codestadooc'>
+                {{ registro.glsestadooc }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-sm-1">
+                <label for="desde">Desde *</label>
+                <input appSelecttext type="text" placeholder="DD/MM/YYYY" class="form-control form-control-sm"
+                        [bsConfig]="bsConfig" bsDatepicker formControlName="desde" placement="right"
+                        (ngModelChange)="refrescar()" (ngModelChange)="refrescar()"/>
+            </div>
+            <div class="form-group  col-sm-1">
+                <label for="hasta">Hasta *</label>
+                <input appSelecttext type="text" placeholder="DD/MM/YYYY" class="form-control form-control-sm"
+                        [bsConfig]="bsConfig" bsDatepicker formControlName="hasta" placement="right"
+                        (focusout)="refrescar()" (ngModelChange)="refrescar()"/>
+            </div>
+        </div>
+        <!-- tabla para búsqueda en otras pantallas-->
+        <table class="table table-stripped table-condensed table-hovered">
+          <thead>
+            <tr>
+              <th>N° OC</th>
+              <th>Proveedor</th>
+              <th>Fecha Emision</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let oc of detalleoc" (click)="onCerrar(oc)" let id=index
+              style="cursor: pointer;">
+              <td>{{oc.orcoid}}</td>
+              <td>{{oc.descripcionprov}}</td>
+              <td>{{oc.fechaemision}}</td>
+              <td>{{oc.estadodesc}} </td>
+            </tr>
+          </tbody>
+        </table>
+  
+        
+        <div class="row m-1">
+          <pagination
+            *ngIf="detalleocpag.length > 0"
+            [boundaryLinks]="true" [directionLinks]="true" [maxSize]="6"
+            [totalItems]="detalleocpag.length" [itemsPerPage]=8 [previousText]="'key.pagination.anterior' | translate"
+            [nextText]="'key.pagination.siguiente' | translate" [firstText]="'&laquo;'" [lastText]="'&raquo;'" (pageChanged)="pageChanged($event)">
+          </pagination>
+        </div>
+      </form>
+    </div>
+  
+    <div class="row float-right mt-1">
+      <div class="form-group col-md-9 align-self-end text-right">
+        <button type="button" id="btnlimpiar" class="btn  btn-primary btn-sm button-my-styles-busqueda_02"
+          (click)="Limpiar()">LIMPIAR <i class="fas fa-eraser ml-1"></i>
+        </button>
+      </div>
+      <div class="form-group col-md-3 align-self-end text-right">
+        <button type="button" id="btnlimpiar" class="btn  btn-primary btn-sm button-my-styles-busqueda_02"
+          (click)="onCerrarSalir()">SALIR <i class="fas fa-window-close ml-1"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+  <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+  <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+  <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+  

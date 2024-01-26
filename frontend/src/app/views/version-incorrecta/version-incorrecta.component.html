@@ -1,0 +1,62 @@
+<nav class="container-fluid py-3" style="background-color: rgb(109, 175, 175)">
+    <div class="row">
+        <img src="./assets/images/barra_supOS_PROD.jpg" alt="Logo" class="d-block m-auto" style="opacity: 0.8" />
+    </div>
+</nav>
+
+<div class="container m-auto py-4 text-center">
+    <div class="row">
+        <div class="col-12">
+            <h3 class="pb-4">{{ 'key.version.incorrecta' | translate}}</h3>
+
+            <table *ngIf="informacionGeneral" class="m-auto py-3 table" style="max-width: 600px">
+                <thead>
+                    <th></th>
+                    <th>{{ 'key.version.ultima' | translate}}</th>
+                    <th>{{ 'key.version.uso' | translate}}</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ 'key.version.go' | translate}}</td>
+                        <td>{{ ultimaVersionGo }}</td>
+                        <td>{{ versionEnUsoGo }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ 'key.version.angular' | translate}}</td>
+                        <td>{{ ultimaVersionAngular }}</td>
+                        <td>{{ versionEnUsoAngular }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p class="m-auto py-3 text-black">{{ 'key.mensaje.version.actualizar' | translate}}</p>
+
+            <div class="py-4 col-12 d-flex justify-content-center">
+                <button type="button" class="px-5 btn btn-sm btn-primary" routerLink="/login">{{ 'key.ir.login' | translate}} <i class="fas fa-user ml-1"></i></button>
+                <button
+                    type="button"
+                    class="ml-3 px-5 btn btn-sm btn-primary"
+                    (click)="toggleAyuda()"
+                    [attr.aria-expanded]="mostrarAyuda"
+                    aria-controls="collapseBasic">
+                    {{ 'key.ayuda' | translate}}
+                    <i class="fas fa-question-circle ml-1"></i>
+                </button>
+            </div>
+
+            <div class="col-12" id="collapseBasic" [collapse]="!mostrarAyuda">
+                <div class="p-4 card">
+                    <p class="mb-4 text-left">
+                        {{ 'key.mensaje.version.intrucciones.1' | translate}}
+                        <b>{{ 'key.mensaje.version.intrucciones.2' | translate}}</b>.
+                    </p>
+                    <img
+                        src="/assets/images/ayuda_refrescar_pagina.png"
+                        class="m-auto img-fluid rounded"
+                        style="max-width: 600px"
+                        alt="Ayuda refrescar página de manera forzada" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

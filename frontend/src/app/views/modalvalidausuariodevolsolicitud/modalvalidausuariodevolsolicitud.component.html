@@ -1,0 +1,31 @@
+<div class="container mt-2 mb-2" style="margin:auto;">
+    <div class="card mb-2" style="margin:auto; ">
+
+        <div class="card-header" style="margin:auto;">
+            {{titulo}}
+            <button type="button" class="close ml-2" data-dismiss="modal" aria-label="Close" (click)="onCerrarSalir()">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <div class="card border-primary mt-2 mb-2" style=" margin: auto; padding: 10px; background-color:azure;">
+            <form novalidate [formGroup]='FormLogin' autocomplete="off" spellcheck="false">
+                <div class="form-group " style="margin:auto;">
+                    <h6>{{ 'key.login.usuario' | translate}}</h6>
+                    <input type="text" name="usuario" id="usuario" class="form-control" formControlName="usuario">
+                </div>
+                <div class="form-group" style="margin:auto;">
+                    <h6>{{ 'key.login.contrasena' | translate}} </h6>
+                    <input type="password" style="margin:auto;" name="Contraseña" id="Contraseña" class="form-control"
+                        formControlName="contraseña">
+                </div>
+                <input type="button" style="margin:auto;" value="ENVIAR"
+                    class="btn mt-1 btn-primary text-center btn-block btn-sm col-md-4" (click)="autenticacion()">
+            </form>
+        </div>
+        <swal #alertSwal title="" text="" type="success" [showCancelButton]="false" (confirm)="onCerrarSalir()"> </swal>
+        <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+        <swal #alertSwalError title="" text="" type="warning" [showCancelButton]="false"> </swal>
+
+    </div>
+</div>

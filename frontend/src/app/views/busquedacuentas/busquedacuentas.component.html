@@ -1,0 +1,272 @@
+    <app-main-nav>
+        <div>
+            <div style="margin: 10px;">
+                    <div class="my-2 ml-2 titulo text-center">
+                        <h3>
+                            {{ 'key.title.busqueda.cuentas' | translate}}
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                      <div class="card mt-2">
+                            <div class="card-body">
+                                <form novalidate [formGroup]="FormBusquedasolicitud" autocomplete="off" spellcheck="false">
+                                    <p class="text-danger text-form-valid"
+                                    *ngIf="FormBusquedasolicitud.controls.fechadesde.invalid &&
+                                    (FormBusquedasolicitud.controls.fechadesde.dirty ||
+                                    FormBusquedasolicitud.controls.fechadesde.touched)">
+                                    {{ 'key.mensaje.requerido.fechaDesde.menor.fechaHasta' | translate}}
+                                    </p>
+                                    <p class="text-danger text-form-valid"
+                                    *ngIf="FormBusquedasolicitud.controls.fechahasta.invalid &&
+                                     (FormBusquedasolicitud.controls.fechahasta.dirty ||
+                                     FormBusquedasolicitud.controls.fechahasta.touched)">
+                                     {{ 'key.mensaje.requerido.fechaHasta.mayor.fechaDesde' | translate}}
+                                    </p>
+                                    <div class="row ml-1 mt-2">
+                                        <div class="form-group col-md-1">
+                                            <label for="fechadesde">{{ 'key.fechadesde' | translate}}*</label>
+                                            <input appSelecttext type="text" placeholder="DD/MM/YYYY" class="form-control form-control-sm"
+                                            [bsConfig]="bsConfig" bsDatepicker formControlName="fechadesde" (onHidden)="onFechaInicio()"
+                                            (focusout)="onFechaInicio()" value='{{vfechainicio}}' placement="right" />
+
+                                        </div>
+
+                                        <div *ngFor="let alert of alerts" class="text-center" >
+                                          <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)">
+                                              {{ alert.msg }}
+                                          </alert>
+                                        </div>
+                                        <div class="form-group col-md-1 ml-2">
+                                            <label for="fechahasta">{{ 'key.fechahasta' | translate}}*</label>
+                                            <input appSelecttext type="text" placeholder="DD/MM/YYYY" class="form-control form-control-sm"
+                                            [bsConfig]="bsConfig" bsDatepicker formControlName="fechahasta" (onHidden)="onFechaTermino()"
+                                            (focusout)="onFechaTermino()" value='{{vfechatermino}}' placement="right" />
+                                        </div>
+                                    </div>
+                                    <div class="row ml-1 mt-2">
+                                        <div class="form-group col-md-1">
+                                            <label for="tipodocpac">{{ 'key.tipo.documento' | translate}}*</label>
+                                            <select class="form-control form-control-sm"
+                                                formControlName="tipodocpac" (change)="SeleccionTipoDoc()">
+                                                <option *ngFor="let tipodoc of docsidentis"
+                                                    [ngValue]='tipodoc.docidentcodigo' >
+                                                    {{ tipodoc.docidentdescripcion }}
+                                                </option>
+                                            </select>
+
+                                        </div>
+                                        <div class="form-group col-md-2">
+                                            <label for="numidentificacion">{{ 'key.numero.identificacion' | translate}}</label>
+                                            <input #numidentificacion appAutofocus appSelecttext formatRut type="text" placeholder="{{'key.placeholder.ingrese.numero.identificacion' | translate}}"
+                                            class="form-control form-control-sm text-uppercase" formControlName="numidentificacion">
+                                        </div>
+
+                                        <div class="form-group col-md-2">
+                                            <label for="nombrepaciente">{{ 'key.nombre.paciente' | translate}}</label>
+                                            <input type="text" class="form-control form-control-sm text-uppercase" placeholder="{{'key.placeholder.ingrese.nombres' | translate}}"
+                                            formControlName="nombrepaciente">
+                                        </div>
+
+                                        <div class="form-group col-md-2">
+                                            <label for="paternopaciente">{{ 'key.apellido.paterno' | translate}}</label>
+                                            <input type="text" class="form-control form-control-sm text-uppercase" placeholder="{{'key.placeholder.ingrese.apellido.paterno' | translate}}"
+                                            formControlName="paternopaciente">
+                                        </div>
+                                        <div class="form-group col-md-2 ml-1">
+                                            <label for="maternopaciente">{{ 'key.apellido.materno' | translate}}</label>
+                                            <input type="text" class="form-control form-control-sm text-uppercase" placeholder="{{'key.placeholder.ingrese.apellido.materno' | translate}}"
+                                            formControlName="maternopaciente">
+                                        </div>
+
+                                        <div class="form-group col-md-1 align-self-end text-right ml-1">
+                                            <button type="button" id="btnbuscar"
+                                                class="btn btn-primary btn-sm button-my-styles-busqueda_01 "
+                                                (click)="onBuscar()" >{{ 'key.button.buscar' | translate}}<i class="fas fa-search ml-1" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="row ml-1 mt-2">
+                                        <div class="form-group col-md-2">
+                                        <label for="nrosolicitud">{{ 'key.numero.solicitud' | translate}}</label>
+                                        <input #nrosolicitud appSelecttext appNumberonly appAutofocus type="text" class="form-control form-control-sm"
+                                            placeholder="XXXXXXXXXX" formControlName="nrosolicitud">
+                                        </div>
+                                        <div class="form-group col-md-1 ml-2">
+                                            <label for="cuenta">{{ 'key.numero.cuenta' | translate}}</label>
+                                            <input #cuenta type="text" class="form-control form-control-sm" formControlName="cuenta" placeholder="{{'key.placeholder.ingrese.cuenta' | translate}}">
+                                        </div>
+                                        <div class="form-group col-md-1">
+                                            <label for="subcuenta">{{ 'key.subcuenta' | translate}}</label>
+                                            <input #subcuenta type="text" class="form-control form-control-sm" formControlName="subcuenta" placeholder="{{'key.placeholder.ingrese.subcuenta' | translate}}">
+                                        </div>
+
+                                        <div class="form-group col-md-2">
+                                            <label for="nroreceta">{{ 'key.n.receta' | translate}}</label>
+                                            <input #nroreceta type="text" class="form-control form-control-sm" formControlName="nroreceta" placeholder="{{'key.placeholder.ingrese.nro.receta' | translate}}">
+                                        </div>
+                                        <div class="form-group col-md-2 ml-1">
+                                            <label for="codproducto">{{ 'key.codigo.producto' | translate}}</label>
+                                            <input #codproducto type="text" class="form-control form-control-sm" formControlName="codproducto" placeholder="{{'key.placeholder.ingrese.codigo.producto' | translate}}">
+                                        </div>
+                                        <div class="form-group col-md-2 ml-1">
+                                            <label for="nombreproducto">{{ 'key.nombre.producto' | translate}}</label>
+                                            <input #nombreproducto type="text" class="form-control form-control-sm" formControlName="nombreproducto" placeholder="{{'key.placeholder.ingrese.nombre.producto' | translate | uppercase}}">
+                                        </div>
+
+                                        <div class="form-group col-md-1 align-self-end text-right ml-1">
+                                            <button type="button" id="btnlimpiarbusq" class="btn btn-primary btn-sm button-my-styles-busqueda_01 "
+                                            (click)="onLimpiar()">{{ 'key.button.limpiar.L' | translate}}<i class="fas fa-eraser ml-1" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="card table col-md-7" *ngIf="arrpacientespag.length > 0">
+                                    <table class="table table-hover">
+                                        <thead class="table-header-text">
+                                            <tr>
+                                                <th>{{ 'key.numero.identificacion' | translate | uppercase}}</th>
+                                                <th>{{ 'key.nombre.paciente' | translate | uppercase}}</th>
+                                                <th>{{ 'key.edad' | translate | uppercase}}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="table-body-text text-nowrap">
+                                            <tr *ngFor="let paciente of arrpacientespag" style="cursor: pointer;"
+                                            (click)="onBuscarctasnompaciente(paciente)">
+                                                <td>
+                                                    {{ paciente.numidentificacion }}
+                                                </td>
+                                                <td>
+                                                    {{ paciente.nompaccompleto }}
+                                                </td>
+                                                <td>
+                                                    {{ paciente.edad }}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row  mt-2 justify-content-end">
+                                  <div class="col-md-9">
+                                      <pagination  *ngIf="arrpacientes.length > 8 "[boundaryLinks]="true" [directionLinks]="true"
+                                          [maxSize]="8" [totalItems]="arrpacientes.length" [itemsPerPage]="8" [previousText]="'key.pagination.anterior' | translate"
+                                          [nextText]="'key.pagination.siguiente' | translate" [firstText]="'&laquo;'" [lastText]="'&raquo;'"
+                                          (pageChanged)="pageChangedPacientes($event)">
+                                      </pagination>
+                                  </div>
+                                  <div class="col-md-3"  *ngIf="arrpacientes.length > 0">
+                                    <div class="content">
+                                        {{ 'key.total.registros' | translate}}: ({{ arrpacientes.length }})
+                                     </div>
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    <!-- *TABLAS CUENTA y CARGOS* -->
+                        <div class="form-row" style="padding: 2px">
+                                <div class="table col-md-6 mt-3" style="max-height: 650px;min-height: 155px;">
+                                <div class="card-header">{{ 'key.lista.cuentas' | translate}}</div>
+                                <table class="table table-primary m-1" #tblasignada>
+                                    <thead class="table-header-text">
+                                        <tr>
+                                            <th scope="col">{{ 'key.numero.cuenta' | translate | uppercase}}</th>
+                                            <th scope="col">{{ 'key.numero.identificacion' | translate | uppercase}}</th>
+                                            <th scope="col">{{ 'key.f.hospitalizacion' | translate}}</th>
+                                            <th scope="col">{{ 'key.f.egreso' | translate}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="table-body-text text-nowrap">
+                                        <tr *ngFor="let cuenta of arrcuentaspaginacion" class="table-secondary"
+                                            style="cursor: pointer;" (click)="onCargospaciente($event, cuenta)">
+                                            <td>
+                                               <small>{{cuenta.numerocuenta}}</small>
+                                            </td>
+                                            <td>
+                                                <small>{{cuenta.numidentificacion}}</small>
+                                            </td>
+                                            <td>
+                                                <small>{{cuenta.fecingreso  | date:'dd/MM/yyyy'}}</small>
+                                            </td>
+                                            <td>
+                                                <small>{{cuenta.feceregreso}}</small>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="row  mt-2 justify-content-end">
+                                    <div class="col-md-12">
+                                        <pagination *ngIf="arrcuentas.length > 8"  [boundaryLinks]="true" [directionLinks]="true" [maxSize]="8"
+                                            [totalItems]="arrcuentas.length" [itemsPerPage]="8" [previousText]="'key.pagination.anterior' | translate"
+                                            [nextText]="'key.pagination.siguiente' | translate" [firstText]="'&laquo;'" [lastText]="'&raquo;'"
+                                            (pageChanged)="pageChangedCuentas($event)" [(ngModel)]="currentPagectas" [maxSize]="8">
+                                        </pagination>
+                                    </div>
+                                    <div class="col-md-6" *ngIf="arrcuentas.length > 8">
+                                      <div class="content">
+                                        {{ 'key.total.registros' | translate}}: ({{ arrcuentas.length }})
+                                       </div>
+                                    </div>
+                                  </div>
+                            </div>
+
+                        <div class="table col-md-6 mt-3" style="max-height: 650px;min-height: 155px;">
+                            <div class="card-header">{{ 'key.lista.cargos' | translate}}</div>
+                            <table class="table table-primary m-1">
+                                <thead class="table-header-text">
+                                    <tr>
+                                      <th scope="col">{{ 'key.codigo' | translate | uppercase}}</th>
+                                      <th scope="col">{{ 'key.descripcion' | translate | uppercase}}</th>
+                                      <th scope="col">{{ 'key.tipo' | translate | uppercase}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-body-text text-nowrap">
+                                    <tr *ngFor="let carga of arrcargaspaginacion"
+                                    class="table-secondary" style="cursor: pointer;" (click)="getSolicitudes(carga)">
+                                        <td>
+                                            <small>{{carga.codigo}}</small>
+                                        </td>
+                                        <td>
+                                            <small>{{carga.descripcion}}</small>
+                                        </td>
+                                        <td>
+                                            <small>{{carga.tipocargo}}</small>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="row  mt-2 justify-content-end">
+                                <div class="col-md-12">
+                                    <pagination *ngIf="arrcargas.length > 8"  [boundaryLinks]="true" [directionLinks]="true" [maxSize]="8"
+                                        [totalItems]="arrcargas.length" [itemsPerPage]="8" [previousText]="'key.pagination.anterior' | translate"
+                                        [nextText]="'key.pagination.siguiente' | translate" [firstText]="'&laquo;'" [lastText]="'&raquo;'"
+                                        (pageChanged)="pageChangedCargas($event)" [(ngModel)]="currentpcargos===null?1:currentpcargos">
+                                    </pagination>
+                                </div>
+                                <div class="col-md-6" *ngIf="arrcargas.length > 8">
+                                  <div class="content">
+                                    {{ 'key.total.registros' | translate}}: ({{ arrcargas.length }})
+                                   </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+              <div class="form-row float-right mt-2">
+                <div class="form-group  align-self-end">
+                    <button type="button" id="btnlimpiar" class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+                        (click)="onLimpiar()">{{ 'key.button.limpiar' | translate}} <i class="fas fa-eraser ml-1"></i>
+                    </button>
+                </div>
+                <div class="form-group  align-self-end">
+                    <button type="button" id="btnsalir" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+                        routerLink='../home'>{{ 'key.button.salir' | translate}} <i class="fas fa-window-close ml-1"></i>
+                    </button>
+                </div>
+              </div>
+            </div>
+            <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+            <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+            <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+            <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+        </div>
+    </app-main-nav>

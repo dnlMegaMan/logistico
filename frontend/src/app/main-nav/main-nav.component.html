@@ -1,0 +1,27 @@
+<!-- Pantalla Principal -->
+<mat-sidenav-container class="sidenav-container" [hasBackdrop]="false">
+  <mat-sidenav #drawer class="sidenav" fixedInViewport
+  [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+  [mode]="(isHandset$ | async) ? 'over' : 'side'"
+  [opened]="(isHandset$ | async) === menuVisible"
+  [ngStyle]="colorFondo"
+  >
+    <mat-toolbar style="color: white"
+	[ngStyle]="colorFondo">{{ 'key.title.menu' | translate}}</mat-toolbar>
+    <mat-nav-list style="color: white">
+      <app-menu-list-item *ngFor="let item of navItems" [item]="item"></app-menu-list-item>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary" [ngStyle]="colorFondo">
+      <button
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="drawer.toggle()">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      <app-navbar></app-navbar>
+      <span class="spacer"></span>
+    </mat-toolbar>
+<ng-content>

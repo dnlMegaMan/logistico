@@ -1,0 +1,118 @@
+<!-- TEMPLATE MODAL HTML -->
+<div class="loading-container">
+    <div class="card">
+      <div class="card-header">
+        <div class="form-row">
+          <h6 style="color:black">
+            {{ titulo }}
+          </h6>
+          <!--Close Icon-->
+          <button (click)="onCerrar()" type="button" class="close pr-2" data-dismiss="modal" aria-label="Close"
+            style="position: absolute; right: 0;">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+  
+      </div>
+  
+      <div class="card-body">
+        <form novalidate [formGroup]="FormBusquedapaciente" autocomplete="off" spellcheck="false">
+          <tabset #tabSelect>
+            <tab id="busquedarut">
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="rutpaciente">Rut Paciente</label>
+                    <input #rutpaciente appAutofocus appSelecttext formatRut type="text"
+                        class="form-control form-control-sm text-uppercase" placeholder="{{'key.placeholder.ingrese.identificacion' | translate}}"
+                        formControlName="rutpaciente">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="nombrepaciente">Nombres</label>
+                    <input type="text" class="form-control form-control-sm text-uppercase" placeholder="{{'key.placeholder.ingrese.nombres' | translate}}"
+                    formControlName="nombrepaciente">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="apellidopaterno">Apellido Paterno</label>
+                    <input type="text" class="form-control form-control-sm text-uppercase" placeholder="{{'key.placeholder.ingrese.apellido.paterno' | translate}}"
+                    formControlName="apellidopaterno">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="apellidomaterno">Apellido Materno</label>
+                    <input type="text" class="form-control form-control-sm text-uppercase" placeholder="{{'key.placeholder.ingrese.apellido.materno' | translate}}"
+                    formControlName="apellidomaterno">
+                </div>
+              </div>
+            </tab>
+  
+          </tabset>
+          <div class="form-row" style="padding: 10px;">
+            <div class="col-md-6 text-right">
+              <button type="button" #btnBuscar class="btn btn-sm btn-primary ml-1" tooltip="BUSCAR" (click)="onBuscar()"><i
+                  class="fas fa-search"></i>
+                BUSCAR</button>
+            </div>
+            <div class="col-md-6 text-left">
+              <button type="button" class="btn btn-sm btn-primary ml-1" tooltip="LIMPIAR" (click)="onLimpiar()"><i
+                  class="fas fa-broom"></i>
+                LIMPIAR</button>
+            </div>
+          </div>
+        </form>
+  
+        <div *ngFor="let alert of alerts">
+          <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)">{{ alert.msg }}
+          </alert>
+        </div>
+      </div>
+  
+      <div class="card-body">
+        <div class="card table-responsive">
+          <table class="table table-hover" style="height: auto;">
+            <thead class="table-header-text">
+              <tr>
+                <!-- <th>SEL</th> -->
+                <th>RUT PACIENTE</th>
+                <th>NOMBRE PACIENTE</th>
+                <th>EDAD</th>
+              </tr>
+            </thead>
+            <tbody class="table-body-text text-nowrap">
+              <tr *ngFor="let paciente of arrpacientespag" style="cursor: pointer;"
+              (click)="onDetallepaciente(paciente)">
+                    <td>
+                        {{ paciente.numidentificacion }}
+                    </td>
+                    <td>
+                        {{ paciente.nompaciente }}
+                    </td>
+                    <td>
+                        {{ paciente.edad }}
+                    </td>
+                </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+  
+      <div class="card-footer">
+        <div class="row">
+          <div class="col-md-12 text-right">
+            <button type="button" class="btn btn-sm btn-primary ml-2" #btnAceptar tooltip="ACEPTAR"><i
+              class="fas fa-window-close"></i>
+            ACEPTAR</button>
+            <button type="button" class="btn btn-sm btn-primary ml-2" tooltip="CERRAR" (click)="onCerrar()"><i
+                class="fas fa-window-close"></i>
+              CERRAR</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"></swal>
+    <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+    <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+    <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+  
+  </div>

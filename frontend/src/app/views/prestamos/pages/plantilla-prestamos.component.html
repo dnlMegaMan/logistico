@@ -1,0 +1,346 @@
+<app-main-nav>
+  <div>
+    <div style="margin: 10px;">
+      <div class="my-2 ml-2 titulo text-center">
+        <!--menu -->
+        <h3>
+          {{ 'key.title.prestamos' | translate}}
+        </h3>
+      </div>
+      <div class="card border-primary mt-0" style="max-height: auto;min-height: 100px; padding: 10px;">
+        <form [formGroup]="formDatosPrestamo" autocomplete="off" spellcheck="false">
+          <div class="table-responsive mt-1" style="padding: 10px;">
+            <div class="form-row">
+              <div class="form-group col-md-2">
+                <label for="fechaPrestamo">Fecha Préstamo *</label>
+                <input appSelecttext type="text" placeholder="DD/MM/YYYY" id="fechaPrestamo"
+                  class="form-control form-control-sm" [bsConfig]="bsConfig" bsDatepicker [min]="minDate"
+                  [max]="maxDate" formControlName="fechaPrestamo">
+              </div>
+              <div class="form-group col-sm-2">
+                <label for="numeroPrestamo">N. Préstamo</label>
+                <input type="number" class="form-control form-control-sm" formControlName="numeroPrestamo" min="0"
+                  (keyup.enter)="onBuscarPrestamo()" (input)="onInput($event,'numeroPrestamo',10)">
+              </div>
+              <div class="form-group col-sm-2">
+                <label for="tipoMov">Tipo Movimiento *</label>
+                <select class="form-control form-control-sm" formControlName="tipoMov" (change)="filtroMovimiento()">
+                  <option *ngFor='let tipo of listTipoMovimiento' [ngValue]='tipo.valor'>
+                    {{ tipo.descripcion }}
+                  </option>
+                </select>
+              </div>
+              <div class="form-group col-sm-3">
+                <label for="estadoPresDes">Estado Préstamo</label>
+                <input class="form-control form-control-sm" [disabled]="true" value="{{ estadoPrestamoDes }}">
+              </div>
+              <div class="form-group col-sm-2 align-self-end text-right">
+                <button type="button" id="paciente" class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                  *ngIf="modelopermisos.btnconsultarprestamo" [disabled]="!listOrigen || estadoPrestamo > 0"
+                  (click)="onBuscarPrestamo()">Buscar Préstamo
+                  <i class="fas fa-search ml-1"></i>
+                </button>
+              </div>
+            </div>
+            <div class="form-row">
+
+              <div class="form-group col-sm-4">
+                <label for="origen">Origen *</label>
+                <select class="form-control form-control-sm" formControlName="origen">
+                  <option *ngFor='let bodega of listOrigen' [ngValue]='bodega.id'>
+                    {{ bodega.descripcion }}
+                  </option>
+                </select>
+              </div>
+              <div class="form-group col-sm-4">
+                <label for="destino">Destino *</label>
+                <select class="form-control form-control-sm" formControlName="destino">
+                  <option *ngFor='let bodega of listDestino' [ngValue]='bodega.id'>
+                    {{ bodega.descripcion }}
+                  </option>
+                </select>
+                <app-field-error-display [displayError]="validarBodegaOrigen()"
+                  errorMsg="La bodega de origen tiene que ser diferente a la de destino.">
+                </app-field-error-display>
+              </div>
+              <div class="form-group col-sm-10">
+                <label for="observaciones">Observaciones:</label>
+                <textarea class="form-control form-control-sm" formControlName="observaciones"
+                  (input)="onInput($event,'observaciones',200)"></textarea>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="card border-primary mt-1" style="padding: 5px; margin: auto;">
+
+        <form [formGroup]="formDetallesPrestamos" autocomplete="off" spellcheck="false">
+          <div class="table-responsive mt-1" style="padding: 10px;">
+            <div class="form-row">
+              <div class="form-group col-sm-2">
+                <label for="tipoProducto">Tipo Producto *</label>
+                <select class="form-control form-control-sm" formControlName="tipoProducto">
+                  <option *ngFor='let producto of listProductos' [ngValue]='producto.valor'>
+                    {{ producto.descripcion }}
+                  </option>
+                </select>
+                <app-field-error-display [displayError]="isFieldValidDetallesPrestamos('tipoProducto')"
+                  errorMsg="tipo registro es obligatorio.">
+                </app-field-error-display>
+              </div>
+              <div class="form-group col-md-2">
+                <label for="codigo">Código</label>
+                <input type="text" class="form-control form-control-sm" placeholder="Ingrese código"
+                  formControlName="codigoMedicamento">
+              </div>
+              <div class="form-group col-md-2">
+                <label for="descripcion">Descripción</label>
+                <input type="text" class="form-control form-control-sm" placeholder="Ingrese descripción"
+                  formControlName="descripcionMedicamento">
+              </div>
+              <div class="row form-group align-self-end ml-1">
+                <button type="button" class="btn btn-info btn-sm ml-2" (click)="onBuscarMedicamento()"
+                  [disabled]="estadoPrestamo > 1 || estadoBotonBuscarMedicamento">Buscar<i
+                    class="fas fa-search ml-1"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div>
+          <div class="loading-container" *ngIf="cargandoInformacion; else templateDetalles">
+            <i class="fas fa-spinner fa-spin"></i>
+            <span>Cargando...</span>
+          </div>
+          <ng-template #templateDetalles>
+            <h5>Detalle de préstamos</h5>
+            <div class="table-responsive mt-3" style="max-height: auto;min-height: 100px;">
+              <table id="tbldatosordendevolucion"
+                class="table ml-1 table-condensed table-responsive-md table-bordered ">
+                <thead class="table-primary  table-sm">
+                  <!-- da color de fondo a la columna-->
+                  <tr class="text-center table-sm">
+                    <th>Código</th>
+                    <th colspan="4">Descripción</th>
+                    <th>Código Cum</th>
+                    <th>Registro Invima</th>
+                    <th>Cantidad solicitada</th>
+                    <th>Cantidad devuelta</th>
+                    <th>Cantidad a devolver</th>
+                    <th>Lote</th>
+                    <th>Fecha Vencimiento</th>
+                    <th>Eliminar</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="table-secondary" *ngFor="let medicamento of detallesPrestamos">
+                    <td><small>{{ medicamento.codigo }}</small></td>
+                    <td colspan="4" class="text-nowrap help">
+                      <small>{{ medicamento.descripcion }}</small>
+                    </td>
+                    <td class="text-center help">
+                      <small>
+                        {{ medicamento.codigo_cum }}
+                      </small>
+                    </td>
+                    <td class="text-center help">
+                      <small>
+                        {{ medicamento.registro_invima }}
+                      </small>
+                    </td>
+                    <td class="text-center help">
+                      <small *ngIf="!medicamento.create">
+                        {{ medicamento.cant_solicitada }}
+                      </small>
+                      <small *ngIf="medicamento.create">
+                        <input type="number" class="form-control form-control-sm text-right" min="0"
+                          [(ngModel)]="medicamento.cant_solicitada"
+                          (input)="onInputCantDevuelta(medicamento.codigo, $event,medicamento.saldo)"
+                          (change)="editarCantidadSolicitada(medicamento,$event.target.value)">
+                        <app-field-error-display [displayError]="medicamento.cant_solicitada==0"
+                          errorMsg="Debe ser mayor que 0">
+                        </app-field-error-display>
+                      </small>
+                    </td>
+
+                    <td class="text-center help">
+                      <small>
+                        {{ medicamento.cant_devuelta }}
+                      </small>
+                    </td>
+                    <td class="text-center help">
+                      <small
+                        *ngIf="!medicamento.create  && estadoPrestamo > 1 || (medicamento.cant_solicitada == medicamento.cant_devuelta);else agregarcantidadDevolver">
+                        {{ medicamento.cant_devolver }}
+                      </small>
+                      <ng-template #agregarcantidadDevolver>
+                        <small>
+                          <input type="number" class="form-control form-control-sm text-right" min="0"
+                            max="{{medicamento.cant_solicitada}}" [disabled]="medicamento.create"
+                            (input)="onInputCantDevuelta(medicamento.codigo, $event,medicamento.cant_solicitada)"
+                            (keyup.enter)="agregarMovimientos(medicamento,$event.target.value)"
+                            [(ngModel)]="medicamento.cant_devolver">
+                        </small>
+                      </ng-template>
+                    </td>
+                    <ng-container *ngIf="!tipoMovimientoSelecionado && medicamento.create ; else editorLoteFechaVto">
+                      <td class="text-center help">
+                        <small>
+                          <input type="texto" class="form-control form-control-sm text-right"
+                            [(ngModel)]="medicamento.lote" (input)="onInputDetalleLote(medicamento.codigo, $event)"
+                            (ngModelChange)="actualizarDetallesLoteFechaVto(medicamento.codigo,'lote',$event)">
+                        </small>
+                      </td>
+                      <td class="text-center help">
+                        <small>
+                          <input appSelecttext type="text" placeholder="DD/MM/YYYY"
+                            class="form-control form-control-sm text-right" [(ngModel)]="medicamento.fecha_vto"
+                            [bsConfig]="bsConfig" bsDatepicker placement="top"
+                            (ngModelChange)="actualizarDetallesLoteFechaVto(medicamento.codigo,'fecha',$event)">
+                        </small>
+                      </td>
+                    </ng-container>
+                    <ng-template #editorLoteFechaVto>
+                      <td class="text-center help">
+                        <small> {{ medicamento.lote }}</small>
+                      </td>
+                      <td class="text-center help">
+                        <small> {{ medicamento.fecha_vto }}</small>
+                      </td>
+                    </ng-template>
+                    <td>
+                      <small>
+                        <div class="checkbox text-center">
+                          <label>
+                            <button type="button" id="btnElinaRegistro" class="btn btn-info btn-danger btn-sm ml-2 "
+                              *ngIf="medicamento.create" (click)="eliminarDetalle(medicamento.codigo)">
+                              <i class="fas fa-trash-restore-alt  ml-1"></i>
+                            </button>
+                          </label>
+                        </div>
+                      </small>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="row  align-self-center">
+              </div>
+            </div>
+            <br>
+            <h5>Detalle de devolucion del préstamo</h5>
+            <div class="table-responsive mt-3" style="max-height: auto;min-height: 100px;">
+              <table id="tbldatosordendevolucion"
+                class="table ml-1 table-condensed table-responsive-md table-bordered ">
+                <thead class="table-primary  table-sm">
+                  <!-- da color de fondo a la columna-->
+                  <tr class="text-center table-sm">
+                    <th>Movimiento</th>
+                    <th>Fecha</th>
+                    <th>Código</th>
+                    <th>Lote</th>
+                    <th>Fecha Vencimiento</th>
+                    <th>Cantidad</th>
+                    <th>Responsable</th>
+                    <th>Eliminar</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="table-secondary" *ngFor="let devolucion of detallesDevoluciones">
+                    <td class="text-nowrap help">
+                      <small> {{ devolucion.movimiento }}</small>
+                    </td>
+                    <td class="text-nowrap help">
+                      <small> {{ devolucion.fecha }}</small>
+                    </td>
+                    <td class="text-center help">
+                      <small>{{ devolucion.codigo }}</small>
+                    </td>
+                    <ng-container *ngIf="!devolucion.create; else editorDevolucion">
+                      <td class="text-center help">
+                        <small>{{ devolucion.lote }}</small>
+                      </td>
+                      <td class="text-center help">
+                        <small>{{ devolucion.fecha_vto }}</small>
+                      </td>
+                    </ng-container>
+
+                    <ng-template #editorDevolucion>
+                      <td class="text-center help">
+                        <small>
+                          <input type="text" class="form-control form-control-sm text-right"
+                            [(ngModel)]="devolucion.lote" (input)="onInputMovimientoLote(devolucion.codigo, $event)">
+                        </small>
+                      </td>
+                      <td class="text-center help">
+                        <small>
+                          <input appSelecttext type="text" placeholder="DD/MM/YYYY"
+                            class="form-control form-control-sm text-right" [(ngModel)]="devolucion.fecha_vto"
+                            [bsConfig]="bsConfig" bsDatepicker placement="top"
+                            (ngModelChange)="actualizardevolucion(devolucion.uuid,'fecha',$event)">
+                        </small>
+                      </td>
+                    </ng-template>
+                    <td class="text-nowrap help">
+                      <small> {{ devolucion.cantidad }}</small>
+                    </td>
+                    <td class="text-nowrap help">
+                      <small> {{ devolucion.responsable }}</small>
+                    </td>
+                    <td>
+                      <small>
+                        <div class="checkbox text-center">
+                          <label>
+                            <button type="button" id="btnElinaRegistro" class="btn btn-info btn-danger btn-sm ml-2 "
+                              *ngIf="devolucion.create" (click)="eliminarMovimiento(devolucion.id)">
+                              <i class="fas fa-trash-restore-alt  ml-1"></i>
+                            </button>
+                          </label>
+                        </div>
+                      </small>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </ng-template>
+        </div>
+
+      </div>
+      <div class="row mt-2" style="padding: 5px;">
+        <div class="form-group" style="margin-right: 400px;">
+          <button type="button" id="btnguardar" class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+            *ngIf="modelopermisos.btnforzarcierre" [disabled]="validarBotonForzarCierre"
+            (click)="onForzarCierre()">FORZAR CIERRE
+          </button>
+        </div>
+
+        <div class="form-group">
+          <button type="button" id="btnguardar" class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+            *ngIf="modelopermisos.btncrearprestamo" (click)="guardarPrestamo()" [disabled]="validarBotonGuardar">GUARDAR
+            <i class="fas fa-save ml-1"></i>
+          </button>
+          <button type="button" id="btnmodificar" class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+            (click)="reset()">LIMPIAR
+            <i class="fas fa-trash-alt"></i>
+          </button>
+          <button type="button" id="btnlimpiar" *ngIf="modelopermisos.btnimprimirprestamo"
+            [disabled]="cargandoReporte || estadoPrestamo ==0"
+            class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02" (click)="imprimir()">IMPRIMIR
+            <i class="fas fa-file-pdf ml-1"></i>
+          </button>
+          <button type="button" id="btnimprimir" class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+            (click)="salir()">SALIR
+            <i class="fas fa-eraser ml-1"></i>
+          </button>
+        </div>
+      </div>
+
+
+      <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+      <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+      <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+      <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+      <swal #alertSwalConfirmar title="" text="" type="question" [showCancelButton]="true"> </swal>
+    </div>
+  </div>
+</app-main-nav>

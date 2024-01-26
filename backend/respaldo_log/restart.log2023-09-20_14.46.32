@@ -1,0 +1,2 @@
+{"level":"info","file":"administradorLoggers.go:85","funcion":"logging.initLogger","time":"2023-09-20 14:39:34","message":"Logs de reinicio de servicios abiertos exitosamente"}
+{"level":"info","file":"restart.go:32","funcion":"main.main","time":"2023-09-20 14:39:34","message":"Inicio de restart.go en http://localhost:8094"}

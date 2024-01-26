@@ -1,0 +1,179 @@
+<nav class="navbar menu navbar-expand-lg navbar-dark" style="background-color: #48b4f3;">
+
+    <a class="navbar-brand" routerLink="../home"><img src="./assets/images/logosonda.jpg" alt="logoSonda"></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto" >
+            <li class="nav-item dropdown ">
+                <a class="nav-link productos dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >{{ 'key.productos' | translate}}
+                </a>
+                <div class="dropdown-menu dropright" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" routerLink="../mantencionarticulos" name="mantencionarticulos">{{ 'key.mantencion.articulos' | translate}}</a>
+                  <!--  <a class="dropdown-item" routerLink="../consultaarticulos">Consulta de Artículos</a-->
+                    <a class="dropdown-item" routerLink="../consultadekardex">{{ 'key.consulta.kardex' | translate}}</a>
+                    <!-- <a class="dropdown-item" routerLink="../busquedaenbodega">Búsqueda en Bodega</a> -->
+                    <a class="dropdown-item" routerLink="../reposicionarticulos">{{ 'key.reposicion.articulos' | translate}}</a>
+
+                   <!--  <a class="btn dropdown-toggle infprod dropdown-item" id="navbarDropdown" type="button"
+                        data-toggle="dropdown">Informes</a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" routerLink="../infdecobertura">Informe de Cobertura</a>
+                        <a class="dropdown-item" routerLink="../infcoberturaporproveedor">Informe de Cobertura x
+                            Proveedor</a>
+                        <a class="dropdown-item" routerLink="../infdespachosabodegas">Informe de Despacho a
+                            Bodegas</a>
+                        <a class="dropdown-item" routerLink="../infconsumoporbodegas">Informe de Consumo por
+                            Bodegas</a>
+                        <a class="dropdown-item" routerLink="../infconsolidadopordevoluciones">Informe Consolidado
+                            por Devoluciones
+                        </a>
+                        <a class="dropdown-item" routerLink="../infalfabeticoproductos">informe Alfabético de
+                            Productos</a>
+                        <a class="dropdown-item" routerLink="../inftendenciasconsumo">Informe de Tendencias de
+                            Consumo</a>
+                        <a class="dropdown-item" routerLink="../auditoriadeprecios">Informe de Auditoría de
+                            Precios</a>
+                        <a class="dropdown-item" routerLink="../infconsumoporbodegasvalorizados">Informe de Consumo
+                            por Bodegas Valorizados</a>
+                        <a class="dropdown-item" routerLink="../listadopreciosproductos">Listado de Precios de
+                            Productos</a>
+                        <a class="dropdown-item" routerLink="../listadobodegasvalorizados">Listado de Bodegas
+                            Valorizados</a>
+                        <a class="dropdown-item" routerLink="../infreposicionstockautomatico">Informe de Reposición
+                            de Stock Automático </a>
+                    </div>
+                    -->
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">{{ 'key.inventarios' | translate}}</a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" routerLink="../listadopararealizarinventarios">{{ 'key.inventarios.listado' | translate}}</a>
+                    <a class="dropdown-item" routerLink="../generainventariosistema">{{ 'key.genera.inventario.sistema' | translate}}</a>
+                    <a class="dropdown-item" routerLink="../ingresoconteomanual">{{ 'key.ingreso.conteo.manual' | translate}}</a>
+                    <a class="dropdown-item" routerLink="../generaajusteinventario">{{ 'key.genera.ajuste.inventario' | translate}}</a>
+                    <a class="dropdown-item" routerLink="../informeexistenciasvalorizado">{{ 'key.informes.existencias.valorizadas' | translate}}</a>
+                </div>
+            </li>
+
+        <!--    <li class="nav-item">
+                <a class="nav-link" routerLink="../proveedores">Proveedores</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">Ajustes
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" routerLink="../ajustestock">Ajuste de Stock</a>
+                    <a class="dropdown-item" routerLink="../ajustevalores">Ajuste de Valores</a>
+                    <a class="dropdown-item" routerLink="../informeajustevalorizados">Informe de Ajustes
+                        Valorizados</a>
+                    <a class="dropdown-item" routerLink="../informeajustesdeprecios">Informe de Ajustes de
+                        Precios</a>
+                </div>
+            </li>
+        -->
+        <!--    <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                    aria-haspopup="false" aria-expanded="false">Movimientos
+                </a>
+                 <div class="dropdown-menu dropleft" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" routerLink="../movimientos">Despacho Recetas Ambulatorias</a>
+                    <a class="dropdown-item" routerLink="../prestamos">Traslados y Préstamos Entre Bodegas </a>
+                    <a class="btn dropdown-toggle dropdown-item" id="navbarDropdown" type="button"
+                        data-toggle="dropdown">Informes </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" routerLink="../informesalidadesdebodgral">Informe De Salidas Desde
+                            Bod. General</a>
+                        <a class="dropdown-item" routerLink="../informeconsumostipodeproducto">Informe De Consumos
+                            por Tipo De Producto</a>
+                        <a class="dropdown-item" routerLink="../informemovimientos">Informe de Movimientos
+                            Internos</a>
+                    </div>
+                </div>
+            </li>
+              -->
+
+            <!--   <li class="nav-item">
+                <a class="nav-link" routerLink="../bodegas">Bodegas</a>
+            </li>
+            <li class="nav-item dropdown ">
+                <a class="nav-link dropdown-toggle drop" href="#" id="navbarDropdown" role="button"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Compras
+                </a>
+                <div class="dropdown-menu dropleft" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" routerLink="../ingresoordenesdecompra">Ingreso de Órdenes de Compra</a>
+                    <a class="dropdown-item" routerLink="../recepcionordenescompra">Recepción de Órdenes de
+                        Compra</a>
+                    <a class="dropdown-item" routerLink="../devolucioncompras">Devolución de Compras</a>
+                    <a class="dropdown-item" routerLink="../distribucioncomprasespeciales">Distribución Compras
+                        Especiales</a>
+                    <a class="dropdown-item" routerLink="../busquedasproductosenOC">Búsquedas de Productos en
+                        O/C</a>
+                    <a class="btn dropdown-toggle dropdown-item" id="navbarDropdown" type="button"
+                        data-toggle="dropdown">Informes </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" routerLink="../estadoordendecompra">Estado Orden de Compra</a>
+                        <a class="dropdown-item" routerLink="../infordenespendientes">Órdenes Pendientes</a>
+                        <a class="dropdown-item" routerLink="../infordenescompraanuladas">Órdenes de Compras
+                            Anuladas</a>
+                        <a class="dropdown-item" routerLink="../infordenescompracerradasmanualmente">Órdenes de
+                            Compras Cerradas Manualmente</a>
+                        <a class="dropdown-item" routerLink="../informedetordenescompra">Informe Detalle de Órdenes
+                            de
+                            Compra</a>
+                        <a class="dropdown-item" routerLink="../infrankingcomprasproveedor">Ranking Compras
+                            Proveedor</a>
+                        <a class="dropdown-item" routerLink="../infcomprasporproveedor">Informe de Compras por
+                            Proveedor</a>
+                        <a class="dropdown-item" routerLink="../infdoctosingresados">Informe de Documentos
+                            Ingresados</a>
+                        <a class="dropdown-item" routerLink="../infcomprascontroladas">Informe de Compras
+                            Controladas</a>
+                        <a class="dropdown-item" routerLink="../infdevolucioncompras">Informe de Devolución de
+                            Compras</a>
+                        <a class="dropdown-item" routerLink="../reimpresionrecepcionoc">Reimpresión de Comprobante
+                            de OC</a>
+                        <a class="dropdown-item" routerLink="../infcomprasporfamilia">Informe de Compras por
+                            Familia</a>
+                    </div>
+                </div>
+            </li>
+        -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">{{ 'key.solicitudes.S' | translate}}</a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" routerLink="../creasolicitud">{{ 'key.administracion.solicitudes' | translate}}</a>
+                    <a class="dropdown-item" routerLink="../despachosolicitudes">{{ 'key.despachar.solicitudes' | translate}}</a>
+                    <a class="dropdown-item" routerLink="../recepcionsolicitudes">{{ 'key.recepcion.solicitudes' | translate}}</a>
+                    <a class="dropdown-item" routerLink="../devolucionsolicitudes">{{ 'key.devolucion.solicitudes' | translate}}</a>
+                    <a class="dropdown-item" routerLink="../recepciondevolucionbodegas">{{ 'key.recepcion.devolucion.bodegas' | translate}}</a>
+                    <a class="dropdown-item" routerLink="../solicitudpaciente">{{ 'key.administracion.solicitud.paciente' | translate}}</a>
+                    <a class="dropdown-item" routerLink="../dispensarsolicitudespacientes"> {{ 'key.dispensacion.solicitud.pacientes' | translate}}</a>
+                    <a class="dropdown-item" routerLink="../devolucionpacientes">{{ 'key.recepcion.devolucion.pacientes' | translate}}</a>
+                    <a class="dropdown-item" routerLink="../despachorecetasambulatoria">{{ 'key.despacho.recetas.ambulatorias' | translate}}</a>
+                    <a class="dropdown-item" routerLink="../recetaanulada">{{ 'key.recetas.anuladas' | translate}}</a>
+                        <!--a class="dropdown-item" routerLink="../devolucionsolicitudespacientes">Devolución de Solicitudes de Pacientes</a-->
+                </div>
+            </li>
+            <li>
+                <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false" (click)="CierreSesion()">{{ 'key.cierre.sesion' | translate}}</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse"
+                    data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                    aria-label="Toggle navigation" (click)="CierreSesion()">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </li>
+        </ul>
+    </div>
+
+
+</nav>

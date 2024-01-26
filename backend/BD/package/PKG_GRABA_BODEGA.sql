@@ -1,0 +1,33 @@
+create or replace PACKAGE PKG_GRABA_BODEGA as
+    PROCEDURE P_GRABA_BODEGA(
+		IN_PI_COD_BOD IN NUMBER,
+		IN_PI_HDG_COD IN NUMBER,
+		IN_PI_ESA_COD IN NUMBER,
+		IN_PI_CME_COD IN NUMBER,
+		IN_PI_DES_BOD IN VARCHAR2  
+    );
+END PKG_GRABA_BODEGA;
+/
+create or replace PACKAGE BODY PKG_GRABA_BODEGA AS
+
+    PROCEDURE P_GRABA_BODEGA(
+		IN_PI_COD_BOD IN NUMBER,
+		IN_PI_HDG_COD IN NUMBER,
+		IN_PI_ESA_COD IN NUMBER,
+		IN_PI_CME_COD IN NUMBER,
+		IN_PI_DES_BOD IN VARCHAR2       
+    ) AS        
+	 BEGIN		
+		INSERT INTO CLIN_FAR_BODEGAS(fbod_codigo, HDGCodigo, ESACodigo, CMECodigo, fbod_descripcion, fbod_modificable, fbod_estado, fbod_tipo_bodega )
+		 VALUES (IN_PI_COD_BOD
+				, IN_PI_HDG_COD
+				, IN_PI_ESA_COD
+				, IN_PI_CME_COD
+				, IN_PI_DES_BOD
+				, 'N'
+				, 'S'
+				, 'P');
+		COMMIT;
+    END P_GRABA_BODEGA;
+END PKG_GRABA_BODEGA;
+/

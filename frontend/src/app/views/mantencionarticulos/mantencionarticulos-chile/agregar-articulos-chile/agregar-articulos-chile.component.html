@@ -1,0 +1,194 @@
+<form [formGroup]="lForm">
+    <!-- Contenedor general de la página -->
+    <!-- lineas de edición y bpusqueda -->
+    <div class="card m-2 border-primary" style="padding: 10px;">
+        <div class="form-row">
+            <div class="form-group col-md-2">
+              <label for="codigo">{{ 'key.codigo' | translate}}</label>
+              <input type="text" class="form-control form-control-sm" formControlName="codigo">
+            </div>
+            <div class="form-group col-md-4">
+              <label for="descripcion">{{ 'key.descripcion' | translate}}</label>
+              <input type="text" class="form-control form-control-sm" formControlName="descripcion">
+            </div>
+            <div class="form-group col-md-3">
+              <label for="tipoproducto">{{ 'key.tipo.producto' | translate}}</label>
+              <select name="tipoproducto" class='form-control form-control-sm' formControlName='tipoproducto'>
+                <option *ngFor='let registrotipoproducto of arreglotipoproducto'
+                  [ngValue]='registrotipoproducto.fparvalor'>
+                  {{ registrotipoproducto.fpardescripcion }}
+                </option>
+              </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+
+            <div class="form-group col-md-3">
+                <label for="estado">{{ 'key.estado' | translate}}  </label>
+                <select name="estado" class='form-control form-control-sm'
+                    formControlName='estado'>
+                    <option value=0>{{ 'key.vigente' | translate}} </option>
+                    <option value=1>{{ 'key.no.vigente' | translate}} </option>
+                </select>
+            </div>           
+
+            <div class="form-group col-md-3">
+                <label for="cmbsolocompra">{{ 'key.solo.compras' | translate}}  </label>
+                <select 
+                    name="solocompra"
+                    class='form-control form-control-sm'
+                    [ngClass]="{ 'is-invalid': lForm.get('solocompra').invalid }"
+                    formControlName='solocompra'>
+                    <option value="S">{{ 'key.si' | translate}}</option>
+                    <option value="N">{{ 'key.no' | translate}}</option>
+                </select>
+                <div *ngIf="lForm.get('solocompra').hasError('required')" class="invalid-feedback">{{ 'key.mensaje.campo.obligatorio' | translate}}</div>
+            </div>
+
+            <div class="form-group col-md-3">
+                <label for="recreten">{{ 'key.receta.retenida' | translate}} </label>
+                <select name="recetaretenida" class='form-control form-control-sm'
+                    formControlName='recetaretenida'>
+                    <option value="S">{{ 'key.si' | translate}}</option>
+                    <option value="N">{{ 'key.no' | translate}} </option>
+                </select>
+            </div>
+
+        </div>
+
+        <!-- ******-->
+
+        <div class="form-row">
+
+
+            <div class="form-group col-md-3">
+                <label for="familia">{{ 'key.familia' | translate}} </label>
+                <select name="familia" class='form-control form-control-sm'
+                    formControlName='familia'>
+                    <option *ngFor='let familia of familias' [ngValue]='familia.idfamilia'>
+                        {{ familia.descripcion }}
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group col-md-3">
+                <label for="subfamilia">{{ 'key.subfamilia' | translate}} </label>
+                <select name="subfamilia" class='form-control form-control-sm'
+                    formControlName='subfamilia'>
+                    <option *ngFor='let subfamilia of subfamilias' [ngValue]='subfamilia.idsubfamilia'>
+                        {{ subfamilia.descripcion }}
+                    </option>
+                </select>
+            </div>
+
+
+            <div class="form-group col-md-3">
+                <label for="unidadcompra">{{ 'key.unidad.compra' | translate}} </label>
+                <select name="unidadcompra" class='form-control form-control-sm'
+                    formControlName='unidadcompra'>
+                    <option *ngFor='let unidadcompra of unidadescompra' [ngValue]='unidadcompra.codigoudecompra'>
+                        {{ unidadcompra.descripcion }}
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group col-md-3">
+                <label for="unidaddespacho">{{ 'key.unidad.despacho' | translate}} </label>
+                <select name="unidaddespacho" class='form-control form-control-sm'
+                    formControlName='unidaddespacho'>
+                    <option *ngFor='let unidaddespacho of unidadesdespacho' [ngValue]='unidaddespacho.codigoudespacho'>
+                        {{ unidaddespacho.descripcion }}
+                    </option>
+                </select>
+            </div>
+
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-3">
+              <label for="principio">{{ 'key.principio.activo' | translate}}</label>
+              <select name="idprincipio" class='form-control form-control-sm' formControlName='codpact'>
+                <option *ngFor='let principio of PrincAct' [ngValue]='principio.idprinc'>
+                  {{ principio.descriprinc }}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-md-3">
+              <label for="presentacion">{{ 'key.presentacion' | translate}}</label>
+              <select name="idpresentacion" class='form-control form-control-sm' formControlName='codpres'>
+                <option *ngFor='let presentacion of Presenta' [ngValue]='presentacion.idprese'>
+                  {{ presentacion.descriprese }}
+                </option>
+              </select>
+            </div>
+    
+            <div class="form-group col-md-3">
+              <label for="forma">{{ 'key.forma.farmaceutica' | translate}}</label>
+              <select name="idforma" class='form-control form-control-sm' formControlName='codffar'>
+                <option *ngFor='let formafarma of FormaFar' [ngValue]='formafarma.idforma'>
+                  {{ formafarma.descriforma }}
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group col-md-3">
+                <label for="controlado">{{ 'key.controlado' | translate}} *</label>
+                <select 
+                    name="controlado"
+                    class='form-control form-control-sm'
+                    [ngClass]="{ 'is-invalid': lForm.get('controlado').invalid }"
+                    formControlName='controlado'>
+                    <option value="S">{{ 'key.si' | translate}}</option>
+                    <option value="N">{{ 'key.no' | translate}} </option>
+                </select>
+                <div *ngIf="lForm.get('controlado').hasError('required')" class="invalid-feedback">{{ 'key.mensaje.campo.obligatorio' | translate}}</div>
+            </div>
+
+          </div>
+
+          <div class="form-row">
+
+            <div class="form-group col-md-3">
+                <label for="fechainivigencia">{{ 'key.fecha.inicio.vigencia' | translate}} </label>
+                <input type="text" placeholder="YYYY-MM-DD" class="form-control form-control-sm" formControlName="fechainivigencia">
+
+            </div>
+
+            <div class="form-group col-md-3">
+                <label for="fechafinvigencia">{{ 'key.fecha.fin.vigencia' | translate}} </label>
+                <input type="text" placeholder="YYYY-MM-DD" class="form-control form-control-sm " formControlName="fechafinvigencia">
+            </div>
+
+        </div>
+    </div>
+</form>   
+<div class="form-row float-right mr-2">
+
+    <div class="form-group  align-self-end">
+        <button type="button" id="btnmodificar" class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_01"
+            *ngIf="modelopermisos.btnmodificarma" 
+            
+            (click)="ConfirmarGuradadoArticulo(lForm.value,'CREAR')">
+            {{ 'key.button.guardar' | translate}} <i class="fas fa-save ml-1"></i>
+        </button>
+
+    </div>
+
+    <div class="form-group  align-self-end">
+        <button type="button" id="btnlimpiar" class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_01"
+            (click)="Limpiar(lForm.value)">{{ 'key.button.limpiar' | translate}} <i class="fas fa-eraser ml-1"></i>
+        </button>
+    </div>
+
+    <div class="form-group  align-self-end">
+        <button type="button" id="btnsalir" class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_01"
+        (click)="Salir()">{{ 'key.button.salir' | translate}} <i class="fas fa-window-close ml-1"></i>
+        </button>
+    </div>
+</div>     
+
+<swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+<swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+<swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>

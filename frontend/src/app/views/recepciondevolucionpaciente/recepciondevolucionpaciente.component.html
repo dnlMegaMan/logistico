@@ -1,0 +1,218 @@
+<app-main-nav>
+  <div style="padding: 10px;">
+    <div class="my-2 ml-2 titulo text-center">
+      <h3>
+        {{ 'key.title.recepcionar.devolucion.pacientes' | translate}}
+      </h3>
+    </div>
+    <!-- Mensaje de alerta en caso de errores -->
+    <div *ngFor="let alert of alerts">
+      <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)">
+        {{ alert.msg }}
+      </alert>
+    </div>
+    <!-- lineas de edición y bpusqueda -->
+
+    <div class="card border-primary mb-1" style="padding: 5px; height: auto;">
+      <form [formGroup]="FormRecepcionDevolPac" autocomplete="off" spellcheck="false">
+        <div class="form-row mt-2">
+          <div class="form-group col-md-2">
+            <label for="bodcodigo">{{ 'key.bodega.suministro' | translate}}</label>
+            <select name="bodcodigo" class='form-control form-control-sm' formControlName='bodcodigo'
+              (change)="ListarEstServicios()">
+              <option *ngFor='let listaBodegasSolictante of bodegasSolicitantes'
+                [ngValue]='listaBodegasSolictante.bodcodigo'>
+                {{ listaBodegasSolictante.boddescripcion }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group col-sm-3">
+            <label for="servicio">{{ 'key.servicio' | translate}}</label>
+            <select name="servicio" class='form-control form-control-sm' formControlName='servicio'
+              (change)="ActivaBotonBuscar()">
+              <option *ngFor='let servicio  of servicios' value='{{ servicio.serviciocod }}'>
+                {{ servicio.serviciodesc }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group col-sm-2">
+            <label for="fechadesde">{{ 'key.fechadesde' | translate}}</label>
+            <input appSelecttext type="text" placeholder="DD/MM/YYYY" id="fecha" class='form-control form-control-sm'
+              [bsConfig]="bsConfig" bsDatepicker formControlName="fechadesde">
+          </div>
+          <div class="form-group col-sm-2">
+            <label for="fechahasta">{{ 'key.fechahasta' | translate}}</label>
+            <input appSelecttext type="text" placeholder="DD/MM/YYYY" id="fecha" class='form-control form-control-sm'
+              [bsConfig]="bsConfig" bsDatepicker formControlName="fechahasta">
+          </div>
+          <div class="form-group col-md-2 align-self-end text-right">
+            <button type="button" id="btnbuscar" class="btn btn-primary btn-sm button-my-styles-busqueda_01 "
+              [disabled]="!activabtnbuscar" (click)="BuscarSolicitudes()">{{ 'key.button.buscar.solicitud' | translate}} <i class="fas fa-search ml-1"
+                aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="card border-primary" style="padding: 5px;margin-top: 10px">
+      <div class="form-group  align-self-end">
+        <button type="button" id="btnsalir" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+        (click)="limpiarFiltro()">{{ 'key.limpiar.filtros' | translate}} <i class="fas fa-filter"></i>
+        </button>
+      </div>
+      <div id="table" class="table-editable">
+        <div class="table-responsive mt-2" style="max-height: auto;min-height: 100px;">
+          <div class="table-responsive mt-1" ></div>
+          <table class="table table-sm  table-primary table-bordered">
+            <tr class="table table-sm  table-primary table-bordered ">
+              <th class="text-center">{{ 'key.solicitud.numero' | translate}}
+                <svg (click)="sortby('numsolicitud')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                </svg>
+                <form [formGroup]="FormFiltro">
+                    <input type="number" class="form-control form-control-xs text-right"
+                    style="width: 100%;"
+                    (keyup.enter)="filtro()" formControlName="numsolicitud">
+                </form>
+              </th>
+
+              <th class="text-center">{{ 'key.fecha.devolucion' | translate}}
+                <svg (click)="sortby('fecdevolucion')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                </svg>
+                <form [formGroup]="FormFiltro">
+                    <input appSelecttext type="text" placeholder="DD/MM/YYYY"
+                    class="form-control form-control-sm" style="width: 100%;"
+                    [bsConfig]="bsConfig" bsDatepicker formControlName="fecdevolucion"
+                    placement="button" (ngModelChange)="filtro()"/>
+                </form>
+              </th>
+              <th class="text-center">{{ 'key.servicio.origen' | translate}}
+                <svg (click)="sortby('codservicio')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                </svg>
+                <form [formGroup]="FormFiltro">
+                    <select name="servicio" class='form-control form-control-sm' formControlName='codservicio'
+                        (change)="filtro()" style="width: 100%;">
+                        <option *ngFor='let servicio  of servicios' [ngValue]='servicio.serviciodesc'
+                            value='{{ servicio.serviciodesc }}'>
+                            {{ servicio.serviciodesc }}
+                        </option>
+                    </select>
+                </form>
+              </th>
+              <th class="text-center">{{ 'key.numero.identificacion' | translate}}
+                <svg (click)="sortby('numsolicitud')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                </svg>
+                <form [formGroup]="FormFiltro">
+                    <input type="text" class="form-control form-control-xs text-right"
+                    style="width: 100%;"
+                    (keyup.enter)="filtro()" formControlName="numdoc">
+                </form>
+              </th>
+              <th class="text-center">{{ 'key.paciente' | translate}}
+                <svg (click)="sortby('paciente')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                </svg>
+                <form [formGroup]="FormFiltro">
+                    <input type="text" class="form-control form-control-xs text-right"
+                    style="width: 100%;"
+                    (input)="filtro()" formControlName="paciente">
+                </form>
+              </th>
+              <th class="text-center">{{ 'key.usuario.genero' | translate}}
+                <svg (click)="sortby('usuarioorig')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                </svg>
+                <form [formGroup]="FormFiltro">
+                    <input type="text" class="form-control form-control-xs text-right"
+                    style="width: 100%;"
+                    (input)="filtro()" formControlName="usuarioorig">
+                </form>
+              </th>
+              <th class="text-center">{{ 'key.responsable.devolucion' | translate}}
+                <svg (click)="sortby('usuariodevol')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                </svg>
+                <form [formGroup]="FormFiltro">
+                    <input type="text" class="form-control form-control-xs text-right"
+                    style="width: 100%;"
+                    (input)="filtro()" formControlName="usuariodevol">
+                </form>
+              </th>
+            </tr>
+            <tr class="table-secondary" *ngFor="let registro of arregloSolicitudDevueltaPaginacion
+            |  paginate: {itemsPerPage: 15, currentPage: page, id:'recDev'}; let id = index"
+              (click)="SolicitudDevuelta(registro)" style="cursor:pointer;">
+              <td>
+                <small><span>{{registro.numsolicitud}}</span></small>
+              </td>
+              <td>
+                <small><span> {{registro.fecdevolucion}}</span></small>
+              </td>
+              <td>
+                <small><span>{{registro.codservicio }} </span></small>
+              </td>
+              <td>
+                <small><span>{{registro.tipodoc }} {{ registro.numdocpac }} </span></small>
+              </td>
+              <td>
+                <small><span>{{registro.paciente }} </span></small>
+              </td>
+              <td>
+                <small><span>{{registro.usuarioorig }}</span></small>
+              </td>
+              <td>
+                <small><span>{{registro.usuariodevol }} </span></small>
+              </td>
+            </tr>
+          </table>
+          <div class="row m-1 mt-3">
+            <pagination-controls
+              id="recDev"
+              (pageChange)="page = $event"
+              previousLabel="{{'key.pagination.anterior' | translate}}"
+              nextLabel="{{'key.pagination.siguiente' | translate}}"
+              autoHide="true">
+            </pagination-controls>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!--  Botones de página -->
+    <div class="row float-right mr-1 mt-2">
+      <!-- <div class="form-group  align-self-end" *ngIf="modelopermisos.btndevolverpac">
+
+        <button type="button" id="btnguardar" [disabled]="!solicitudexist" (click)="onDevolver()"
+          class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02">RECEPCIONAR
+          <i class="fas fa-save ml-1"></i>
+        </button>
+      </div> -->
+      <!-- <div class="form-group  align-self-end" *ngIf="modelopermisos.btnimprimedevolpac"> Aún NO se desarrolla el reporte
+            <button type="button" id="btnguardar" [disabled]="!solicituddevuelta"
+                class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+                (click)="onImprimir()">IMPRIMIR SOLICITUD <i class="fas fa-file-pdf ml-1"></i>
+            </button>
+        </div> -->
+      <div class="form-group  align-self-end">
+        <button type="button" id="btnlimpiar" (click)="limpiar()"
+          class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02">{{ 'key.button.limpiar' | translate}} <i class="fas fa-eraser ml-1"></i>
+        </button>
+      </div>
+      <div class="form-group  align-self-end">
+        <button type="button" id="btnsalir" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+          routerLink='../home'>{{ 'key.button.salir' | translate}} <i class="fas fa-window-close ml-1"></i>
+        </button>
+      </div>
+
+      <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+      <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+      <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+
+    </div>
+  </div>
+</app-main-nav>

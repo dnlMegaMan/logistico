@@ -1,0 +1,97 @@
+<div class="card">
+    <!--menu - Búsqueda de productos-->
+    <div class="card-header">
+      <h3>{{titulo}}
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onCerrarSalir()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </h3>
+    </div>
+    <div *ngFor="let alert of alerts" class="text-center">
+      <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)">{{ alert.msg }}
+      </alert>
+    </div>
+    <div class="card m-2 border-primary" style="padding: 10px; background-color:azure;">
+      <form novalidate [formGroup]='lForm' autocomplete="off" spellcheck="false">
+        <div class="form-row">
+          <div class="form-group col-md-2">
+            <label for="cantidad">{{ 'key.cantidad' | translate}}</label>
+            <input type="number" 
+            (keyup.enter)="modificarcantidad($event.target.value)"
+            (focusout)="modificarcantidad($event.target.value)"
+            class="form-control form-control-sm" formControlName="cantidad"
+            onKeyPress="if(this.value.length==10) return false;">
+          </div>
+          <div class="form-group col-md-2">
+            <label for="precio">{{ 'key.precio.unitario' | translate}}</label>
+            <input type="number" 
+            (keyup.enter)="modificarcosto($event.target.value)"
+            (focusout)="modificarcosto($event.target.value)"
+            class="form-control form-control-sm" formControlName="precio"
+            onKeyPress="if(this.value.length==10) return false;">
+          </div>
+          <div class="form-group col-md-1">
+          </div>
+          <div class="form-group col-md-5">
+            <label for="meindesc">{{ 'key.articulo' | translate}}</label>
+            <input type="text" class="form-control form-control-sm text-center" 
+            [readonly]="true" [(ngModel)]="mein_desc" formControlName='meindesc' /> 
+          </div>
+
+        </div>
+        
+        <table *ngIf ="registroarticulo.length > 0" class="table table-stripped table-condensed table-hovered">
+          <thead>
+            <tr>
+              <th>{{ 'key.fecha' | translate}}</th>
+              <th>{{ 'key.numero.identificacion' | translate}}</th>
+              <th>{{ 'key.proveedor' | translate}}</th>
+              <th>{{ 'key.precio.unitario' | translate}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let registro of registroarticulo" let id=index
+              style="cursor: pointer;">
+              <td>{{registro.prmifechacrea}}</td>
+              <td>{{registro.rutprov}}</td>
+              <td>{{registro.descprov}}</td>
+              <td>{{registro.valorultima}} </td>
+            </tr>
+          </tbody>
+        </table>  
+        <div *ngIf ="registroarticulo.length == 0" >
+          <h4 class="text-center">{{ 'key.mensaje.sin.historial.compra' | translate}}</h4>
+        </div>    
+        <div class="row m-1">
+          <pagination
+            *ngIf="registroarticulopag.length > 0"
+            [boundaryLinks]="true" [directionLinks]="true" [maxSize]="6"
+            [totalItems]="registroarticulopag.length" [itemsPerPage]=8 [previousText]="'key.pagination.anterior' | translate"
+            [nextText]="'key.pagination.siguiente' | translate" [firstText]="'&laquo;'" [lastText]="'&raquo;'" (pageChanged)="pageChanged($event)">
+          </pagination>
+        </div>
+      </form>
+    </div>
+    <div class="row float-right mt-1">
+      <div class="form-group col-md-4 align-self-end text-right">
+        <button type="button" id="btnlimpiar" class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+          (click)="Limpiar()">{{ 'key.button.limpiar' | translate}} <i class="fas fa-eraser ml-1"></i>
+        </button>
+      </div>
+      <div class="form-group col-md-4 align-self-end text-right">
+        <button type="button" id="btnlimpiar" class="btn  btn-primary btn-sm button-my-styles-busqueda_02"
+          (click)="onCerrar()">{{ 'key.agregar' | translate | uppercase}} <i class="fas fa-save ml-1"></i>
+        </button>
+      </div>
+      <div class="form-group col-md-4 align-self-end text-right">
+        <button type="button" id="btnlimpiar" class="btn  btn-primary btn-sm button-my-styles-busqueda_02"
+          (click)="onCerrarSalir()">{{ 'key.button.salir' | translate}} <i class="fas fa-window-close ml-1"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+  <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+  <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+  <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+  

@@ -1,0 +1,146 @@
+<!-- <app-navbar ></app-navbar>
+<app-sidebar></app-sidebar>
+<div class="content-wrapper pl-4"> -->
+<app-main-nav>
+  <div style="padding: 10px;">
+    <div style="margin: 10px;">
+        <form [formGroup]="FormAjusteStock">
+            <!-- Contenedor feneral de la página -->
+            <div class="my-2 ml-2 titulo text-center">
+                <h3>
+                    Mantenedor de Ajustes de Stock
+                </h3>
+            </div>
+            <div class="card border-primary" style="padding: 5px;">
+                <div class="form-row mt-2">
+                    <div class="form-group col-md-3">
+                        <label for="boddestino">Bodega *</label>
+                        <select name="boddestino" class='form-control form-control-sm'
+                            formControlName='boddestino' (change)="ActivaBotonBuscaProd()">
+                            <option *ngFor='let bodega of bodegas' [ngValue]='bodega.bodcodigo'>
+                                {{ bodega.boddescripcion }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="codigo">Código *</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="codigo"
+                        (keyup.enter)="getProducto($event.target.value)" (keydown.tab)="getProducto($event.target.value)">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="descripcion">Descripción  *</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="descripcion"
+                        (keyup.enter)="setDatabusqueda($event.target.value, 2)" (keydown.tab)="setDatabusqueda($event.target.value, 2)">
+                    </div>
+                    <div class="form-group col-md-2 align-self-end">
+                        <button type="button" id="btnbuscar" class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                            [disabled]="!buscaprod" (click)="BuscaProducto()">Buscar Producto<i
+                            class="fas fa-search ml-1" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-row mt-2">
+                    <div class="form-group col-md-2">
+                        <label for="stockactual">Stock actual *</label>
+                        <input type="number" class="form-control form-control-sm" disabled formControlName="stockactual">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="stocknuevo">Stock Nuevo *</label>
+                        <input type="number" class="form-control form-control-sm" formControlName="stocknuevo"
+                        (keyup.enter)="validaStock($event.target.value)" (keydown.tab)="validaStock($event.target.value)">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="motivoajuste">Motivo Ajuste *</label>
+                        <select name="motivoajuste" class='form-control form-control-sm'
+                            formControlName='motivoajuste' (change)="ActivaBotonGrabar()">
+                            <option *ngFor='let motivo of motivos' [ngValue]='motivo.tipomotivoajus'>
+                                {{ motivo.tipomotivoajusdes }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+
+        <!-- <div class="card border-primary mt-0" style="padding: 5px;height: 440px;"> -->
+            <!-- <tabset> -->
+            <!-- <tab heading="Detalle Kardex" id="tab1"> -->
+            <!-- <div class="table-responsive mt-3" style="height: 330px;">
+                <table class="table table-sm  table-primary table-bordered">
+                    <tr>
+                        <th class="text-center">Código</th>
+                        <th class="text-center">Descripción</th>
+                        <th class="text-center">Tipo </th>
+                        <th class="text-center">Stock</th>
+                    </tr>
+                    <tr class="table-secondary" *ngFor="let kardex of datoskardexpaginacion; let id = index"
+                        >
+                        <!-- (click)="DetalleKardex(kardex)" style="cursor:pointer;" -->
+                        <!-- <td>
+                            <span>{{kardex.fechakardex}}</span>
+                        </td>
+                        <td>
+                            <span> {{kardex.kardexdestino | slice:0:30 }}</span>
+                        </td>
+                        <td>
+                            <span> {{kardex.descripcion}}</span>
+                        </td>
+                        <td>
+                            <span>{{kardex.saldoanterior}} </span>
+                        </td>
+                        <td>
+                            <span>{{kardex.cantidad}} </span>
+                        </td>
+                        <td>
+                            <span>{{kardex.cantidad}} </span>
+                        </td> -->
+
+                        <!-- <td>
+                                        <span><button type="button" id="btnVerEventosDet" class="btn btn-info btn-rounded btn-sm ml-2"
+                                                (click)="eventosDetalleSolicitud(registro)">Eventos
+                                            </button></span>
+                                    </td> -->
+                        <!--                           <td>
+                                                    <span> {{registro.cantadespachar}}</span>
+                                                </td> -->
+                    <!-- </tr>
+                </table>
+            </div> -->
+            <!-- <div class="row m-1">
+                <pagination [boundaryLinks]="true" [directionLinks]="true" [maxSize]="6" [totalItems]="datoskardex.length"
+                    [itemsPerPage]=8 [previousText]="'Anterior'" [nextText]="'Siguiente'" [firstText]="'&laquo;'"
+                    [lastText]="'&raquo;'" (pageChanged)="pageChanged($event)">
+                </pagination>
+            </div> -->
+            <!-- </tab> -->
+
+            <!-- </tabset> -->
+        <!-- </div> -->
+
+        <!--  Botones de página -->
+        <div class="form-row float-right mt-2">
+            <div class="form-group align-self-end" *ngIf="modelopermisos.btngrabaajustestock">
+                <button type="button" id="btnguardar" class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+                    [disabled]="!activabtngrabar" (click)="ConfirmarAjusteStock()" >
+                    GRABAR<i class="fas fa-save ml-1"></i>
+                </button>
+            </div>
+            <div class="form-group align-self-end">
+                <button type="button" id="btnlimpiar" class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+                    (click)="Limpiar()">LIMPIAR <i class="fas fa-eraser ml-1"></i>
+                </button>
+            </div>
+            <div class="form-group col-md-4 align-self-end">
+                <button type="button" id="btnsalir" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+                    routerLink='../home'>SALIR <i class="fas fa-window-close ml-1"></i>
+                </button>
+            </div>
+        </div>
+        <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+        <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+        <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+    </div>
+  </div>
+</app-main-nav>
+

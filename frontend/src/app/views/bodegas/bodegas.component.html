@@ -1,0 +1,503 @@
+<!-- <app-navbar></app-navbar>
+<app-sidebar></app-sidebar>
+<div class="content-wrapper pl-4"> -->
+<app-main-nav>
+    <div>
+        <div style="margin: 10px;">
+            <form [formGroup]="FormBodegas">
+                <!-- Contenedor feneral de la página -->
+                <div class="my-2 ml-2 titulo text-center">
+                    <h5>
+                        {{ 'key.title.bodegas' | translate}}
+                    </h5>
+                </div>
+                <div class="card border-primary" style="padding: 5px;">
+                    <div class="form-row mt-2">
+                        <div class="form-group col-md-1">
+                            <label for="codigobodega">{{ 'key.codigo' | translate}} *</label>
+                            <input type="text" class="form-control form-control-sm"
+                             formControlName="codigobodega"
+                             (keyup.enter)="getBodega($event.target.value)"
+                             (focusout)="getBodega($event.target.value)">
+                        </div>
+
+
+                        <div class="form-group col-md-7">
+                            <label for="nombrebodega">{{ 'key.nombre.bodega' | translate}} *</label>
+                            <input type="text" class="form-control form-control-sm col-md-7"
+                             formControlName="nombrebodega"
+                             (keyup.enter)="getNombreBodega($event.target.value)"
+                             (focusout)="getNombreBodega($event.target.value)">
+                        </div>
+                        <div class="form-group col-md-4 align-self-end text-right">
+                            <button type="button" id="btnbuscar"
+                                class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                                (click)="BuscaBodega()">{{ 'key.button.buscar.bodega' | translate}} <i class="fas fa-search ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-row mt-2">
+                        <div class="form-group col-md-2">
+                            <label for="estado">{{ 'key.estado' | translate}} *</label>
+                            <select name="estado" class='form-control form-control-sm' formControlName='estado'
+                                (change)="ActivaBtnModifica()">
+                                <option value="S">{{ 'key.vigente' | translate | uppercase}}</option>
+                                <option value="N">{{ 'key.no.vigente' | translate | uppercase}} </option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="tipobodega">{{ 'key.tipo.bodega' | translate}} *</label>
+                            <select name="tipobodega" class='form-control form-control-sm' formControlName='tipobodega'
+                                (change)="ActivaBtnModifica()">
+                                <option *ngFor='let registrotipobdega of arreglotipobodega'
+                                    [ngValue]='registrotipobdega.fparvalor'>
+                                    {{ registrotipobdega.fpardescripcion }}
+                                </option>
+                            </select>
+
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="tipoproducto">{{ 'key.tipo.producto' | translate}} *</label>
+                            <select name="tipoproducto" class='form-control form-control-sm'
+                                formControlName='tipoproducto' (change)="ActivaBtnModifica()">
+                                <option *ngFor='let registrotipoproducto of arreglotipoproducto'
+                                    [ngValue]='registrotipoproducto.fparvalor'>
+                                    {{ registrotipoproducto.fpardescripcion }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="tipoproducto">{{ 'key.fraccionable' | translate}} *</label>
+                            <select name="tipoproducto" class='form-control form-control-sm'
+                                formControlName='fraccionable' (change)="ActivaBtnModifica()">
+                                <option value='S'>Si </option>
+                                <option value='N'>No </option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="tipoproducto">Despachar Receta *</label>
+                            <select name="tipoproducto" class="form-control form-control-sm" 
+                                formControlName="despachareceta" (change)="ActivaBtnModifica()">
+                                <option value="S">{{ 'key.si' | translate}} </option>
+                                <option value="N">{{ 'key.no' | translate}} </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <tabset #tabset>
+              <tab heading="{{'key.tab.productos.asociados' | translate}}" >
+                <form [formGroup]="FormDatosProducto" autocomplete="off" spellcheck="false">
+                  <div class="form-row div-top">
+                    <div class="form-group col-md-2 mt-3">
+                      <label for="codigo">{{ 'key.codigo' | translate}} *</label>
+                      <input type="text" class="form-control form-control-sm" formControlName="codigo"
+                      (keyup.enter)="findArticuloGrilla()"
+                      (keydown.tab)="findArticuloGrilla()"
+                      placeholder="{{'key.placeholder.ingrese.codigo' | translate}}"
+                      #codigo>
+                    </div>
+                    <div class="form-group col-md-6 mt-5">
+                      <button [disabled]="!ActivaBotonAgregarArticulo()" type="button"
+                        class="btn btn-info btn-sm" (click)="getProducto()">{{ 'key.agregar' | translate}}<i
+                            class="fas fa-plus ml-1"></i>
+                      </button>
+                      <button [disabled]="!ActivaBotonBuscaGrilla()" type="button"
+                        class="btn btn-info btn-sm ml-2" (click)="findArticuloGrilla()">{{ 'key.button.buscar' | translate}}<i
+                            class="fas fa-search ml-1"></i>
+                      </button>
+                      <button [disabled]="!ActivaBotonBuscaGrilla()" type="button"
+                        class="btn btn-danger btn-sm ml-2" (click)="limpiarCodigo()">{{ 'key.button.limpiar.L' | translate}}<i
+                            class="fas fa-brush ml-1"></i>
+                      </button>
+                    </div>
+                  </div>
+                </form>
+                <div class="card border-primary mt-1" style="padding: 5px; max-height: auto;min-height: 100px;">
+                  <div class="table-responsive mt-1" >
+                    <table class="table table-sm  table-primary table-bordered">
+                      <tr class="table table-sm  table-primary table-bordered ">
+                        <th class="text-center">
+                          <svg (click)="sortbyProd('mameincodmei')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                          </svg>
+                          {{ 'key.codigo' | translate}}</th>
+                        <th class="text-center">
+                          <svg (click)="sortbyProd('glosaproducto')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                          </svg>
+                          {{ 'key.descripcion' | translate}}</th>
+                        <th class="text-center">
+                          <svg (click)="sortbyProd('glosatipoproducto')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                          </svg>
+                          {{ 'key.tipo' | translate}} </th>
+                        <th class="text-center">
+                          <svg (click)="sortbyProd('principioactivo')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                          </svg>
+                          {{ 'key.principio.activo' | translate}} </th>
+                        <th class="text-center">
+                          <svg (click)="sortbyProd('presentacion')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                          </svg>
+                          {{ 'key.presentacion' | translate}} </th>
+                        <th class="text-center">
+                          <svg (click)="sortbyProd('formafarma')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                          </svg>
+                          {{ 'key.forma.farmaceutica' | translate}}</th>
+                        <th class="text-center">
+                          <svg (click)="sortbyProd('stockactual')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                          </svg>
+                          {{ 'key.stock' | translate}}</th>
+                        <th class="text-center">
+                          <svg (click)="sortbyProd('stockcritico')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                          </svg>
+                          {{ 'key.stock.critico' | translate}}*
+                            <small>
+                                <input class="mr-2  " type="checkbox"
+                                    (click)="CambioStockCritico($event)" [disabled]="checkCritico"
+                                    [checked]="checkboxcritico">
+                            </small>
+                        </th>
+                        <th class="text-center">
+                          <svg (click)="sortbyProd('nivelreposicion')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                          </svg>
+                          {{ 'key.nivel.reposicion' | translate}}*</th>
+                        <th class="text-center">
+                          <svg (click)="sortbyProd('controlminimo')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                          </svg>
+                          {{ 'key.control.minimo' | translate}}
+                          <small>
+                            <input class="mr-2" type="checkbox"
+                                (click)="onControlminimo($event)"
+                                [disabled]="checkCritico">
+                        </small>
+                        </th>
+
+                        <th class="text-center"  *ngIf="modelopermisos.btngrabarbod">
+                            <button type="button" id="btnElinaRegistro"
+                                class="btn btn-info btn-danger btn-sm ml-2 "
+                                (click)="ConfirmaEliminaProductoDeLaGrilla2()"
+                                [disabled]="desactivabtnelimprod">{{ 'key.button.eliminar' | translate}}
+                                <i class="fas fa-trash-restore-alt  ml-1"></i>
+                            </button>
+                        </th>
+                      </tr>
+                      <tr class="table-secondary"
+                        *ngFor="let producto of _bodega_productos_paginacion
+                          |  paginate: {itemsPerPage: 15, currentPage: pageMein, id:'mamein'};">
+                          <td><small><span>{{producto.mameincodmei}}</span></small></td>
+                          <td class="text-nowrap help" tooltip="{{producto.glosaproducto }}"><small><span> {{producto.glosaproducto| slice:0:30 }}</span></small></td>
+                          <td><small><span> {{producto.glosatipoproducto}}</span></small></td>
+                          <td class="text-nowrap help" tooltip="{{producto.principioactivo }}"><small><span> {{producto.principioactivo| slice:0:20 }}</span></small></td>
+                          <td class="text-nowrap help" tooltip="{{producto.presentacion }}"><small><span> {{producto.presentacion| slice:0:20 }}</span></small></td>
+                          <td class="text-nowrap help" tooltip="{{producto.formafarma }}"><small><span> {{producto.formafarma| slice:0:20 }}</span></small></td>
+                          <td class="text-nowrap help" tooltip="{{producto.stockactual }}"><small><span>{{producto.stockactual}} </span></small></td>
+                          <td><small>
+                            <input type="number" class="form-control form-control-sm text-right"
+                                      min="1" max="99999999" [(ngModel)]="producto.stockcritico"
+                                      (keyup.enter)="cambio_cantidad(producto.meinid, 'stockcritico', $event,producto)"
+                                      (focusout)="cambio_cantidad(producto.meinid, 'stockcritico', $event,producto)">
+                              </small>
+                          </td>
+                          <td><small>
+                                  <input type="number" class="form-control form-control-sm text-right"
+                                      min="1" max="99999999" [(ngModel)]="producto.nivelreposicion"
+                                      (keyup.enter)="cambio_cantidad(producto.meinid, 'nivelreposicion', $event,producto)"
+                                      (focusout)="cambio_cantidad(producto.meinid, 'nivelreposicion', $event,producto)">
+                              </small>
+                          </td>
+                          <td><small>
+                                  <div *ngIf="producto.controlminimo=='N'">
+                                      <input class="mr-2 " type="checkbox"
+                                          (change)="cambio_check_minimo(producto.meinid, 'controlminimo', $event)"
+                                          name="marca" value="M">
+                                  </div>
+                                  <div *ngIf="producto.controlminimo=='S'">
+                                      <input class="mr-2 " type="checkbox"
+                                          (change)="cambio_check_minimo(producto.meinid, 'controlminimo', $event)"
+                                          name="marca" value="M" checked>
+                                  </div>
+                              </small>
+                          </td>
+                          <td *ngIf="modelopermisos.btngrabarbod">
+                              <small>
+                                  <input class="mr-2  " type="checkbox"
+                                      [disabled]="!producto.bloqcampogrilla"
+                                      (click)="CambioCheckProductos(producto,$event,producto.marcacheckgrilla)">
+                              </small>
+                          </td>
+                      </tr>
+                    </table>
+                    <div class="row  align-self-center">
+                      <pagination-controls
+                        id="mamein"
+                        (pageChange)="pageMein = $event"
+                        (pageBoundsCorrection)="pageMein = $event"
+                        previousLabel="{{'key.pagination.anterior' | translate}}"
+                        nextLabel="{{'key.pagination.siguiente' | translate}}"
+                        autoHide="true">
+                      </pagination-controls>
+                    </div>
+                  </div>
+                </div>
+              </tab>
+              <tab heading="{{'key.tab.servicios.asociados' | translate}}"  onclick="cambio()">
+                  <div class="card border-primary"  style="padding: 20px;margin-top: 10px">
+                      <div id="table" class="table-editable" style="max-height: auto;min-height: 100px;">
+                          <a class="btn-floating btn-lg purple-gradient"></a>
+                          <button type="button" class="btn btn-info btn-rounded btn-sm ml-2"
+                              (click)="addServicioGrilla()" [disabled]="!ActivaBotonAgregarArticulo()">
+                              {{ 'key.agregar' | translate}}<i class="fas fa-plus ml-2" aria-hidden="true"></i>
+                          </button>
+                          <div id="table" class="table-editable table-responsive mt-2">
+                              <table
+                                  class="table table-sm table-condensed table-bordered table-responsive-md table-striped text-center">
+                                  <tr class="table table-sm  table-primary table-bordered">
+                                      <th class="text-center">
+                                        <svg (click)="sortbyServ('codservicio')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                        </svg>
+                                        {{ 'key.codigo' | translate}}</th>
+                                      <th class="text-center">
+                                        <svg (click)="sortbyServ('descservicio')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                        </svg>
+                                        {{ 'key.servicio' | translate}}</th>
+                                      <th class="text-center" *ngIf="modelopermisos.btneliminaserviciobod">
+                                          <button type="button" id="btnElinaRegistro"
+                                              class="btn btn-info btn-danger btn-sm ml-2 "
+                                              (click)="ConfirmaEliminaServicioDeLaGrilla2()"
+                                              [disabled]="!desactivabtnelimserv">{{ 'key.button.eliminar' | translate}}
+                                              <i class="fas fa-trash-restore-alt  ml-1"></i>
+                                          </button>
+                                      </th>
+                                  </tr>
+                                  <tr class="table-secondary"
+                                      *ngFor="let servicio of _bodega_servicios
+                                      |  paginate: {itemsPerPage: 15, currentPage: pageServ, id:'serv'}; let id = index"
+                                        style="cursor: pointer;">
+                                      <td><small>
+                                              <span>{{servicio.codservicio}}</span></small>
+                                      </td>
+                                      <td><small>
+                                              <span>{{servicio.descservicio}} </span></small>
+                                      </td>
+
+                                      <td *ngIf="modelopermisos.btneliminaserviciobod">
+                                          <small>
+                                              <input class="mr-2  " type="checkbox"
+                                                  [disabled]="!servicio.bloqcampogrilla"
+                                                  (click)="CambioCheckServicios(servicio,id,$event,servicio.marcacheckgrilla)">
+                                          </small>
+                                          <!-- <small>
+                                              <span><button type="button" id="btnElinaRegistro"
+                                                      class="btn btn-info btn-rounded btn-sm ml-2"
+                                                      (click)="ConfirmaEliminaServicioDeLaGrilla(servicio,id)">Eliminar
+                                                  </button></span>
+                                          </small> -->
+                                      </td>
+                                  </tr>
+                              </table>
+                              <div class="row  align-self-center">
+                                <pagination-controls
+                                  id="serv"
+                                  (pageChange)="pageServ = $event"
+                                  (pageBoundsCorrection)="pageServ = $event"
+                                  previousLabel="{{'key.pagination.anterior' | translate}}"
+                                  nextLabel="{{'key.pagination.siguiente' | translate}}"
+                                  autoHide="true">
+                                </pagination-controls>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+              </tab>
+              <tab heading="{{'key.tab.usuarios.asociados' | translate}}" >
+
+                  <div class="card border-primary"  style="padding: 20px;margin-top: 10px">
+                      <div id="table" class="table-editable" style="max-height: auto;min-height: 100px;">
+                          <a class="btn-floating btn-lg purple-gradient"></a>
+                          <button type="button" class="btn btn-info btn-rounded btn-sm ml-2"
+                              (click)="addUsauriosGrilla()" [disabled]="!ActivaBotonAgregarArticulo()">
+                              {{ 'key.agregar' | translate}}<i class="fas fa-plus ml-2" aria-hidden="true"></i>
+                          </button>
+                          <div id="table" class="table-editable table-responsive mt-2">
+                              <table
+                                  class="table table-sm table-condensed table-bordered table-responsive-md table-striped text-center">
+                                  <tr class="table table-sm  table-primary table-bordered">
+                                      <th class="text-center">
+                                        <svg (click)="sortbyUser('glosausuario')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                        </svg>
+                                        {{ 'key.login.usuario' | translate}}</th>
+                                      <th class="text-center" *ngIf="modelopermisos.btneliminausuariobod">
+                                          <button type="button" id="btnElinaRegistro"
+                                              class="btn btn-info btn-danger btn-sm ml-2 "
+                                              (click)="ConfirmaEliminaUsuarioDeLaGrilla2()"
+                                              [disabled]="!desactivabtnelimusu">{{ 'key.button.eliminar' | translate}}
+                                              <i class="fas fa-trash-restore-alt  ml-1"></i>
+                                          </button>
+                                      </th>
+                                  </tr>
+                                  <tr class="table-secondary"
+                                      *ngFor="let reg_usuarios of _bodega_usuarios
+                                      |  paginate: {itemsPerPage: 15, currentPage: pageUser, id:'user'}; let id = index"
+                                        style="cursor: pointer;">
+                                      <td>
+                                          <small><span>{{reg_usuarios.glosausuario}}</span></small>
+                                      </td>
+                                      <td *ngIf="modelopermisos.btneliminaserviciobod">
+                                          <small>
+                                              <input class="mr-2  " type="checkbox"
+                                                  [disabled]="!reg_usuarios.bloqcampogrilla"
+                                                  (click)="CambioCheckUsuarios(reg_usuarios,id,$event,reg_usuarios.marcacheckgrilla)">
+                                          </small>
+                                          <!-- <small>
+                                              <span><button type="button" id="btnElinaRegistro"
+                                                      class="btn btn-info btn-rounded btn-sm ml-2"
+                                                      (click)="ConfirmaEliminaUsuarioDeLaGrilla(reg_usuarios,id)">Eliminar
+                                                  </button></span></small> -->
+                                      </td>
+                                  </tr>
+                              </table>
+                              <div class="row  align-self-center">
+                                <pagination-controls
+                                  id="user"
+                                  (pageChange)="pageUser = $event"
+                                  (pageBoundsCorrection)="pageUser = $event"
+                                  previousLabel="{{'key.pagination.anterior' | translate}}"
+                                  nextLabel="{{'key.pagination.siguiente' | translate}}"
+                                  autoHide="true">
+                                </pagination-controls>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+              </tab>
+              <tab heading="{{'key.tab.bodegas.asociadas' | translate}}" >
+                  <div class="card border-primary"  style="padding: 20px;margin-top: 10px">
+                      <div id="table" class="table-editable" style="max-height: auto;min-height: 100px;">
+                          <a class="btn-floating btn-lg purple-gradient"></a>
+                          <button type="button" class="btn btn-info btn-rounded btn-sm ml-2"
+                              (click)="addBodegaGrilla()" [disabled]="!ActivaBotonAgregarArticulo()">
+                              {{ 'key.agregar' | translate}}<i class="fas fa-plus ml-2" aria-hidden="true"></i>
+                          </button>
+                          <div id="table" class="table-editable table-responsive mt-2">
+                              <table
+                                  class="table table-sm table-condensed table-bordered table-responsive-md table-striped text-center">
+                                  <tr class="table table-sm  table-primary table-bordered">
+                                      <th class="text-center">
+                                        <svg (click)="sortbyBod('glosatiporelacion')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                        </svg>
+                                        {{ 'key.relacion' | translate}}</th>
+                                      <th class="text-center">
+                                        <svg (click)="sortbyBod('nombodega')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                                        </svg>
+                                        {{ 'key.bodega' | translate}}</th>
+                                      <th class="text-center" *ngIf="modelopermisos.btneliminabodasociada">
+                                          <button type="button" id="btnElinaRegistro"
+                                              class="btn btn-info btn-danger btn-sm ml-2 "
+                                              (click)="ConfirmaEliminaBodegaDeLaGrilla2()"
+                                              [disabled]="!desactivabtnelimbod">
+                                              {{ 'key.button.eliminar.relacion' | translate}} <i class="fas fa-trash-restore-alt  ml-1"></i>
+                                          </button>
+                                      </th>
+                                  </tr>
+                                  <tr class="table-secondary"
+                                      *ngFor="let reg_relacion_bodegas of _bodega_relacion_bodegas
+                                      |  paginate: {itemsPerPage: 15, currentPage: pageBod, id:'bodega'}; let id = index"
+                                        style="cursor: pointer;">
+                                      <td>
+                                          <small><span>{{reg_relacion_bodegas.glosatiporelacion}}</span></small>
+                                      </td>
+                                      <td>
+                                          <small><span>{{reg_relacion_bodegas.nombodega}}</span></small>
+                                      </td>
+                                      <td *ngIf="modelopermisos.btneliminabodasociada">
+                                          <small>
+                                              <input class="mr-2  " type="checkbox"
+                                                  [disabled]="!reg_relacion_bodegas.bloqcampogrilla"
+                                                  (click)="CambioCheckBodegas(reg_relacion_bodegas,id,$event,reg_relacion_bodegas.marcacheckgrilla)">
+                                          </small>
+                                          <!-- <small>
+                                            <span><button type="button" id="btnElinaRegistro"
+                                                    class="btn btn-info btn-rounded btn-sm ml-2"
+                                                    (click)="ConfirmaEliminaBodegaDeLaGrilla(reg_relacion_bodegas,id)">Eliminar
+                                                </button></span>
+                                            </small> -->
+                                      </td>
+                                  </tr>
+                              </table>
+                              <div class="row  align-self-center">
+                                <pagination-controls
+                                  id="bodega"
+                                  (pageChange)="pageBod = $event"
+                                  (pageBoundsCorrection)="pageBod = $event"
+                                  previousLabel="{{'key.pagination.anterior' | translate}}"
+                                  nextLabel="{{'key.pagination.siguiente' | translate}}"
+                                  autoHide="true">
+                                </pagination-controls>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </tab>
+            </tabset>
+            <!--  Botones de página -->
+            <div class="form-row float-right mt-2">
+                <div class="form-group  align-self-end" *ngIf="modelopermisos.btngrabarbod">
+                    <button type="button" id="btnguardar"
+                        class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_02" (click)="CreaBodegaNueva()"
+                        [disabled]=" !ActivaBotonCrear()">{{ 'key.button.crear' | translate}}
+                        <i class="fas fa-save ml-1"></i>
+                    </button>
+                </div>
+                <div class="form-group  align-self-end" *ngIf="modelopermisos.btnmodificarbod">
+                    <button type="button" id="btnmodificar"
+                        class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+                        (click)="ModificarBodega(FormBodegas.value)"
+                        [disabled]="!verificanull">
+                        {{ 'key.button.modificar' | translate}} <i class="fas fa-save ml-1"></i>
+                    </button>
+                </div>
+                <div class="form-group  align-self-end">
+                    <button type="button" id="btnimprimir" [disabled]="!ActivaBotonImprimir()"
+                        class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02" (click)="onImprimir()">
+                        {{ 'key.button.imprimir' | translate}} <i class="fas fa-file-pdf ml-1"></i>
+                    </button>
+                </div>
+                <div class="form-group align-self-end">
+                    <button type="button" id="btnlimpiar"
+                        class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_02" (click)="Limpiar()">{{ 'key.button.limpiar' | translate}} <i
+                            class="fas fa-eraser ml-1"></i>
+                    </button>
+                </div>
+                <div class="form-group align-self-end">
+                    <button type="button" id="btnsalir" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+                        (click)="Salir()">{{ 'key.button.salir' | translate}}<i class="fas fa-window-close ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- <a class="table-secondary"
+        *ngFor="let reg_relacion_bodegas of _bodega_relacion_bodegas_paginacion">
+        {{ reg_relacion_bodegas.nombodega }}<br>
+        </a> -->
+        <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+        <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+        <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+        <swal #alertSwalConfirmar title="" text="" type="question" [showCancelButton]="true"> </swal>
+        <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+    </div>
+</app-main-nav>

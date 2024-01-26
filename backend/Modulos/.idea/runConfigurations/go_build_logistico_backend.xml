@@ -1,0 +1,17 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="go build logistico-backend" type="GoApplicationRunConfiguration" factoryName="Go Application" singleton="false" nameIsGenerated="true">
+    <module name="Modulos" />
+    <working_directory value="$PROJECT_DIR$/../../logistico-backend" />
+    <go_parameters value="-i" />
+    <parameters value="$GOPATH$" />
+    <sudo value="true" />
+    <kind value="FILE" />
+    <package value="Modulos" />
+    <directory value="$PROJECT_DIR$" />
+    <filePath value="$PROJECT_DIR$/../../logistico-backend" />
+    <output_directory value="$PROJECT_DIR$/../../logistico-backend" />
+    <redirect_input value="true" />
+    <input_file value="$PROJECT_DIR$/../../logistico-backend/main.go" />
+    <method v="2" />
+  </configuration>
+</component>

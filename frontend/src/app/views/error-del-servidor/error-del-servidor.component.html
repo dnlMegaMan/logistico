@@ -1,0 +1,80 @@
+<nav class="container-fluid py-3"  [ngStyle]="colorFondo">
+  <div class="row">
+    <img src="./assets/images/{{imagen}}" alt="Logo" class="d-block m-auto" style="opacity: 0.8" />
+  </div>
+</nav>
+
+<div class="container m-auto py-5">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="mb-4 display-4 text-center text-danger">
+        <i class="fa fa-exclamation-triangle"></i>
+        <span class="ml-4">{{ 'key.title.error.sistema' | translate}}</span>
+      </h1>
+      <p class="lead text-center">{{ 'key.mensaje.contacto.administrador' | translate}}</p>
+      <div *ngIf="errores.length > 0" class="mt-5">
+        <h4 class="mb-4">{{ 'key.informacion.general' | translate}}</h4>
+        <table class="table">
+          <tbody>
+            <tr>
+              <td>{{ 'key.pagina.origen' | translate}}</td>
+              <td>{{ ultimaPaginaNavegada }}</td>
+            </tr>
+            <tr>
+              <td>{{ 'key.fecha' | translate}}</td>
+              <td>{{ ahora | date : 'short' }}</td>
+            </tr>
+            <tr>
+              <td>{{ 'key.ambiente' | translate}}</td>
+              <td>{{ servidor }}</td>
+            </tr>
+            <tr>
+              <td>{{ 'key.login.usuario' | translate}}</td>
+              <td>{{ usuario }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h4 class="my-4">{{ 'key.problemas.detectados' | translate}}</h4>
+        <table class="table">
+          <thead>
+            <th>{{ 'key.endpoint.go' | translate}}</th>
+            <th>{{ 'key.mensaje.error' | translate}}</th>
+          </thead>
+          <tbody>
+            <tr *ngFor="let error of errores">
+              <td class="text-primary">{{ error.url }}</td>
+              <td>{{ error.message }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="row py-5">
+    <div class="col-12">
+      <div class="d-flex flex-column justify-content-center align-items-center">
+        <ng-container *ngIf="!serviciosReiniciados && ambienteHabilitadoParaReiniciar()">
+          <button type="button" class="px-4 btn btn-sm btn-primary" [disabled]="reiniciandoServicios" (click)="reiniciarServicios()">
+            <span *ngIf="reiniciandoServicios" class="mr-2 spinner-border spinner-border-sm"></span>
+            <span class="mr-2 text-uppercase">{{ reiniciandoServicios ? 'Reiniciando servicios...' : 'Reiniciar servicios' }}</span>
+            <i *ngIf="!reiniciandoServicios" class="fas fa-play-circle"></i>
+          </button>
+          <p *ngIf="reiniciandoServicios" class="mt-3 text-center">{{ 'key.mensaje.espera.carga' | translate}}</p>
+        </ng-container>
+
+        <ng-container *ngIf="serviciosReiniciados || !ambienteHabilitadoParaReiniciar()">
+          <button type="button" class="m-auto px-4 btn btn-sm btn-primary" routerLink="/login">
+            <span class="mr-2 text-uppercase">Ir al login</span>
+            <i class="fas fa-user"></i>
+          </button>
+          <p *ngIf="ambienteHabilitadoParaReiniciar()" class="mt-3 text-center text-success">{{ 'key.mensaje.servicios.reiniciados' | translate}}</p>
+        </ng-container>
+      </div>
+    </div>
+
+    <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+    <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+    <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+  </div>
+</div>

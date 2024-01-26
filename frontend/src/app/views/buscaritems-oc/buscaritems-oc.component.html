@@ -1,0 +1,133 @@
+<!-- <app-main-nav>
+    <div>
+         Contenedor feneral de la página 
+        <div class="my-2 ml-2 titulo text-center">
+            menu 
+            <h3>
+                Buscar Items en O.C.
+            </h3>
+        </div>
+         Creacio nde filtros y datos ingresados por pantalla 
+        <form [formGroup]='FormBuscarItemsOc'>
+            <div class="card border-primary " style="padding: 5px;">
+                <div class="form-row d-flex justify-content-center">
+                    <div class="form-group col-md-1">
+                        <label for="sin fecha">Sin fecha fecha</label>
+                        <input type="checkbox"
+                        class="form-control form-control-sm"
+                        formControlName="confecha"
+                        (change)="cambio_check('todoslosproductos', $event)" name="confecha">
+                    </div>
+                    <div class="form-group col-md-2 align-self-end">
+                        <label for="fechadesde">Desde</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="fechadesde">
+                    </div>
+                    <div class="form-group col-md-2 align-self-end">
+                        <label for="fechahasta">Hasta</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="fechahasta">
+                    </div>
+                </div>
+                <div class="form-row d-flex justify-content-center">
+                    <div class="form-group col-md-1">
+                        <label for="codigo">Codigo</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="codigo">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="descripcion">Descripcion</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="descripcion">
+                    </div>
+                </div>    
+            </div>
+        </form>
+       
+         listado de articulos 
+        <div class="card border-primary mt-0" style="padding: 5px">
+            <div class="form-row d-flex justify-content-center">
+                <div class="form-group col-md-8">
+                    <tabset>
+                        <tab heading="Detalle Original" id="tab1">
+                            <div class="table-responsive mt-3" style="max-height: auto;min-height: 100px;">
+                                <table class="table table-sm  table-primary table-bordered">
+                                    <tr class="table-sm">
+                                        <th class="text-center">Fecha O.C.</th>
+                                        <th class="text-center">N° O.C.</th>
+                                        <th class="text-center">Valor Costo</th>
+                                        <th class="text-center">Rut proveedor</th>
+                                        <th class="text-center">Nombre proveedor</th>
+                                        <th class="text-center">Estado O.C.</th>
+                                    </tr>
+                                    <tr *ngFor="let registro of listaDetalleSolicitudpaginacion; let id = index"
+                                        [ngClass]="registro.backgroundcolor">
+                                        <td class="text-nowrap help   " tooltip="{{registro.meindescri }}">
+                                            <small><span> {{registro.meindescri | slice:0:20 }}</span></small>
+                                        </td>
+                                        <td>
+                                            <small><span>{{registro.cantsoli}} </span></small>
+                                        </td>
+                                        <td>
+                                            <small><span>{{registro.cantdespachada}} </span></small>
+                                        </td>
+                                        <td>
+                                            <small><span> {{registro.cantsoli - registro.cantdespachada}} </span></small>
+                                        </td>
+                                        <td>
+                                            <small><span>{{registro.cantrecepcionado}} </span></small>
+                                        </td>
+                                        <td>
+                                            <small><span>{{registro.cantdevolucion}} </span></small>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="row m-1" *ngIf="1>20">
+                                <pagination [boundaryLinks]="true" [directionLinks]="true" [maxSize]="8"
+                                    [totalItems]="listaDetalleSolicitud.length" [itemsPerPage]=20 [previousText]="'Anterior'"
+                                    [nextText]="'Siguiente'" [firstText]="'&laquo;'" [lastText]="'&raquo;'"
+                                    (pageChanged)="pageChanged($event)">
+                                </pagination>
+                            </div>
+                        </tab>
+                    </tabset>
+                </div>
+            </div>
+        </div> 
+
+
+          Botones de página 
+        <div class="form-row float-right mt-2 mr-1">
+            <div class="form-group align-self-end" *ngIf="modelopermisos.btnimpdespsolicbod">
+                <button type="button" id="btnguardar" [disabled]="!activabtnimprimesolic"
+                    class="btn mr-1 btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+                    (click)="onImprimirSolicitud()">IMPRIMIR SOLICITUD <i class="fas fa-file-pdf ml-1"></i>
+                </button>
+            </div>
+            <div class="form-group  align-self-end" *ngIf="modelopermisos.btngrabadespachosolic">
+                <button type="button" id="btnguardar" class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+                    [disabled]="!verificanull" (click)="ConfirmarEnviarDespacho(FormDespachoSolicitud.value)">DESPACHAR
+                    <i class="fas fa-save ml-1"></i>
+                </button>
+            </div>
+            <div class="form-group align-self-end" *ngIf="modelopermisos.btnimpdespsolicbod">
+                <button type="button" id="btnguardar" [disabled]="!activabtnimprime"
+                    class="btn mr-1 btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+                    (click)="onImprimir()">IMPRIMIR DESPACHO <i class="fas fa-file-pdf ml-1"></i>
+                </button>
+            </div>
+
+            <div class="form-group  align-self-end">
+                <button type="button" id="btnlimpiar" class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+                    >LIMPIAR <i class="fas fa-eraser ml-1"></i>
+                </button>
+            </div>
+            <div class="form-group align-self-end">
+                <button type="button" id="btnsalir" class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+                    >SALIR <i class="fas fa-window-close ml-1"></i>
+                </button>
+            </div>
+        </div>
+
+        <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+        <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+        <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+    </div>
+</app-main-nav> -->

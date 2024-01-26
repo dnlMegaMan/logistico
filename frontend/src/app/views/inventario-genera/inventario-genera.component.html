@@ -1,0 +1,65 @@
+<app-main-nav>
+  <div>
+    <div style="margin: 10px;">
+      <form [formGroup]="FormInvantarioGenera">
+        <div class="my-2 ml-2 titulo text-center">
+          <!--menu -->
+          <h3>
+            {{ 'key.genera.inventario.sistema' | translate}}
+          </h3>
+        </div>
+
+        <div class="card border-primary" style="padding: 10px;">
+          <div class="form-row mt-2">
+            <div class="form-group col-md-2">
+              <label for="fechamostrar">{{ 'key.periodo' | translate }} *</label>
+              <input appSelecttext type="text" placeholder="DD/MM/YYYY" id="fecha" class='form-control form-control-sm'
+                [bsConfig]="bsConfig" bsDatepicker formControlName="fechamostrar">
+            </div>
+            <div class="form-group col-md-4">
+              <label for="codigobodega">{{ 'key.title.bodegas' | translate }} *</label>
+              <select name="boddescodigo" class='form-control form-control-sm' formControlName='boddestino'>
+                <option *ngFor='let listaBodega of bodegasSolicitantes' [ngValue]='listaBodega.id'>
+                  {{ listaBodega.descripcion }}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-md-2">
+              <label for="idtiporegistro">{{ 'key.tipo.producto' | translate }} *</label>
+              <select name="idtiporegistro" class='form-control form-control-sm' formControlName='tiporegistro'>
+                <option *ngFor='let tipo of listaTipoProductos' [ngValue]='tipo.valor'>
+                  {{ tipo.descripcion }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row mt-1 float-right">
+          <div class="form-group col-md-4 align-self-end">
+            <button type="button" id="btnguardar" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+              [disabled]="loading || !hasFormIngresoInventarioGeneral" (click)="ConfirmaGeneraInventario()">{{
+              'key.button.generar.inventario.sistema' | translate}} <i class="fas fa-save ml-1"></i>
+            </button>
+          </div>
+          <div class="form-group col-md-4 align-self-end">
+            <button type="button" id="btnlimpiar" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+              (click)="Limpiar()">{{ 'key.button.limpiar' | translate}} <i class="fas fa-eraser ml-1"></i>
+            </button>
+          </div>
+          <div class="form-group col-md-4 align-self-end">
+            <button type="button" id="btnsalir" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+              routerLink='../home'>{{ 'key.button.salir' | translate}} <i class="fas fa-window-close ml-1"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+      <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+      <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+      <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+      <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+
+    </div>
+  </div>
+</app-main-nav>

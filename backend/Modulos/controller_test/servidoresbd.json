@@ -1,0 +1,31 @@
+[
+  {
+    "name": "DESARROLLO",
+    "stringconnection": "FarmaciaClinica/sisaFarmaDes20XX@//10.152.138.55:1521/SISALUDES",
+    "username" : "FarmaciaClinica",
+	  "password" : "sisaFarmaDes20XX",
+	  "connectstring" : "10.152.138.55:1521/SISALUDES"
+  },
+  {
+    "name": "TESTING",
+	  "stringconnection": "FARMACIACLINICA/F4rma_2019@//10.188.184.140:1521/FUSATQA",
+    "username" : "FARMACIACLINICA",
+	  "password" : "F4rma_2019",
+	  "connectstring" : "10.188.184.140:1521/FUSATQA"
+  },
+  {
+    "name": "PRODUCCION",
+    "stringconnection": "FARMACIACLINICA/F4rma_2019@//10.188.184.140:1521/FUSATRAC",
+    "username" : "FARMACIACLINICA",
+	  "password" : "F4rma_2019",
+	  "connectstring" : "10.188.184.140:1521/FUSATRAC"
+  },
+  {
+    "name": "TESTING_CLOUD",
+	  "stringconnection": "FarmaciaClinica/sisaFarmaQA20XX@//10.0.1.9:1521/pdb_qa.sub09012156411.vcnmodernizacio.oraclevcn.com",
+    "username" : "FarmaciaClinica",
+	  "password" : "sisaFarmaQA20XX",
+	  "connectstring" : "10.0.1.9:1521/pdb_qa.sub09012156411.vcnmodernizacio.oraclevcn.com"
+  }
+
+]

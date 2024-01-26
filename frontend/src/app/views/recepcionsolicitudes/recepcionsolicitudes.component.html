@@ -1,0 +1,369 @@
+<!-- <app-navbar ></app-navbar>
+<app-sidebar></app-sidebar>
+<div class="content-wrapper pl-4"> -->
+<app-main-nav>
+  <div style="padding: 10px;">
+
+<!-- Contenedor feneral de la página -->
+    <div class="my-2 ml-2 titulo text-center">
+        <!--menu -->
+        <h3>
+            {{ 'key.recepcion.solicitudes' | translate}}
+        </h3>
+    </div>
+    <!-- lineas de edición y bpusqueda -->
+    <div class="card border-primary" style="padding: 5px;">
+        <form novalidate [formGroup]='FormRecepcionSolicitud' autocomplete="off" spellcheck="false">
+            <div class="form-row">
+                <div class="form-group col-md-2">
+                    <label for="numsolicitud"># {{ 'key.solicitud' | translate}} *</label>
+                    <input type="number" class="form-control form-control-sm" formControlName="numsolicitud">
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="estadosolicitudde">{{ 'key.estado' | translate}} {{ 'key.solicitud' | translate}} *</label>
+                    <input type="text" class="form-control form-control-sm" formControlName="estadosolicitudde">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="prioridad">{{ 'key.prioridad' | translate}} *</label>
+                    <input type="text" class="form-control form-control-sm" formControlName="prioridad">
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="fechamostrar">{{ 'key.fecha' | translate}} *</label>
+                    <input type="text" appSelecttext placeholder="DD/MM/YYYY" [bsConfig]="bsConfig" bsDatepicker id="fecha"
+                        class='form-control form-control-sm' formControlName="fechamostrar">
+                </div>
+                <div class="form-group col-md-3 align-self-end text-right">
+                    <button type="button" id="btnbuscar" class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                        (click)="BuscarSolicitudes()">{{ 'key.button.buscar.solicitud' | translate}} <i class="fas fa-search ml-1"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="bodegaorigen">{{ 'key.bodega.solicitante' | translate}} *</label>
+                    <input type="text" class="form-control form-control-sm" formControlName="bodorigen">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="codigobodega">{{ 'key.bodega.despacho' | translate}} *</label>
+                    <input type="text" class="form-control form-control-sm" formControlName="boddestino">
+                </div>
+                <div class="form-group col-md-4 align-self-end text-right">
+                    <button type="button" id="btnevento" class="btn btn-primary btn-sm
+                            button-my-styles-busqueda_01" [disabled]="!activabtnevento" (click)="eventosSolicitud()">{{ 'key.button.eventos' | translate}}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="card border-primary mt-0" style="padding: 5px">
+        <tabset #tabset>
+            <tab heading="{{'key.tab.detalle.solicitud' | translate}}" id="tab1">
+                <form [formGroup]="FormDatosProducto" autocomplete="off" spellcheck="false">
+                    <div class="row form-group align-self-end ml-1">
+                        <!-- <a class="btn-floating btn-lg purple-gradient"></a> -->
+                        <div class="form-group col-md-2">
+                            <label for="codigo">{{ 'key.codigo' | translate}} *</label>
+                            <input type="text" class="form-control form-control-sm"
+                            formControlName ="codigo"
+                            (keydown.tab)="findArticuloGrilla()"
+                            (keyup.enter)="findArticuloGrilla()"
+                            placeholder="{{'key.placeholder.ingrese.codigo' | translate}}"
+                            matInput
+                            #codigo>
+                        </div>
+                        <div class="row form-group align-self-end ml-1">
+                            <button type="button" class="btn btn-info btn-sm ml-2"
+                                [disabled]="!ActivaBotonBuscaGrilla"
+                                (click)="findArticuloGrilla()">{{ 'key.button.buscar' | translate}}<i
+                                class="fas fa-search ml-1"></i>
+                            </button>
+                            <button type="button" [disabled]="!ActivaBotonLimpiaBusca"
+                                class="btn btn-danger btn-sm ml-2"
+                                (click)="limpiarCodigo()">{{ 'key.button.limpiar.busqueda' | translate}}<i
+                                class="fas fa-brush ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <div class="table-responsive mt-3" style="max-height: auto;min-height: 100px;">
+                    <table class="table table-sm  table-primary table-bordered">
+                        <tr>
+                            <th class="text-center">{{ 'key.codigo' | translate}}
+                              <svg (click)="sortbySol('codmei')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
+                            </th>
+                            <th class="text-center">{{ 'key.descripcion.articulo' | translate}}
+                              <svg (click)="sortbySol('meindescri')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
+                            </th>
+                            <th class="text-center">{{ 'key.stock' | translate}}
+                              <svg (click)="sortbySol('stockorigen')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
+                            </th>
+                            <th class="text-center">{{ 'key.solicitada' | translate}}
+                              <svg (click)="sortbySol('cantsoli')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
+                            </th>
+                            <th class="text-center">{{ 'key.despachada' | translate}}
+                              <svg (click)="sortbySol('cantdespachada')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
+                            </th>
+                            <th class="text-center">{{ 'key.pendiente.recepcionar' | translate}}
+                              <svg (click)="sortbySol('id')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
+                            </th>
+                            <th class="text-center">{{ 'key.recepcionada' | translate}}
+                              <svg (click)="sortbySol('cantrecepcionado')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
+                            </th>
+                            <th class="text-center">{{ 'key.devuelta' | translate}}
+                              <svg (click)="sortbySol('cantdevolucion')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
+                            </th>
+                            <th class="text-center">{{ 'key.button.eventos' | translate}}</th>
+                        </tr>
+                        <!-- <tr
+                            *ngFor="let registro of listaDetalleSolicitudpaginacion; let id = index"[ngClass]="registro.backgroundcolor"
+                            (dblclick)="BuscaproductoaRecepcionar(registro.codmei)"> -->
+                            <tr
+                            *ngFor="let registro of listaDetalleSolicitudpaginacion
+                            |  paginate: {itemsPerPage: 15, currentPage: pageSoli, id:'sol'}
+                             let id = index"[ngClass]="registro.backgroundcolor"
+                            >
+                            <td><small><span>{{registro.codmei}}</span></small></td>
+                            <td class="text-nowrap help   " tooltip="{{registro.meindescri }}">
+                                <small><span> {{registro.meindescri | slice:0:30 }}</span></small>
+                            </td>
+                            <td><small><span> {{registro.stockorigen}}</span></small></td>
+                            <td><small><span>{{registro.cantsoli}} </span></small></td>
+                            <td><small><span>{{registro.cantdespachada}} </span></small></td>
+                            <td><small><span> {{registro.cantdespachada - registro.cantrecepcionado}} </span></small></td>
+                            <td><small><span>{{registro.cantrecepcionado}} </span></small></td>
+                            <td><small><span>{{registro.cantdevolucion}} </span></small></td>
+                            <td>
+                                <small><span><button type="button" id="btnVerEventos" class="btn btn-info btn-rounded btn-sm ml-2"
+                                        (click)="eventosDetalleSolicitud(registro)">{{ 'key.button.eventos' | translate}}
+                                    </button></span>
+                                </small>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="row m-1 mt-3">
+                      <pagination-controls
+                        id="sol"
+                        (pageChange)="pageSoli = $event"
+                        previousLabel="{{'key.pagination.anterior' | translate}}"
+                        nextLabel="{{'key.pagination.siguiente' | translate}}"
+                        autoHide="true">
+                      </pagination-controls>
+                    </div>
+                </div>
+            </tab>
+            <tab heading="{{'key.tab.detalle.recepcion' | translate}}" id="tab2">
+                <div class="mt-0">
+                    <form novalidate [formGroup]='FormRecepcionDetalle' autocomplete="off" spellcheck="false">
+                        <div class="form-row ">
+                            <div class="form-group col-md-2">
+                                <label for="codmei">{{ 'key.codigo' | translate}} *</label>
+                                <input type="text" class="form-control form-control-sm"
+                                   formControlName="codmei">
+                            </div>
+
+                            <div class="form-group col-md-3 align-self-end">
+                                <button type="button" class="btn btn-info btn-rounded  btn-sm button-my-styles-busqueda_03 "
+                                    [disabled]="bloqbtnagregar" (click)="BuscaproductoaRecepcionar(FormRecepcionDetalle.value, 1)">
+                                    {{ 'key.agregar' | translate}} <i class="fas fa-plus ml-1"></i>
+                                </button><!----addArticuloGrillaRecepcion-->
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="table-responsive mt-1" style="max-height: auto;min-height: 100px;">
+                    <table class="table table-sm  table-primary table-bordered">
+                        <tr>
+                            <th class="text-center">{{ 'key.codigo' | translate}}
+                              <svg (click)="sortbySolDet('codmei')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
+                            </th>
+                            <th class="text-center">{{ 'key.descripcion' | translate}}
+                              <svg (click)="sortbySolDet('meindescri')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
+                            </th>
+                            <th class="text-center">{{ 'key.solicitado' | translate}}
+                              <svg (click)="sortbySolDet('cantsoli')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
+                            </th>
+                            <th class="text-center">{{ 'key.despachado' | translate}}
+                              <svg (click)="sortbySolDet('cantdespachada')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
+                            </th>
+                            <th class="text-center">{{ 'key.pendiente.recepcionar' | translate}}
+                              <svg (click)="sortbySolDet('id')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
+                            </th>
+                            <th class="text-center">{{ 'key.devuelta' | translate}}
+                              <svg (click)="sortbySolDet('cantdevolucion')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
+                            </th>
+                            <th class="text-center">{{ 'key.recepcionar' | translate}}*
+                              <svg (click)="sortbySolDet('cantidadarecepcionar')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
+                            </th>
+                            <th class="text-center">{{ 'key.lote' | translate}}
+                              <svg (click)="sortbySolDet('lote')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
+                            </th>
+                            <th class="text-center">{{ 'key.fecha.vencimiento' | translate}}
+                              <svg (click)="sortbySolDet('fechavto')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
+                            </th>
+                        </tr>
+                        <tr class="table-success"
+                            *ngFor="let registrodespacho of listaDetalleDespachopaginacion
+                            |  paginate: {itemsPerPage: 15, currentPage: pageSoliDet, id:'recDesp'} let id = index">
+                            <td><small><span>{{registrodespacho.codmei}}</span></small></td>
+                            <td class="text-nowrap help" tooltip="{{registrodespacho.meindescri }}">
+                                <small><span> {{registrodespacho.meindescri | slice:0:30 }}</span></small>
+                            </td>
+                            <td><small><span>{{registrodespacho.cantsoli}} </span></small></td>
+                            <td><small><span>{{registrodespacho.cantdespachada}} </span></small></td>
+                            <td><small><span> {{registrodespacho.cantdespachada - registrodespacho.cantrecepcionado}} </span></small></td>
+                            <td><small><span>{{registrodespacho.cantdevolucion}} </span></small></td>
+                            <td><small><span>{{registrodespacho.cantidadarecepcionar}} </span></small></td>
+                            <td><small><span>{{registrodespacho.lote}} </span></small></td>
+                            <td><small><span>{{registrodespacho.fechavto | date: 'dd/MM/yyyy'}}</span></small></td>
+                        </tr>
+                    </table>
+                    <div class="row m-1 mt-3 text-center">
+                      <pagination-controls
+                        id="recDesp"
+                        (pageChange)="pageSoliDet = $event"
+                        previousLabel="{{'key.pagination.anterior' | translate}}"
+                        nextLabel="{{'key.pagination.siguiente' | translate}}"
+                        autoHide="true">
+                      </pagination-controls>
+                    </div>
+                </div>
+            </tab>
+        </tabset>
+    </div>
+
+    <!--  Botones de página -->
+    <div class="form-row float-right mt-2 mr-1">
+        <!-- <div class="form-group mr-1 align-self-end" *ngIf="modelopermisos.btngrabareceptotalsolic">
+            <button type="button" id="btnguardar" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+                [disabled]="!numsolic"
+                (click)="ConfirmarRecepcionCompleta()">RECEPCIÓN TOTAL
+                <i class="fas fa-save ml-1"></i>
+            </button>
+        </div> -->
+        <div class="form-group align-self-end" *ngIf="modelopermisos.btnimprecepsolicbod">
+            <button 
+                type="button"
+                [disabled]="!activabtnimprimedesp"
+                class="btn mr-1 btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+                (click)="imprimirRecepcion()">
+                <span class="text-uppercase">{{ 'key.button.imprimir.recepcion' | translate}}</span>
+                <i class="fas fa-file-pdf ml-1"></i>
+            </button>
+        </div>
+        <div class="form-group align-self-end" *ngIf="modelopermisos.btnimprecepsolicbod">
+            <button type="button" id="btnguardar" [disabled]="!activabtnimprimedesp"
+                class="btn mr-1 btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+                (click)="onImprimirDespacho()">{{ 'key.button.imprimir.despacho' | translate}}  <i class="fas fa-file-pdf ml-1"></i>
+            </button>
+        </div>
+        <div class="form-group mr-1 align-self-end" *ngIf="modelopermisos.btngrabarecepsolic">
+            <button type="button" id="btnguardar" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+                [disabled]="!verificanull"
+                (click)="ConfirmarRecepcion()">{{ 'key.recepcion' | translate}}
+                <i class="fas fa-save ml-1"></i>
+            </button>
+        </div>
+        <div class="form-group  align-self-end" *ngIf="modelopermisos.btnimprecepsolicbod" >
+            <button type="button" id="btnguardar" [disabled]="!activabtnimprime"
+                class="btn mr-1 btn-primary btn-sm button-my-styles-busqueda_02"
+                (click)="onImprimir()">{{ 'key.button.imprimir.recepcion' | translate}}  <i class="fas fa-file-pdf ml-1"></i>
+            </button>
+        </div>
+        <div class="form-group mr-1 align-self-end">
+            <button type="button" id="btnlimpiar" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+                (click)="Limpiar()">{{ 'key.button.limpiar' | translate}} <i class="fas fa-eraser ml-1"></i>
+            </button>
+        </div>
+        <div class="form-group  align-self-end">
+            <button type="button" id="btnsalir" class="btn btn-primary btn-sm button-my-styles-busqueda_02"
+            (click) = salir()>{{ 'key.button.salir' | translate}} <i class="fas fa-window-close ml-1"></i>
+            </button>
+        </div>
+    </div>
+    <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+    <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+    <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+    <swal #alertSwalGrilla title="" text="" [showCancelButton]="true" (confirm)="onConfirm()" grow="row"
+        (cancel)="onCancel()" showCloseButton="true">
+        <table class="table table-hover mt-4" *swalPartial>
+            <thead class="table-header-text">
+                <tr>
+                    <th>{{ 'key.seleccion' | translate}}</th>
+                    <th>{{ 'key.solicitud' | translate}}</th>
+                    <!-- <th>F.Despacho</th> -->
+                    <th>{{ 'key.lote' | translate}}</th>
+                    <th>{{ 'key.f.vencimiento' | translate}}</th>
+                    <th>{{ 'key.cantidad.despachada' | translate}}</th>
+                    <th>{{ 'key.cantidad.recepcionada' | translate}} </th>
+                    <th>{{ 'key.cantidad.pendiente.recepcion' | translate}}</th>
+                    <!-- <th>Cantidad Devuelta</th> -->
+                </tr>
+            </thead>
+            <tbody class="table-body-text text-nowrap">
+                <tr class="text-nowrap" *ngFor="let productorecepcionado of productosrecepcionadospaginacion
+                |  paginate: {itemsPerPage: 15, currentPage: pageRecProd, id:'recProd'}">
+                    <td>
+                        <input type="checkbox"  [disabled]="productorecepcionado.checkgrilla"
+                        (click)="onCheck($event, productorecepcionado)">
+                    </td>
+                    <td>
+                        {{ productorecepcionado.soliid }}
+                    </td>
+                    <!-- <td>{{ productorecepcionado.fecharecepcion | date: 'dd/MM/yyyy HH:mm:ss' }}</td> -->
+                    <td>{{ productorecepcionado.lote }}</td>
+                    <td>{{ productorecepcionado.fechavto | date: 'dd/MM/yyyy'}}</td>
+                    <td>{{ productorecepcionado.cantdespachada }}
+                    <td>{{ productorecepcionado.cantrecepcionada }}</td>
+                    <td>{{ productorecepcionado.cantpendienterecepcion}} </td>
+                    <!-- <td>{{ productorecepcionado.cantdevuelta }}</td> -->
+                </tr>
+            </tbody>
+        </table>
+        <div class="row m-1 mt-3 text-center">
+          <pagination-controls
+            id="recProd"
+            (pageChange)="pageRecProd = $event"
+            previousLabel="{{'key.pagination.anterior' | translate}}"
+            nextLabel="{{'key.pagination.siguiente' | translate}}"
+            autoHide="true">
+          </pagination-controls>
+        </div>
+    </swal>
+    <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+  </div>
+</app-main-nav>

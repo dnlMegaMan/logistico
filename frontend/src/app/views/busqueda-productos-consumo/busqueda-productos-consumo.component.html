@@ -1,0 +1,92 @@
+<div class="card">
+    <!--menu - Búsqueda de productos-->
+    <div class="card-header">
+      {{titulo}}
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onCerrarSalir()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <div class="card m-1 border-primary" style="padding: 10px; background-color:azure;">
+      <form novalidate [formGroup]='lForm' autocomplete="off" spellcheck="false">
+        <div class="form-row">
+          <div class="form-group col-md-1">
+            <label for="codigo">{{ 'key.codigo' | translate}} *</label>
+            <input type="text" class="form-control form-control-sm" formControlName="codigo"
+            (keyup.enter)="getProducto($event.target.value)" (keydown.tab)="getProducto($event.target.value)">
+          </div>
+          <div class="form-group col-md-3">
+            <label for="descripcion">{{ 'key.descripcion' | translate}} *</label>
+            <input type="text" class="form-control form-control-sm" formControlName="descripcion">
+          </div>
+          <div class="form-group col-md-3">
+            <label for="grupo">{{ 'key.grupo' | translate}} *</label>
+            <select name="grupoid" class='form-control form-control-sm' formControlName='grupoid'   (change)="listarsubgrupos(lForm.value.grupoid)">
+              <option *ngFor='let registrogrupo of listaGurpoConsumo' [ngValue]='registrogrupo.grupoid'>
+                {{ registrogrupo.grupodescripcion }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group col-md-3">
+            <label for="subgrupo">{{ 'key.sub.grupo' | translate}} *</label>
+            <select name="subgrupoid" class='form-control form-control-sm' formControlName='subgrupoid'>
+              <option *ngFor='let registrosubgrupo of listaSubGurpoConsumo' [ngValue]='registrosubgrupo.subgrupoid' >
+                {{ registrosubgrupo.subgrupodescripcion }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group col-md-2 align-self-end">
+            <button type="button" id="btnbuscar" class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+            (click)="Buscarproducto(lForm.value.codigo,lForm.value.descripcion,lForm.value.grupoid,lForm.value.subgrupoid)"
+            >{{ 'key.button.buscar' | translate}} <i class="fas fa-search ml-1"></i>
+            </button>
+          </div>
+        </div>
+        <table class="table table-stripped table-condensed table-hovered">
+          <thead>
+            <tr>
+              <th>{{ 'key.codigo' | translate | uppercase}}</th>
+              <th>{{ 'key.descripcion' | translate | uppercase}}</th>
+              <th>{{ 'key.saldo' | translate | uppercase}}</th>
+              <th>{{ 'key.unidad' | translate | uppercase}}</th>
+              <th>{{ 'key.grupo' | translate | uppercase}}</th>
+              <th>{{ 'key.sub.grupo' | translate | uppercase}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let productos of detalleconsultaproductopag" (click)="onCerrar(productos)" let id=index
+              style="cursor: pointer;">
+              <td><small>{{productos.prodcodigo}}</small></td>
+              <td><small>{{productos.proddescripcion}}</small></td>
+              <td><small>{{productos.stockactual}} </small></td>
+              <td><small>{{productos.glosaunidadconsumo}}</small></td>
+              <td><small>{{productos.glosagrupo}}</small></td>
+              <td><small>{{productos.glosasubgrupo}}</small></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="row m-1">
+          <pagination [boundaryLinks]="true" [directionLinks]="true" [maxSize]="6"
+            [totalItems]="detalleconsultaproducto.length" [itemsPerPage]=8 [previousText]="'key.pagination.anterior' | translate"
+            [nextText]="'key.pagination.siguiente' | translate" [firstText]="'&laquo;'" [lastText]="'&raquo;'" (pageChanged)="pageChanged($event)">
+          </pagination>
+        </div>
+      </form>
+    </div>
+    <div class="row float-right mt-1">
+      <div class="form-group col-md-9 align-self-end text-right">
+        <button type="button" id="btnlimpiar" class="btn  btn-primary btn-sm button-my-styles-busqueda_02"
+          (click)="Limpiar()">{{ 'key.button.limpiar' | translate}} <i class="fas fa-eraser ml-1"></i>
+        </button>
+      </div>
+      <div class="form-group col-md-3 align-self-end text-right">
+        <button type="button" id="btnlimpiar" class="btn  btn-primary btn-sm button-my-styles-busqueda_02"
+          (click)="onCerrarSalir()">{{ 'key.button.salir' | translate}} <i class="fas fa-window-close ml-1"></i>
+        </button>
+      </div>
+    </div>
+    <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+    <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+    <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+    <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+  </div>

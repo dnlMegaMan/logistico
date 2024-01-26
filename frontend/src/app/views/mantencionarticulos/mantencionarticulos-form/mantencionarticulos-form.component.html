@@ -1,0 +1,37 @@
+<div style="padding: 10px;">
+    
+        <!-- Contenedor general de la página -->
+
+        <div class="my-2 ml-2 titulo text-center">
+            <!--menu - productos -mantencion de articulos-->
+            <h3>
+                {{ 'key.mantencion.articulos' | translate}}
+           </h3>
+        </div>
+
+    <div class="card m-2 border-primary" style="padding: 10px;">   
+        <tabset (click)="confirmTabSwitch($event)" #tabset>
+            <tab
+              tab1
+              heading="{{'key.tab.title.agregar.articulos' | translate}}"
+              id="first"
+              #first
+              [disabled]="disableSwitching"
+              >
+              <app-agregar-articulos-form></app-agregar-articulos-form>
+            </tab>
+          
+            <tab
+              tab2
+              heading="{{'key.tab.title.modificar.articulos' | translate}}"
+              id="second"
+              select="!disableSwitching && second.active = true"
+              #second
+              [disabled]="disableSwitching"
+              >
+              <app-modificar-articulos-form></app-modificar-articulos-form>
+            </tab>
+          </tabset>
+    </div>    
+</div> <!-- Fin contenedor de la página-->
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>

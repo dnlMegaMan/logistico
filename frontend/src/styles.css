@@ -1,0 +1,100 @@
+/* You can add global styles to this file, and also import other style files */
+@import '../node_modules/ngx-bootstrap/datepicker/bs-datepicker.css';
+
+.cursor-pointer {
+    cursor: pointer !important;
+}
+
+.button-my-styles-busqueda_01 {
+    width: 140px;
+}
+
+/* .custom-select.is-invalid, .form-control.is-invalid, .was-validated .custom-select:invalid, .was-validated .form-control:invalid {
+    border-color: #f0ad4e;
+} */
+
+.button-my-styles-busqueda_02 {
+    width: 200px;
+}
+
+.button-my-styles-busqueda_03 {
+    width: 100px;
+}
+
+.help {
+    cursor: help;
+}
+.sidebar{
+    height: calc(100% - 0rem) !important;
+    background-color:rgb(109, 175, 175);
+    padding-left: 0.0rem !important;
+}
+
+.main-header{
+    margin-left: 0em !important;
+}
+
+.brand-link {
+    padding: 0% !important;
+}
+.main-sidebar{
+    width:auto !important;
+    margin-top: 3.9em !important;
+    height: 100% !important;
+    /* position: absolute  !important;  */
+}
+
+.sidebtn{
+    font-weight: bold !important;
+    color: white !important;
+}
+
+.main-side-menu{
+    width:auto !important;
+    margin-top: 3.9em !important;
+    height: 100% !important;
+    /* position: absolute  !important;  */
+}
+
+.side-menu{
+    height: calc(100% - 0rem) !important;
+    background-color:rgb(109, 175, 175);
+    padding-left: 0.0rem !important;
+}
+
+.btn-buscar{
+    width:141.47px !important;
+    height: 30.47px !important;
+    font-size: 14px;
+}
+
+.ng-sidebar {
+    background: rgb(109, 175, 175);
+    width: 11rem;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    position: absolute !important;
+}
+
+body {
+    height: 100vh;
+    background-color: black;
+    font-size: 13.5pxa;
+}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.content-menu-open {
+    width: 90%;
+}
+
+.content-menu-close {
+    width: 100%;
+}
+
+/* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+/* .main { */
+    /* transition: margin-left .5s;
+    padding: 20px; */
+    /* width: 250px; */
+/* } */

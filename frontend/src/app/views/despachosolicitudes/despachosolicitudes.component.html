@@ -1,0 +1,291 @@
+<app-main-nav>
+    <div>
+        <!-- Contenedor feneral de la página -->
+        <div class="my-2 ml-2 titulo text-center">
+            <!--menu -->
+            <h3>
+                {{ 'key.title.despacho.solicitudes' | translate}}
+            </h3>
+        </div>
+        <!-- lineas de edición y bpusqueda -->
+        <form [formGroup]='FormDespachoSolicitud'>
+            <div class="card border-primary" style="padding: 5px;">
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label for="numsolicitud"># {{ 'key.solicitud' | translate}} *</label>
+                        <input type="number" class="form-control form-control-sm" formControlName="numsolicitud">
+
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="esticod">{{ 'key.estado' | translate}} {{ 'key.solicitud' | translate}} *</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="esticod">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="prioridad">{{ 'key.prioridad' | translate}} *</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="prioridad">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="fechamostrar">{{ 'key.fecha' | translate}} *</label>
+                        <input type="text" appSelecttext placeholder="DD/MM/YYYY" [bsConfig]="bsConfig" bsDatepicker
+                            id="fecha" class='form-control form-control-sm' formControlName="fechamostrar">
+                    </div>
+                    <div class="form-group col-md-3 align-self-end text-right">
+                        <button type="button" id="btnbuscar" class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                            (click)="BuscarSolicitudes()">{{ 'key.button.buscar.solicitud' | translate}} <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="codigobodega">{{ 'key.bodega.solicitante' | translate}} *</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="bodorigen">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="bodegaorigen">{{ 'key.bodega.despacho' | translate}} *</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="boddestino">
+                    </div>
+
+                    <div class="form-group col-md-4 align-self-end text-right">
+                        <button type="button" id="btnevento" class="btn btn-primary btn-sm button-my-styles-busqueda_01"
+                            [disabled]="!numsolic" (click)="eventosSolicitud()">{{ 'key.button.eventos' | translate}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+
+        <div class="card border-primary mt-0" style="padding: 5px">
+            <tabset>
+                <tab heading="{{'key.tab.detalle.original' | translate}}" id="tab1">
+                    <form [formGroup]="FormDatosProducto" autocomplete="off" spellcheck="false">
+                        <div class="row form-group align-self-end ml-1">
+
+                            <div class="form-group col-md-2">
+                                <label for="codigo">{{ 'key.codigo' | translate}} *</label>
+                                <input type="text" class="form-control form-control-sm" formControlName ="codigo"
+                                (keydown.tab)="findArticuloGrilla()"
+                                (keyup.enter)="findArticuloGrilla()"
+                                matInput
+                                placeholder="{{'key.placeholder.ingrese.codigo' | translate}}"
+                                #codigo>
+                            </div>
+                            <div class="row form-group align-self-end ml-1">
+                                <button type="button" class="btn btn-info btn-sm ml-2"
+                                    [disabled]="!ActivaBotonBuscaGrilla"
+                                    (click)="findArticuloGrilla()">{{ 'key.button.buscar' | translate}}<i
+                                    class="fas fa-search ml-1"></i>
+                                </button>
+                                <button type="button" [disabled]="!ActivaBotonLimpiaBusca"
+                                    class="btn btn-danger btn-sm ml-2"
+                                    (click)="limpiarCodigo()">{{ 'key.button.limpiar.busqueda' | translate}}<i
+                                    class="fas fa-brush ml-1"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="table-responsive mt-3" style="max-height: auto;min-height: 100px;">
+                        <table class="table table-sm  table-primary table-bordered">
+                            <tr class="table-sm">
+                                <th class="text-center">{{ 'key.codigo' | translate}}</th>
+                                <th class="text-center">{{ 'key.descripcion.articulo' | translate}}</th>
+                                <th class="text-center">{{ 'key.stock' | translate}}</th>
+                                <th class="text-center">{{ 'key.solicitada' | translate}}</th>
+                                <th class="text-center">{{ 'key.despachada' | translate}}</th>
+                                <th class="text-center">{{ 'key.pendiente' | translate}}</th>
+                                <th class="text-center">{{ 'key.recepcionada' | translate}}</th>
+                                <th class="text-center">{{ 'key.devuelta' | translate}}</th>
+                                <th class="text-center">{{ 'key.button.eventos' | translate}}</th>
+
+                            </tr>
+                            <tr *ngFor="let registro of listaDetalleSolicitudpaginacion
+                            |  paginate: {itemsPerPage: 15, currentPage: pageSoli, id:'sol'} ; let id = index"
+                                [ngClass]="registro.backgroundcolor">
+                                <td><small><span>{{registro.codmei}}</span></small></td>
+                                <td class="text-nowrap help   " tooltip="{{registro.meindescri }}">
+                                    <small><span> {{registro.meindescri | slice:0:20 }}</span></small>
+                                </td>
+                                <td><small><span> {{registro.stockdestino}}</span></small></td>
+                                <td><small><span>{{registro.cantsoli}} </span></small></td>
+                                <td><small><span>{{registro.cantdespachada}} </span></small></td>
+                                <td><small><span> {{registro.cantsoli - registro.cantdespachada}} </span></small></td>
+                                <td><small><span>{{registro.cantrecepcionado}} </span></small></td>
+                                <td><small><span>{{registro.cantdevolucion}} </span></small></td>
+                                <td>
+                                    <small><span><button type="button" id="btnVerEventosDet"
+                                                class="btn btn-info btn-rounded btn-sm ml-2"
+                                                (click)="eventosDetalleSolicitud(registro)">{{ 'key.button.eventos' | translate}}
+                                            </button></span>
+                                    </small>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="row m-1 mt-3">
+                          <pagination-controls
+                            id="sol"
+                            (pageChange)="pageSoli = $event"
+                            previousLabel="{{'key.pagination.anterior' | translate}}"
+                            nextLabel="{{'key.pagination.siguiente' | translate}}"
+                            autoHide="true">
+                          </pagination-controls>
+                        </div>
+                    </div>
+                </tab>
+
+                <tab heading="{{'key.tab.detalle.despacho' | translate}}" id="tab2">
+                    <div class="mt-0">
+                        <form [formGroup]="FormDespachoSolicitud2" autocomplete="off" spellcheck="false">
+                            <div class="form-row ">
+                                <div class="form-group col-md-2">
+                                    <label for="codigoproducto">{{ 'key.codigo' | translate}} *</label>
+                                    <input type="text" class="form-control form-control-sm"
+                                        (keyup.enter)="codigo_ingresado(FormDespachoSolicitud2.value)"
+                                        (keydown.tab)="codigo_ingresado(FormDespachoSolicitud2.value)"
+                                        formControlName="codigoproducto">
+                                </div>
+                                <div class="form-group col-md-2">
+                                    <label for="cantidad">{{ 'key.cantidad' | translate}} *</label>
+                                    <input type="number" class="form-control form-control-sm"
+                                        (keyup.enter)="valida_cantidad(FormDespachoSolicitud2.value.cantidad,FormDespachoSolicitud2.value)"
+                                        (keydown.tab)="valida_cantidad(FormDespachoSolicitud2.value.cantidad,FormDespachoSolicitud2.value)"
+                                        formControlName="cantidad">
+                                </div>
+
+                                <div class="form-group col-md-2">
+                                    <label for="lote">{{ 'key.lote' | translate}} *</label>
+                                    <select name="lote" class='form-control form-control-sm' formControlName='lote'
+                                        (change)="LlamaFecha(FormDespachoSolicitud2.value.lote)"
+                                        ngDefaultControl >
+                                        <option *ngFor="let detallelote  of detalleslotes" [ngValue]='detallelote'
+                                            [selected]='detallelote.row == 0'
+                                            value="{{detallelote.fechavto}}/{{detallelote.lote}}">
+                                            {{detallelote.glscombo}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="fechavto">{{ 'key.fecha' | translate}} {{ 'key.fecha.vencimiento' | translate}}* *</label>
+                                    <input appSelecttext type="text" placeholder="DD/MM/YYYY"
+                                        class="form-control form-control-sm" [bsConfig]="bsConfig" bsDatepicker
+                                        formControlName="fechavto"  disabled='cmbLoteDet'/>
+                                </div>
+                                <div class="form-group col-md-3 align-self-end">
+                                    <button type="button"
+                                        class="btn btn-info btn-rounded  btn-sm button-my-styles-busqueda_03 "
+                                        (click)="addArticuloGrillaDespacho(FormDespachoSolicitud2.value)"
+                                        [disabled]="!logicabtnAgregar()">
+                                        {{ 'key.agregar' | translate}} <i class="fas fa-plus ml-1"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="table-responsive mt-1" style="max-height: auto;min-height: 100px;">
+                        <table class="table table-sm  table-primary table-bordered">
+                            <tr class="table-sm">
+                                <th class="text-center">{{ 'key.codigo' | translate}}</th>
+                                <th class="text-center">{{ 'key.descripcion.articulo' | translate}}</th>
+                                <th class="text-center">{{ 'key.stock' | translate}}</th>
+                                <th class="text-center">{{ 'key.solicitada' | translate}}</th>
+                                <th class="text-center">{{ 'key.despachada' | translate}}</th>
+                                <th class="text-center">{{ 'key.pendiente' | translate}}</th>
+                                <th class="text-center">{{ 'key.devuelta' | translate}}</th>
+                                <th class="text-center">{{ 'key.lote' | translate}}</th>
+                                <th class="text-center">{{ 'key.fecha.vencimiento' | translate}}</th>
+                                <th class="text-center">{{ 'key.despachar' | translate}}*</th>
+                                <th class="text-center"><button type="button" id="btnElinaRegistro"
+                                        class="btn btn-info btn-danger btn-sm ml-2 "
+                                        (click)="ConfirmaEliminaProductoDeLaGrilla2()" [disabled]="!listaDetalleEliminado.length">
+                                        {{ 'key.button.eliminar' | translate}} <i class="fas fa-trash-restore-alt  ml-1"></i>
+                                    </button>
+                                </th>
+                            </tr>
+                            <tr class="table-success"
+                                *ngFor="let registrodespacho of listaDetalleDespacho
+                                |  paginate: {itemsPerPage: 15, currentPage: pageSoliDes, id:'solDes'} ; let id = index">
+                                <td><small><span>{{registrodespacho.codmei}}</span></small></td>
+                                <td *ngIf="activabtndespacho" class="text-nowrap help   "
+                                    tooltip="{{registrodespacho.meindescri }}">
+                                    <small><span> {{registrodespacho.meindescri | slice:0:20 }}</span></small>
+                                </td>
+                                <td><small><span> {{registrodespacho.stockorigen}}</span></small></td>
+                                <td><small><span>{{registrodespacho.cantsoli}} </span></small></td>
+                                <td><small><span>{{registrodespacho.cantdespachada}} </span></small></td>
+                                <td><small><span> {{registrodespacho.cantsoli - registrodespacho.cantdespachada}} </span></small></td>
+                                <td><small><span>{{registrodespacho.cantdevolucion}} </span></small></td>
+                                <td><small><span>{{registrodespacho.lote}} </span></small></td>
+                                <td><small><span>{{registrodespacho.fechavto }}</span></small></td>
+                                <td>
+                                    <small>
+                                        <input type="number" class="form-control form-control-sm text-right" min="1"
+                                            max="100" [(ngModel)]="registrodespacho.cantadespachar"
+                                            [disabled]="!registrodespacho.bloqcampogrilla2"
+                                            (input)="cambio_cantidad(id, 'cantadespachar',registrodespacho)"
+                                            (keydown.tab)="validacantidadgrilla(id,registrodespacho)"
+                                            (keyup.enter)="validacantidadgrilla(id,registrodespacho)">
+                                    </small>
+                                </td>
+                                <td>
+                                    <small>
+                                        <input class="mr-2  " type="checkbox"
+                                            [disabled]="!registrodespacho.bloqcampogrilla"
+                                            (click)="CambioCheck(registrodespacho,id,$event,registrodespacho.marcacheckgrilla)">
+                                    </small>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="row m-1 mt-3">
+                          <pagination-controls
+                            id="solDes"
+                            (pageChange)="pageSoliDes = $event"
+                            previousLabel="{{'key.pagination.anterior' | translate}}"
+                            nextLabel="{{'key.pagination.siguiente' | translate}}"
+                            autoHide="true">
+                          </pagination-controls>
+                        </div>
+                    </div>
+                </tab>
+            </tabset>
+        </div>
+
+
+
+        <!--  Botones de página -->
+        <div class="form-row float-right mt-2 mr-1">
+            <div class="form-group align-self-end" *ngIf="modelopermisos.btnimpdespsolicbod">
+                <button type="button" id="btnguardar" [disabled]="!activabtnimprimesolic"
+                    class="btn mr-1 btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+                    (click)="onImprimirSolicitud()">{{ 'key.button.imprimir.solicitud' | translate}} <i class="fas fa-file-pdf ml-1"></i>
+                </button>
+            </div>
+            <div class="form-group  align-self-end" *ngIf="modelopermisos.btngrabadespachosolic">
+                <button type="button" id="btnguardar" class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+                    [disabled]="!verificanull" (click)="ConfirmarEnviarDespacho(FormDespachoSolicitud.value)">{{ 'key.button.despachar' | translate}}
+                    <i class="fas fa-save ml-1"></i>
+                </button>
+            </div>
+            <div class="form-group align-self-end" *ngIf="modelopermisos.btnimpdespsolicbod">
+                <button type="button" id="btnguardar" [disabled]="!activabtnimprime"
+                    class="btn mr-1 btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+                    (click)="onImprimir()">{{ 'key.button.imprimir.despacho' | translate}} <i class="fas fa-file-pdf ml-1"></i>
+                </button>
+            </div>
+
+            <div class="form-group  align-self-end">
+                <button type="button" id="btnlimpiar" class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+                    (click)="Limpiar()">{{ 'key.button.limpiar' | translate}} <i class="fas fa-eraser ml-1"></i>
+                </button>
+            </div>
+            <div class="form-group align-self-end">
+                <button type="button" id="btnsalir" class="btn btn-primary mr-1 btn-sm button-my-styles-busqueda_02"
+                    (click)=salir()>{{ 'key.button.salir' | translate}} <i class="fas fa-window-close ml-1"></i>
+                </button>
+            </div>
+        </div>
+
+        <swal #alertSwal title="" text="" type="success" [showCancelButton]="false"> </swal>
+        <swal #alertSwalAlert title="" text="" type="warning" [showCancelButton]="false"> </swal>
+        <swal #alertSwalError title="" text="" type="error" [showCancelButton]="false"> </swal>
+        <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"> </ngx-loading>
+    </div>
+</app-main-nav>
